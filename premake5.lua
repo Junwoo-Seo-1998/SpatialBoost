@@ -28,6 +28,7 @@ project "RenderingEngine"
     kind "ConsoleApp"
     language "C++"
     targetdir "bin/%{cfg.buildcfg}"
+    objdir "bin/%{cfg.buildcfg}-obj"
     architecture "x86_64"
     links {
         "GLFW",
@@ -47,6 +48,12 @@ project "RenderingEngine"
     defines{
         "GLFW_INCLUDE_NONE",
     }
+
+    postbuildcommands {
+        "{COPYDIR} \"../Assets\" \"../bin/%{cfg.buildcfg}/Assets\""
+    }
+
+
     -- All of these settings will appear in the Debug configuration
     filter "configurations:Debug"
         defines { "DEBUG" }

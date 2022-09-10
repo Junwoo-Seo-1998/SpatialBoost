@@ -42,14 +42,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\Debug\</OutDir>
-    <IntDir>obj\Win64\Debug\</IntDir>
+    <IntDir>..\bin\Debug-obj\</IntDir>
     <TargetName>RenderingEngine</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release\</OutDir>
-    <IntDir>obj\Win64\Release\</IntDir>
+    <IntDir>..\bin\Release-obj\</IntDir>
     <TargetName>RenderingEngine</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -67,6 +67,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Debug\Assets"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
     <ClCompile>
@@ -86,6 +89,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Release\Assets"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />

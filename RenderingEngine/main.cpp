@@ -14,6 +14,8 @@ End Header --------------------------------------------------------*/
 #include <glad.h>
 #include<iostream>
 #include "Core/Application.h"
+#include <fstream>
+#include<string>
 int main(void)
 {
 	Application application;
