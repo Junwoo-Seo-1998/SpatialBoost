@@ -36,7 +36,7 @@ project "RenderingEngine"
     }
     includedirs
     {
-        
+        "RenderingEngine",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.GLAD}"
     }

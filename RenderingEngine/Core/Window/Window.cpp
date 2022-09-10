@@ -2,23 +2,34 @@
 Copyright (C) 2022 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the prior written
 consent of DigiPen Institute of Technology is prohibited.
-File Name: main.cpp
-Purpose: entry point for the engine.
+File Name: Window.cpp
+Purpose: Abstricted Layer for Window.
 Language: C++ MSVC(2022)
 Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
 Project: junwoo.seo_cs300_1
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
-#include <GLFW/glfw3.h>
-#include <glad.h>
-#include<iostream>
-#include "Core/Application.h"
-int main(void)
+#include "Window.h"
+//for now glfw
+#include "Core/Window/API/WindowGLFW.h"
+bool Window::Init()
 {
-	Application application;
-	application.Init();
-	application.Update();
-	application.Close();
-	return 0;
+	m_StaticData.m_WindowAPI = std::make_shared<WindowGLFW>();
+	return m_StaticData.m_WindowAPI->Init();
+}
+
+bool Window::ShouldClose()
+{
+	return m_StaticData.m_WindowAPI->ShouldClose();
+}
+
+void Window::Update()
+{
+	m_StaticData.m_WindowAPI->Update();
+}
+
+void Window::Close()
+{
+	m_StaticData.m_WindowAPI->Close();
 }
