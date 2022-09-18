@@ -4,6 +4,12 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Data">
+      <UniqueIdentifier>{57F6BA15-C360-6F8C-0C9F-203278484DE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Graphics">
+      <UniqueIdentifier>{2E10C882-9AD0-43B9-630B-8D36CF8A8895}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Layer">
       <UniqueIdentifier>{7A9BAACD-6653-EC1A-CF5A-C576BB31870B}</UniqueIdentifier>
     </Filter>
@@ -24,8 +30,20 @@
     <ClInclude Include="Core\Application.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Data\Face.h">
+      <Filter>Core\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Data\Mesh.h">
+      <Filter>Core\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Data\Vertex.h">
+      <Filter>Core\Data</Filter>
+    </ClInclude>
     <ClInclude Include="Core\EntryPoint.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Graphics\Shader.h">
+      <Filter>Core\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Core\Layer\DefaultLayer.h">
       <Filter>Core\Layer</Filter>
@@ -42,6 +60,9 @@
     <ClInclude Include="Core\Scene\SceneManager.h">
       <Filter>Core\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\Math.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Utils\ObjParser.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
@@ -51,14 +72,16 @@
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Data\Mesh.h" />
-    <ClInclude Include="Core\Utils\Math.h" />
-    <ClInclude Include="Core\Data\Face.h" />
-    <ClInclude Include="Core\Data\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Data\Mesh.cpp">
+      <Filter>Core\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Graphics\Shader.cpp">
+      <Filter>Core\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Core\Layer\DefaultLayer.cpp">
       <Filter>Core\Layer</Filter>
@@ -75,6 +98,9 @@
     <ClCompile Include="Core\Scene\SceneManager.cpp">
       <Filter>Core\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Utils\Math.cpp">
+      <Filter>Core\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Utils\ObjParser.cpp">
       <Filter>Core\Utils</Filter>
     </ClCompile>
@@ -85,7 +111,5 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Data\Mesh.cpp" />
-    <ClCompile Include="Core\Utils\Math.cpp" />
   </ItemGroup>
 </Project>

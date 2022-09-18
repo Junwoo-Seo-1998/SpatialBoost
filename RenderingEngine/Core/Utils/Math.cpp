@@ -3,8 +3,10 @@
 #include<iostream>
 #include<glm/gtc/matrix_transform.hpp>
 #else
+#include<iostream>
 #include<glm/gtc/matrix_transform.hpp>
-#endif // DEBUG
+#endif 
+// DEBUG
 glm::mat4 Math::BuildCameraMatrix(glm::vec3 cam_position, glm::vec3 target, glm::vec3 world_up)
 {
 #ifdef DEBUG
@@ -110,10 +112,15 @@ glm::mat4 Math::BuildPerspectiveProjectionMatrixFovy(float fov_y, float aspect_r
 		}
 		std::cout << std::endl;
 	}
-
 	return perspective;
 #else
 	return glm::perspective(fov_y, aspect_ratio, near, far);
 #endif
+
+}
+
+glm::vec3 Math::ComputeFaceNormal(const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2)
+{
+	return glm::normalize(glm::cross(v1 - v0, v2 - v0));
 }
 
