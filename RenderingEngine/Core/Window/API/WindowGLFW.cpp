@@ -40,7 +40,6 @@ bool WindowGLFW::ShouldClose()
 
 void WindowGLFW::Update()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
 	glfwSwapBuffers(m_Window);
 	glfwPollEvents();
 }

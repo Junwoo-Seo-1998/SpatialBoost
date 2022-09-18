@@ -95,13 +95,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\EntryPoint.h" />
+    <ClInclude Include="Core\Layer\Layer.h" />
+    <ClInclude Include="Core\Scene\Scene.h" />
+    <ClInclude Include="Core\Scene\SceneManager.h" />
+    <ClInclude Include="Core\Utils\ObjParser.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
+    <ClInclude Include="Core\Layer\DefaultLayer.h" />
+    <ClInclude Include="Core\Layer\LayerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp" />
+    <ClCompile Include="Core\Layer\Layer.cpp" />
+    <ClCompile Include="Core\Scene\Scene.cpp" />
+    <ClCompile Include="Core\Scene\SceneManager.cpp" />
+    <ClCompile Include="Core\Utils\ObjParser.cpp" />
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
+    <ClCompile Include="Core\Layer\DefaultLayer.cpp" />
+    <ClCompile Include="Core\Layer\LayerManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

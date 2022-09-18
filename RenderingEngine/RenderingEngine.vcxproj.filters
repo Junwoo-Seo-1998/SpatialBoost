@@ -4,6 +4,15 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Layer">
+      <UniqueIdentifier>{7A9BAACD-6653-EC1A-CF5A-C576BB31870B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Scene">
+      <UniqueIdentifier>{CB0B2ACE-B7C3-6B1B-20CB-44770CA2060C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Utils">
+      <UniqueIdentifier>{0EA057CE-FA57-991B-635F-72774F36340C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Window">
       <UniqueIdentifier>{5581319D-C136-AA92-4A2B-A469B6DFA096}</UniqueIdentifier>
     </Filter>
@@ -15,16 +24,45 @@
     <ClInclude Include="Core\Application.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\EntryPoint.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Layer\Layer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Scene\Scene.h">
+      <Filter>Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Scene\SceneManager.h">
+      <Filter>Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils\ObjParser.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Window\API\WindowGLFW.h">
       <Filter>Core\Window\API</Filter>
     </ClInclude>
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Layer\DefaultLayer.h" />
+    <ClInclude Include="Core\Layer\LayerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Layer\Layer.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Scene\Scene.cpp">
+      <Filter>Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Scene\SceneManager.cpp">
+      <Filter>Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils\ObjParser.cpp">
+      <Filter>Core\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp">
       <Filter>Core\Window\API</Filter>
@@ -33,5 +71,7 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Layer\DefaultLayer.cpp" />
+    <ClCompile Include="Core\Layer\LayerManager.cpp" />
   </ItemGroup>
 </Project>
