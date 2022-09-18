@@ -27,7 +27,13 @@
     <ClInclude Include="Core\EntryPoint.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Layer\DefaultLayer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Layer\Layer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Layer\LayerManager.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
     <ClInclude Include="Core\Scene\Scene.h">
@@ -45,14 +51,18 @@
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Layer\DefaultLayer.h" />
-    <ClInclude Include="Core\Layer\LayerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Layer\DefaultLayer.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Layer\Layer.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Layer\LayerManager.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
     <ClCompile Include="Core\Scene\Scene.cpp">
@@ -71,7 +81,5 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Layer\DefaultLayer.cpp" />
-    <ClCompile Include="Core\Layer\LayerManager.cpp" />
   </ItemGroup>
 </Project>

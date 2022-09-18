@@ -19,8 +19,9 @@ workspace "RenderingEngine"
 include "Libs/glfw"
 include "Libs/glad"
 IncludeDir={}
-IncludeDir["GLFW"]="Libs/glfw/glfw/include"
+IncludeDir["GLFW"]="Libs/glfw/glfw/include/"
 IncludeDir["GLAD"]="Libs/glad/"
+IncludeDir["GLM"]="Libs/glm/"
 
 
 project "RenderingEngine"
@@ -39,7 +40,8 @@ project "RenderingEngine"
     {
         "RenderingEngine",
         "%{IncludeDir.GLFW}",
-        "%{IncludeDir.GLAD}"
+        "%{IncludeDir.GLAD}",
+        "%{IncludeDir.GLM}"
     }
     files {
         "RenderingEngine/**.h",

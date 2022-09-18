@@ -99,7 +99,6 @@ class MyScene : public Scene
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 		glEnableVertexAttribArray(0);
-		
 	};
 	virtual void Update() 
 	{
