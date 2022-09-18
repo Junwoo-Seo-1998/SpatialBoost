@@ -51,6 +51,10 @@
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Data\Mesh.h" />
+    <ClInclude Include="Core\Utils\Math.h" />
+    <ClInclude Include="Core\Data\Face.h" />
+    <ClInclude Include="Core\Data\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -81,5 +85,7 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Data\Mesh.cpp" />
+    <ClCompile Include="Core\Utils\Math.cpp" />
   </ItemGroup>
 </Project>

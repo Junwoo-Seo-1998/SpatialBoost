@@ -13,7 +13,10 @@ End Header --------------------------------------------------------*/
 #include"Core/Application.h"
 #include"Core/EntryPoint.h"
 #include"Core/Scene/Scene.h"
+#include"Core/Utils/ObjParser.h"
 #include"glad.h"
+#include"Core/Utils/Math.h"
+#include"Core/Data/Vertex.h"
 class MyScene : public Scene
 {
 	GLuint vertex_array_object[1];
@@ -21,13 +24,16 @@ class MyScene : public Scene
 
 	GLuint shader;
 	
+	Mesh mesh;
 
 	const char* vertexShaderSource = R"(
 		#version 460 core
 		layout (location = 0) in vec3 aPos;
+		layout (location = 1) in vec3 aNormal;
+		uniform mat4 mat;
 		void main()
 		{
-		   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+		   gl_Position = mat*vec4(aPos.x, aPos.y, aPos.z, 1.0);
 		}
 		)";
 	const char* fragShaderSource = R"(
@@ -43,17 +49,33 @@ class MyScene : public Scene
 	virtual void OnEnable() {};
 	virtual void Start() 
 	{
+
+		ObjParser parser;
+		mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
 		float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		 0.0f,  0.5f, 0.0f
+		 0.5f,  0.5f, 0.0f,  // top right
+		 0.5f, -0.5f, 0.0f,  // bottom right
+		-0.5f, -0.5f, 0.0f,  // bottom left
+		-0.5f,  0.5f, 0.0f   // top left 
 		};
+		unsigned int indices[] = {  // note that we start from 0!
+			0, 1, 3,   // first triangle
+			1, 2, 3    // second triangle
+		};
+		
+		
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 		glGenVertexArrays(1, vertex_array_object);
 		glBindVertexArray(vertex_array_object[0]);
 		glGenBuffers(2, vertex_buffer);
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer[0]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, mesh.GetVertices().size()*sizeof(Vertex), mesh.GetVertices().data(), GL_STATIC_DRAW);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_buffer[1]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.GetFaces().size() * sizeof(Face), mesh.GetFaces().data(), GL_STATIC_DRAW);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertex_shader, 1, &vertexShaderSource, NULL);
@@ -95,17 +117,33 @@ class MyScene : public Scene
 		glDeleteShader(vertex_shader);
 		glDeleteShader(frag_shader);
 
+		auto obj_to_world = glm::mat4{
+			{20,0,0,0},
+			{0,20,0,0},
+			{0,0,20,0},
+			{0,0,0,1}
+		};
+		auto world_to_cam = Math::BuildCameraMatrix({ 0,10,10 }, { 0,0,0 }, { 0,1,0 });
+		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 400.f / 400.f, 0.1f, 100.f);
+		glUseProgram(shader);
+		//don't forget to bind!
+		GLuint location = glGetUniformLocation(shader, "mat");
+		auto res = perspective * world_to_cam * obj_to_world;
+		glUniformMatrix4fv(location, 1, GL_FALSE, &res[0][0]);
 		
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
 		glEnableVertexAttribArray(0);
+
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),(void*)(3*sizeof(float)));
+		glEnableVertexAttribArray(1);
 	};
 	virtual void Update() 
 	{
 		glUseProgram(shader);
 		glBindVertexArray(vertex_array_object[0]);
 		
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, mesh.GetFaces().size()*3, GL_UNSIGNED_INT, nullptr);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	};
 	virtual void LateUpdate() {};
 	virtual void OnDisable() {};
@@ -129,6 +167,6 @@ class MyApp : public Application
 };
 std::shared_ptr<Application> CoreMain()
 {
-
+	std::cout<<"Vertex:" << sizeof(Vertex) << std::endl;
 	return std::make_shared<MyApp>();
 }

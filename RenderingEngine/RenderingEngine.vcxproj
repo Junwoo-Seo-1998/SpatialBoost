@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\Data\Vertex.h" />
     <ClInclude Include="Core\EntryPoint.h" />
     <ClInclude Include="Core\Layer\DefaultLayer.h" />
     <ClInclude Include="Core\Layer\Layer.h" />
@@ -104,6 +105,9 @@
     <ClInclude Include="Core\Utils\ObjParser.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
+    <ClInclude Include="Core\Data\Mesh.h" />
+    <ClInclude Include="Core\Utils\Math.h" />
+    <ClInclude Include="Core\Data\Face.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp" />
@@ -116,6 +120,8 @@
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Data\Mesh.cpp" />
+    <ClCompile Include="Core\Utils\Math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libs\glfw\GLFW.vcxproj">
