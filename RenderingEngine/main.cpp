@@ -34,18 +34,36 @@ class MyScene : public Scene
 		uniform mat4 model;
 		uniform mat4 view;
 		uniform mat4 projection;
+		uniform vec3 CamPos;
+		out vec3 Normal;
+		out vec3 LightPos;
+		out vec3 FragPos;
 		void main()
 		{
 			gl_Position = projection*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
+			Normal=aNormal;
+			LightPos=CamPos;
+			FragPos=vec3(model*vec4(aPos,1.0));
 		}
 		)";
 	const char* fragShaderSource = R"(
 		#version 460 core
+		in vec3 Normal;
+		in vec3 LightPos;
+		in vec3 FragPos;
+
 		out vec4 FragColor;
-		
 		void main()
 		{
-			FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+			vec3 LightDir=normalize(LightPos-FragPos);
+			float diff=max(dot(normalize(Normal),LightDir),0.f);
+			vec3 diffuse=diff*vec3(1.f, 1.f, 1.f);
+			//FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+
+			float ambientStrength=0.1;
+			vec3 ambient = ambientStrength * vec3(1.f, 1.f, 1.f);
+			vec3 result=(ambient+diffuse)*vec3(1.0f, 0.5f, 0.2f);
+			FragColor = vec4(result, 1.0f);
 		} 
 		)";
 
@@ -75,8 +93,8 @@ class MyScene : public Scene
 	{
 
 		ObjParser parser;
-		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
-		mesh = parser.LoadFile("../Assets/cube2.obj");
+		mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
+		//mesh = parser.LoadFile("../Assets/cube2.obj");
 		float vertices[] = {
 		 0.5f,  0.5f, 0.0f,  // top right
 		 0.5f, -0.5f, 0.0f,  // bottom right
@@ -103,18 +121,19 @@ class MyScene : public Scene
 		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		auto obj_to_world = glm::mat4{
-			{1,0,0,0},
-			{0,1,0,0},
-			{0,0,1,0},
+			{10,0,0,0},
+			{0,10,0,0},
+			{0,0,10,0},
 			{0,0,0,1}
 		};
-		auto world_to_cam = Math::BuildCameraMatrix({ 0,10,10 }, { 0,0,0 }, { 0,1,0 });
+		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
 		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 400.f / 400.f, 0.1f, 100.f);
 		
 		shader = std::make_shared<Shader>(vertexShaderSource, fragShaderSource);
 		shader->SetMat4("model", obj_to_world);
 		shader->SetMat4("view", world_to_cam);
 		shader->SetMat4("projection", perspective);
+		shader->SetFloat3("CamPos", { 0,0,10 });
 		
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
 		glEnableVertexAttribArray(0);
