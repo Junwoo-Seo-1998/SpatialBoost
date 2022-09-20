@@ -19,6 +19,7 @@ End Header --------------------------------------------------------*/
 #include"Core/Data/Vertex.h"
 #include"Core/Graphics/Shader.h"
 #include<memory>
+#include<ctime>
 class MyScene : public Scene
 {
 	GLuint vertex_array_object[1];
@@ -92,9 +93,19 @@ class MyScene : public Scene
 	virtual void Start() 
 	{
 
+		time_t start, finish;
+		double duration;
+		start = time(NULL);
 		ObjParser parser;
-		mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
-		//mesh = parser.LoadFile("../Assets/cube2.obj");
+		mesh= mesh = parser.LoadFileFast("../Assets/bunny_high_poly.obj");
+		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
+		//mesh = parser.LoadFile("../Assets/triangle.obj");
+
+		finish = time(NULL);
+
+		duration = (double)(finish - start);
+		std::cout << duration << "sec" << std::endl;
+
 		float vertices[] = {
 		 0.5f,  0.5f, 0.0f,  // top right
 		 0.5f, -0.5f, 0.0f,  // bottom right
@@ -126,14 +137,14 @@ class MyScene : public Scene
 			{0,0,10,0},
 			{0,0,0,1}
 		};
-		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
+		auto world_to_cam = Math::BuildCameraMatrix({ 0,10,10 }, { 0,0,0 }, { 0,1,0 });
 		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 400.f / 400.f, 0.1f, 100.f);
 		
 		shader = std::make_shared<Shader>(vertexShaderSource, fragShaderSource);
 		shader->SetMat4("model", obj_to_world);
 		shader->SetMat4("view", world_to_cam);
 		shader->SetMat4("projection", perspective);
-		shader->SetFloat3("CamPos", { 0,0,10 });
+		shader->SetFloat3("CamPos", { 0,10,10 });
 		
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
 		glEnableVertexAttribArray(0);
