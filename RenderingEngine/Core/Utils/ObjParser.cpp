@@ -112,7 +112,7 @@ inline bool is_not_dup(const std::vector<glm::vec3>& vec, const glm::vec3& to_co
 
 Mesh ObjParser::LoadFileFast(const std::string& file_name)
 {
-	
+	auto start = high_resolution_clock::now();
 
 	Mesh mesh;
 	std::vector<Vertex>& vertices= mesh.GetVertices();
@@ -166,70 +166,16 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 
 	//map to [-1,1] and center to origin.
 	glm::vec3 center{ (max + min) / 2.f };
-
 	const glm::vec3 scale = glm::vec3{ 2.f / (max - min) };
 	for (auto& vert:vertices )
 	{
 		vert.position = (vert.position - center) * scale;
 	}
 
-	auto start = high_resolution_clock::now();
-
-
-	int total_faces = faces.size();
-	/*
-	std::unordered_map<unsigned int, std::vector<glm::vec3>> vertex_normals_map;
-	//std::unordered_set<glm::vec3> set;
-	vertex_normals_map.reserve(vertices.size());
-	for (int i = 0; i < total_faces; ++i)
-	{
-		Face& face = faces[i];
-		const Vertex& v0 = vertices[face.indices[0]];
-		const Vertex& v1 = vertices[face.indices[1]];
-		const Vertex& v2 = vertices[face.indices[2]];
-		const glm::vec3 normal{ Math::ComputeFaceNormal(v0.position, v1.position, v2.position) };
-		
-		if (is_not_dup(vertex_normals_map[face.indices[0]], normal))
-		{
-			vertex_normals_map[face.indices[0]].push_back(normal);
-		}
-		else
-		{
-			std::cout << "same!";
-		}
-		if (is_not_dup(vertex_normals_map[face.indices[1]], normal))
-		{
-			vertex_normals_map[face.indices[1]].push_back(normal);
-		}
-		else
-		{
-			std::cout << "same!";
-		}
-		if (is_not_dup(vertex_normals_map[face.indices[2]], normal))
-		{
-			vertex_normals_map[face.indices[2]].push_back(normal);
-		}
-		else
-		{
-			std::cout << "same!";
-		}
-	}
-
-	for (auto& pair : vertex_normals_map)
-	{
-		glm::vec3 acc_normal(0.f);
-		const std::vector<glm::vec3>& normals = pair.second;
-		for (auto& element: normals)
-		{
-			acc_normal += element;
-		}
-		vertices[pair.first].normal = glm::normalize(acc_normal);
-	}
-	*/
-
 	//process normal 
+	int total_faces = faces.size();
 	std::vector<glm::vec3> face_normals;
-	face_normals.reserve(faces.size());
+	face_normals.reserve(total_faces);
 	std::unordered_map<unsigned int, std::vector<unsigned int>> vertex_faces_map;
 	vertex_faces_map.reserve(vertices.size());
 
@@ -256,22 +202,17 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 		std::vector<unsigned int>& face_indices=pair.second;
 		for (unsigned int i: face_indices)
 		{
-			if (std::find(prev_normals.begin(), prev_normals.end(), face_normals[i]) == prev_normals.end())
+			if (std::find(prev_normals.begin(), prev_normals.end(), face_normals[i]) == prev_normals.end()) //check the normal is unique.
 			{
 				acc_normal += face_normals[i];
 				prev_normals.push_back(face_normals[i]);
-			}
-			else
-			{
-				std::cout << "same!";
 			}
 		}
 		vertices[vertex_index].normal = glm::normalize(acc_normal);
 	}
 	
-	
 	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<microseconds>(stop - start);
-	std::cout << duration.count() << " ms - load " << std::endl;
+	auto duration = duration_cast<milliseconds>(stop - start);
+	std::cout << duration.count() << " ms - load  - ( " << file_name << " )" << std::endl;
 	return mesh;
 }

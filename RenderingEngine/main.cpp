@@ -56,7 +56,7 @@ class MyScene : public Scene
 		void main()
 		{
 			vec3 LightDir=normalize(LightPos-FragPos);
-			float diff=max(dot(normalize(Normal),LightDir),0.f);
+			float diff=max(dot(Normal,LightDir),0.f);
 			vec3 diffuse=diff*vec3(1.f, 1.f, 1.f);
 			//FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
 
@@ -95,6 +95,7 @@ class MyScene : public Scene
 		//mesh = std::move(parser.LoadFileFast("../Assets/bunny_high_poly.obj"));
 		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
 		mesh = parser.LoadFileFast("../Assets/bunny_high_poly.obj");
+		mesh = parser.LoadFileFast("../Assets/4Sphere.obj");
 
 		float vertices[] = {
 		 0.5f,  0.5f, 0.0f,  // top right
