@@ -97,9 +97,9 @@ class MyScene : public Scene
 		double duration;
 		start = time(NULL);
 		ObjParser parser;
-		mesh= mesh = parser.LoadFileFast("../Assets/bunny_high_poly.obj");
+		mesh = std::move(parser.LoadFileFast("../Assets/bunny_high_poly.obj"));
 		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
-		//mesh = parser.LoadFile("../Assets/triangle.obj");
+		//mesh = parser.LoadFile("../Assets/cube2.obj");
 
 		finish = time(NULL);
 
@@ -132,12 +132,12 @@ class MyScene : public Scene
 		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		auto obj_to_world = glm::mat4{
-			{10,0,0,0},
-			{0,10,0,0},
-			{0,0,10,0},
+			{1,0,0,0},
+			{0,1,0,0},
+			{0,0,1,0},
 			{0,0,0,1}
 		};
-		auto world_to_cam = Math::BuildCameraMatrix({ 0,10,10 }, { 0,0,0 }, { 0,1,0 });
+		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
 		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 400.f / 400.f, 0.1f, 100.f);
 		
 		shader = std::make_shared<Shader>(vertexShaderSource, fragShaderSource);

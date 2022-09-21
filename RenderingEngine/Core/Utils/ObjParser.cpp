@@ -6,6 +6,13 @@
 #include<ctime>
 #include"Core/Utils/Math.h"
 #include<unordered_map>
+#include<unordered_set>
+#include<functional>
+
+
+#include <chrono>
+using namespace std::chrono;
+
 Mesh ObjParser::LoadFile(const std::string& file_name)
 {
 	using namespace std;
@@ -94,6 +101,17 @@ Mesh ObjParser::LoadFile(const std::string& file_name)
 	return mesh;
 }
 
+
+namespace std {
+	template<> struct hash<glm::vec3>
+	{
+		std::size_t operator()(const glm::vec3& p) const noexcept
+		{
+			return p.x + p.y + p.z;
+		}
+	};
+}
+
 Mesh ObjParser::LoadFileFast(const std::string& file_name)
 {
 	
@@ -111,9 +129,8 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 	glm::vec3 vertex;
 	Face face;
 
-	glm::vec3 min;
-	glm::vec3 max;
-
+	glm::vec3 min{ std::numeric_limits<float>().max() };
+	glm::vec3 max{ std::numeric_limits<float>().lowest() };
 	
 	while(std::getline(file, line))
 	{	
@@ -126,6 +143,15 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 			stringstream >> vertex.x;
 			stringstream >> vertex.y;
 			stringstream >> vertex.z;
+
+			min.x = std::min(min.x, vertex.x);
+			min.y = std::min(min.y, vertex.y);
+			min.z = std::min(min.z, vertex.z);
+
+			max.x = std::max(max.x, vertex.x);
+			max.y = std::max(max.y, vertex.y);
+			max.z = std::max(max.z, vertex.z);
+
 			vertices.push_back({ vertex, });
 		}
 		else if (token == "f")
@@ -139,14 +165,56 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 			faces.push_back(face);
 		}
 	}
+
+	//map to [-1,1] and center to origin.
+	glm::vec3 center{ (max + min) / 2.f };
+
+	const glm::vec3 scale = glm::vec3{ 2.f / (max - min) };
+	for (auto& vert:vertices )
+	{
+		vert.position = (vert.position - center) * scale;
+	}
+
+	auto start = high_resolution_clock::now();
+
+
+	int total_faces = faces.size();
+
+	/*
+	std::unordered_map<unsigned int, std::vector<glm::vec3>> vertex_normals_map;
+	//std::unordered_set<glm::vec3> set;
+	vertex_normals_map.reserve(vertices.size());
+	for (int i = 0; i < total_faces; ++i)
+	{
+		Face& face = faces[i];
+		const Vertex& v0 = vertices[face.indices[0]];
+		const Vertex& v1 = vertices[face.indices[1]];
+		const Vertex& v2 = vertices[face.indices[2]];
+		const glm::vec3 normal{ Math::ComputeFaceNormal(v0.position, v1.position, v2.position) };
+
+		vertex_normals_map[face.indices[0]].push_back(normal);
+		vertex_normals_map[face.indices[1]].push_back(normal);
+		vertex_normals_map[face.indices[2]].push_back(normal);
+	}
+
+	for (auto& pair : vertex_normals_map)
+	{
+		glm::vec3 acc_normal(0.f);
+		const std::vector<glm::vec3>& normals = pair.second;
+		for (auto& element: normals)
+		{
+			acc_normal += element;
+		}
+		vertices[pair.first].normal = glm::normalize(acc_normal);
+	}
+		*/
 	
 	//process normal 
 	std::vector<glm::vec3> face_normals;
 	face_normals.reserve(faces.size());
-
 	std::unordered_map<unsigned int, std::vector<unsigned int>> vertex_faces_map;
 	vertex_faces_map.reserve(vertices.size());
-	int total_faces = faces.size();
+
 	for (int i = 0; i < total_faces; ++i)
 	{
 		Face& face = faces[i];
@@ -158,9 +226,7 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 		vertex_faces_map[face.indices[1]].push_back(i);
 		vertex_faces_map[face.indices[2]].push_back(i);
 	}
-	time_t start, finish;
-	double duration;
-	start = time(NULL);
+
 	
 	std::vector<glm::vec3> prev_normals;
 	int vertex_index;
@@ -232,9 +298,8 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 		
 	}
 	*/
-	finish = time(NULL);
-
-	duration = (double)(finish - start);
-	std::cout << duration << "sec - load " << std::endl;
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	std::cout << duration.count() << " ms - load " << std::endl;
 	return mesh;
 }
