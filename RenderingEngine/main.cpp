@@ -19,7 +19,6 @@ End Header --------------------------------------------------------*/
 #include"Core/Data/Vertex.h"
 #include"Core/Graphics/Shader.h"
 #include<memory>
-#include<ctime>
 class MyScene : public Scene
 {
 	GLuint vertex_array_object[1];
@@ -92,19 +91,10 @@ class MyScene : public Scene
 	virtual void OnEnable() {};
 	virtual void Start() 
 	{
-
-		time_t start, finish;
-		double duration;
-		start = time(NULL);
 		ObjParser parser;
-		mesh = std::move(parser.LoadFileFast("../Assets/bunny_high_poly.obj"));
+		//mesh = std::move(parser.LoadFileFast("../Assets/bunny_high_poly.obj"));
 		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
-		//mesh = parser.LoadFile("../Assets/cube2.obj");
-
-		finish = time(NULL);
-
-		duration = (double)(finish - start);
-		std::cout << duration << "sec" << std::endl;
+		mesh = parser.LoadFileFast("../Assets/bunny_high_poly.obj");
 
 		float vertices[] = {
 		 0.5f,  0.5f, 0.0f,  // top right

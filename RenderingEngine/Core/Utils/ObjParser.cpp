@@ -94,6 +94,10 @@ Mesh ObjParser::LoadFile(const std::string& file_name)
 					acc_normal += face_normals[i];
 					prev_normals.push_back(face_normals[i]);
 				}
+				else
+				{
+					std::cout << "same!";
+				}
 			}
 		}
 		vert.normal = glm::normalize(acc_normal);
@@ -101,15 +105,9 @@ Mesh ObjParser::LoadFile(const std::string& file_name)
 	return mesh;
 }
 
-
-namespace std {
-	template<> struct hash<glm::vec3>
-	{
-		std::size_t operator()(const glm::vec3& p) const noexcept
-		{
-			return p.x + p.y + p.z;
-		}
-	};
+inline bool is_not_dup(const std::vector<glm::vec3>& vec, const glm::vec3& to_comp)
+{
+	return std::find(vec.begin(), vec.end(), to_comp) == vec.end();
 }
 
 Mesh ObjParser::LoadFileFast(const std::string& file_name)
@@ -179,7 +177,6 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 
 
 	int total_faces = faces.size();
-
 	/*
 	std::unordered_map<unsigned int, std::vector<glm::vec3>> vertex_normals_map;
 	//std::unordered_set<glm::vec3> set;
@@ -191,10 +188,31 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 		const Vertex& v1 = vertices[face.indices[1]];
 		const Vertex& v2 = vertices[face.indices[2]];
 		const glm::vec3 normal{ Math::ComputeFaceNormal(v0.position, v1.position, v2.position) };
-
-		vertex_normals_map[face.indices[0]].push_back(normal);
-		vertex_normals_map[face.indices[1]].push_back(normal);
-		vertex_normals_map[face.indices[2]].push_back(normal);
+		
+		if (is_not_dup(vertex_normals_map[face.indices[0]], normal))
+		{
+			vertex_normals_map[face.indices[0]].push_back(normal);
+		}
+		else
+		{
+			std::cout << "same!";
+		}
+		if (is_not_dup(vertex_normals_map[face.indices[1]], normal))
+		{
+			vertex_normals_map[face.indices[1]].push_back(normal);
+		}
+		else
+		{
+			std::cout << "same!";
+		}
+		if (is_not_dup(vertex_normals_map[face.indices[2]], normal))
+		{
+			vertex_normals_map[face.indices[2]].push_back(normal);
+		}
+		else
+		{
+			std::cout << "same!";
+		}
 	}
 
 	for (auto& pair : vertex_normals_map)
@@ -207,8 +225,8 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 		}
 		vertices[pair.first].normal = glm::normalize(acc_normal);
 	}
-		*/
-	
+	*/
+
 	//process normal 
 	std::vector<glm::vec3> face_normals;
 	face_normals.reserve(faces.size());
@@ -243,61 +261,15 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 				acc_normal += face_normals[i];
 				prev_normals.push_back(face_normals[i]);
 			}
+			else
+			{
+				std::cout << "same!";
+			}
 		}
 		vertices[vertex_index].normal = glm::normalize(acc_normal);
 	}
-
-
-	/*
-
-	std::vector<glm::vec3> prev_normals;
-	int total_vertices = vertices.size();
-	for (int i = 0; i < total_vertices; ++i)
-	{
-		prev_normals.clear();
-		glm::vec3 acc_normal(0.f);
-		for (int face_index = 0; face_index < total_faces; face_index++)
-		{
-			unsigned int* indices = faces[face_index].indices;
-			if (indices[0] == i || indices[1] == i || indices[2] == i)
-			{
-				if (std::find(prev_normals.begin(), prev_normals.end(), face_normals[face_index]) == prev_normals.end())
-				{
-					acc_normal += face_normals[face_index];
-					prev_normals.push_back(face_normals[face_index]);
-				}
-			}
-		}
-		vertices[i].normal = glm::normalize(acc_normal);
-	}
-	*/
-
-	/*
-	for (Vertex& vert : vertices)//indices
-	{
-		
-		glm::vec3 acc_normal(0.f);
-		prev_normals.clear();
-		for (int i = 0; i < total_faces; ++i)
-		{
-			const glm::vec3& position = vert.position;
-			const glm::vec3& v0 = vertices[faces[i].indices[0]].position;
-			const glm::vec3& v1 = vertices[faces[i].indices[1]].position;
-			const glm::vec3& v2 = vertices[faces[i].indices[2]].position;
-			//if there is a face that contain the vertex then add to normal
-			if (v0 == position || v1 == position || v2 == position)
-			{
-				if (std::find(prev_normals.begin(), prev_normals.end(), face_normals[i]) == prev_normals.end())
-				{
-					acc_normal += face_normals[i];
-					prev_normals.push_back(face_normals[i]);
-				}
-			}
-		}
-		vert.normal = glm::normalize(acc_normal);
-		
-	}
-	*/
+	
+	
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
 	std::cout << duration.count() << " ms - load " << std::endl;
