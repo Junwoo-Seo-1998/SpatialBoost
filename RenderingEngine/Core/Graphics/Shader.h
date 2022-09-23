@@ -1,4 +1,16 @@
 #pragma once
+/* Start Header -------------------------------------------------------
+Copyright (C) 2022 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the prior written
+consent of DigiPen Institute of Technology is prohibited.
+File Name: Shader.cpp
+Purpose: Abstracted class for shader program
+Language: C++ MSVC(2022)
+Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
+Project: junwoo.seo_cs300_1
+Author: Junwoo Seo, junwoo.seo, 0055213
+Creation date: Sep 10 2022
+End Header --------------------------------------------------------*/
 #include<glm/glm.hpp>
 #include<string>
 #include<glad.h>
@@ -15,7 +27,7 @@ enum class ShaderFlag
 class Shader
 {
 public:
-	Shader() {};
+	Shader() :m_ShaderProgram(0) {};
 	Shader(const std::string& vertex_src, const std::string& shader_src);
 	~Shader();
 	void Use() const;

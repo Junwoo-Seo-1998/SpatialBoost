@@ -77,12 +77,11 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;..\Libs\glfw\glfw\include;..\Libs\glad;..\Libs\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -100,7 +99,9 @@
     <ClInclude Include="Core\Data\Mesh.h" />
     <ClInclude Include="Core\Data\Vertex.h" />
     <ClInclude Include="Core\EntryPoint.h" />
+    <ClInclude Include="Core\Graphics\Buffer.h" />
     <ClInclude Include="Core\Graphics\Shader.h" />
+    <ClInclude Include="Core\Graphics\VertexArray.h" />
     <ClInclude Include="Core\Layer\DefaultLayer.h" />
     <ClInclude Include="Core\Layer\Layer.h" />
     <ClInclude Include="Core\Layer\LayerManager.h" />
@@ -114,7 +115,9 @@
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp" />
     <ClCompile Include="Core\Data\Mesh.cpp" />
+    <ClCompile Include="Core\Graphics\Buffer.cpp" />
     <ClCompile Include="Core\Graphics\Shader.cpp" />
+    <ClCompile Include="Core\Graphics\VertexArray.cpp" />
     <ClCompile Include="Core\Layer\DefaultLayer.cpp" />
     <ClCompile Include="Core\Layer\Layer.cpp" />
     <ClCompile Include="Core\Layer\LayerManager.cpp" />

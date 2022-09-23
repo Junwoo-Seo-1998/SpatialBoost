@@ -42,7 +42,13 @@
     <ClInclude Include="Core\EntryPoint.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Graphics\Buffer.h">
+      <Filter>Core\Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Graphics\Shader.h">
+      <Filter>Core\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Graphics\VertexArray.h">
       <Filter>Core\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Core\Layer\DefaultLayer.h">
@@ -80,7 +86,13 @@
     <ClCompile Include="Core\Data\Mesh.cpp">
       <Filter>Core\Data</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Graphics\Buffer.cpp">
+      <Filter>Core\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Graphics\Shader.cpp">
+      <Filter>Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Graphics\VertexArray.cpp">
       <Filter>Core\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Core\Layer\DefaultLayer.cpp">

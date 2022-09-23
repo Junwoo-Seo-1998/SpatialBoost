@@ -32,7 +32,7 @@ bool Application::Init()
 void Application::Update()
 {
 	//TODO: remove this after testing.
-	glViewport(0, 0, 400, 400);
+	glViewport(0, 0, 800, 800);
 	m_SceneManager->GetCurrentScene()->Start();
 	while (!m_Window->ShouldClose())
 	{
