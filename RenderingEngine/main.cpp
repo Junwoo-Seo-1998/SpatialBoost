@@ -23,8 +23,6 @@ End Header --------------------------------------------------------*/
 #include"Core/Graphics/VertexArray.h"
 class MyScene : public Scene
 {
-	GLuint vertex_array_object[1];
-	GLuint vertex_buffer;
 	std::shared_ptr<VertexArray> vertex_array;
 	std::shared_ptr<VertexBuffer> vertex_buffer_class;
 	std::shared_ptr<ElementBuffer> element_buffer;
@@ -101,33 +99,10 @@ class MyScene : public Scene
 		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
 		mesh = parser.LoadFileFast("../Assets/bunny_high_poly.obj");
 		//mesh = parser.LoadFileFast("../Assets/4Sphere.obj");
-
-		float vertices[] = {
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left 
-		};
-		unsigned int indices[] = {  // note that we start from 0!
-			0, 1, 3,   // first triangle
-			1, 2, 3    // second triangle
-		};
-		
 		
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
-		glGenVertexArrays(1, vertex_array_object);
-		glBindVertexArray(vertex_array_object[0]);
-		glGenBuffers(1, &vertex_buffer);
-		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-		glBufferData(GL_ARRAY_BUFFER, mesh.GetVertices().size()*sizeof(Vertex), mesh.GetVertices().data(), GL_STATIC_DRAW);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		element_buffer = std::make_shared<ElementBuffer>(mesh.GetFaces());
-		element_buffer->Bind();
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_buffer[1]);
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.GetFaces().size() * sizeof(Face), mesh.GetFaces().data(), GL_STATIC_DRAW);
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		auto obj_to_world = glm::mat4{
 			{1,0,0,0},
@@ -143,30 +118,22 @@ class MyScene : public Scene
 		shader->SetMat4("view", world_to_cam);
 		shader->SetMat4("projection", perspective);
 		shader->SetFloat3("CamPos", { 0,10,10 });
-		
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
-		glEnableVertexAttribArray(0);
-
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),(void*)(3*sizeof(float)));
-		glEnableVertexAttribArray(1);
-
 
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
-		vertex_buffer_class = std::make_shared<VertexBuffer>(mesh.GetVertices().size()*sizeof(Vertex));
+		vertex_buffer_class = std::make_shared<VertexBuffer>(mesh.GetVertices().size() * sizeof(Vertex));
 		vertex_buffer_class->BufferData(mesh.GetVertices().data(), mesh.GetVertices().size() * sizeof(Vertex));
 		vertex_buffer_class->DescribeData({ {0,Float3}, {1, Float3} });
 		vertex_array->AttachBuffer(*vertex_buffer_class);
+		element_buffer = std::make_shared<ElementBuffer>(mesh.GetFaces());
 		vertex_array->AttachBuffer(*element_buffer);
 	};
 	virtual void Update() 
 	{
 		shader->Use();
-		//glBindVertexArray(vertex_array_object[0]);
 		vertex_array->Bind();
 		
 		glDrawElements(GL_TRIANGLES, mesh.GetFaces().size()*3, GL_UNSIGNED_INT, nullptr);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	};
 	virtual void LateUpdate() {};
 	virtual void OnDisable() {};
@@ -174,8 +141,6 @@ class MyScene : public Scene
 	{
 		glBindBuffer(GL_VERTEX_ARRAY, 0);
 		glBindVertexArray(0);
-		glDeleteBuffers(1, &vertex_buffer);
-		glDeleteVertexArrays(1, vertex_array_object);
 	};
 };
 
