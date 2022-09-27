@@ -13,119 +13,27 @@
 #include <chrono>
 using namespace std::chrono;
 
-Mesh ObjParser::LoadFile(const std::string& file_name)
-{
-	using namespace std;
-	Mesh mesh;
-	std::vector<Vertex>& vertices=mesh.GetVertices();
-	std::vector<Face>& faces = mesh.GetFaces();
-	ifstream file(file_name);
-	
-	for (std::string str; std::getline(file, str);)
-	{
-		std::stringstream ss(str);
-		std::string token;
-		ss >> token;
-		//if (token.find("#")!=std::string::npos)
-		//{
-		//	continue;
-		//}
-
-		if (token == "v")
-		{
-			glm::vec3 vertex;
-			ss >> vertex.x;
-			ss >> vertex.y;
-			ss >> vertex.z;
-			vertices.push_back({ vertex, });
-			#ifdef DEBUG
-			//std::cout << "(" << vertex.x << "," << vertex.y << "," << vertex.z << ")" << std::endl;
-			#endif // DEBUG
-		}
-		else if (token == "f")
-		{
-			Face face;
-			for (int i = 0; i < 3; ++i)
-			{
-				ss >> face.indices[i];
-				//since index starts from 0
-				--(face.indices[i]);
-			}
-			faces.push_back(face);
-		}
-		#ifdef DEBUG
-		//std::cout << token << std::endl;
-		//std::cout << str << std::endl;
-		#endif
-	}
-	
-	//process normal 
-	std::vector<glm::vec3> face_normals;
-
-
-	int total_faces = faces.size();
-	for (int i=0; i<total_faces; ++i)
-	{
-		Face& face = faces[i];
-		const Vertex& v0 = vertices[face.indices[0]];
-		const Vertex& v1 = vertices[face.indices[1]];
-		const Vertex& v2 = vertices[face.indices[2]];
-
-		face_normals.push_back(Math::ComputeFaceNormal(v0.position, v1.position, v2.position));
-
-	}
-
-
-	for (Vertex& vert : vertices)
-	{
-		std::vector<glm::vec3> prev_normals;
-		glm::vec3 acc_normal(0.f);
-		for (int i=0; i<total_faces; ++i)
-		{
-			const glm::vec3& position = vert.position;
-			const glm::vec3& v0 = vertices[faces[i].indices[0]].position;	
-			const glm::vec3& v1 = vertices[faces[i].indices[1]].position;	
-			const glm::vec3& v2 = vertices[faces[i].indices[2]].position;	
-			//if there is a face that contain the vertex then add to normal
-			if (v0 == position || v1 == position || v2 == position)
-			{
-				if (std::find(prev_normals.begin(), prev_normals.end(), face_normals[i]) == prev_normals.end())
-				{
-					acc_normal += face_normals[i];
-					prev_normals.push_back(face_normals[i]);
-				}
-				else
-				{
-					std::cout << "same!";
-				}
-			}
-		}
-		vert.normal = glm::normalize(acc_normal);
-	}
-	return mesh;
-}
-
 inline bool is_not_dup(const std::vector<glm::vec3>& vec, const glm::vec3& to_comp)
 {
 	return std::find(vec.begin(), vec.end(), to_comp) == vec.end();
 }
 
-Mesh ObjParser::LoadFileFast(const std::string& file_name)
+Mesh ObjParser::LoadFile(const std::string& file_name)
 {
 	auto start = high_resolution_clock::now();
 
 	Mesh mesh;
-	std::vector<Vertex>& vertices= mesh.GetVertices();
-	std::vector<Face>& faces=mesh.GetFaces();
+	std::vector<glm::vec3>& vertices= mesh.GetVertices();
+	std::vector<glm::vec3>& normals = mesh.GetNormals();
+	std::vector<unsigned int>& indices = mesh.GetIndices();	
 
 	std::ifstream file(file_name);
 	std::stringstream stringstream;
 	std::string line;
 	std::string token;
-	
+	unsigned int index = 0;
 
 	glm::vec3 vertex;
-	Face face;
 
 	glm::vec3 min{ std::numeric_limits<float>().max() };
 	glm::vec3 max{ std::numeric_limits<float>().lowest() };
@@ -150,17 +58,18 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 			max.y = std::max(max.y, vertex.y);
 			max.z = std::max(max.z, vertex.z);
 
-			vertices.push_back({ vertex, });
+			vertices.push_back(vertex);
+			//since i want to have normal per vertex
+			normals.emplace_back();
 		}
 		else if (token == "f")
 		{
 			for (int i = 0; i < 3; ++i)
 			{
-				stringstream >> face.indices[i];
+				stringstream >> index;
 				//since index starts from 0
-				--(face.indices[i]);
+				indices.push_back(index - 1);
 			}
-			faces.push_back(face);
 		}
 	}
 
@@ -169,11 +78,11 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 	const glm::vec3 scale = glm::vec3{ 2.f / (max - min) };
 	for (auto& vert:vertices )
 	{
-		vert.position = (vert.position - center) * scale;
+		vert = (vert - center) * scale;
 	}
 
 	//process normal 
-	int total_faces = faces.size();
+	int total_faces = indices.size() / 3;
 	std::vector<glm::vec3> face_normals;
 	face_normals.reserve(total_faces);
 	std::unordered_map<unsigned int, std::vector<unsigned int>> vertex_faces_map;
@@ -181,14 +90,14 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 
 	for (int i = 0; i < total_faces; ++i)
 	{
-		Face& face = faces[i];
-		const Vertex& v0 = vertices[face.indices[0]];
-		const Vertex& v1 = vertices[face.indices[1]];
-		const Vertex& v2 = vertices[face.indices[2]];
-		face_normals.emplace_back(Math::ComputeFaceNormal(v0.position, v1.position, v2.position));
-		vertex_faces_map[face.indices[0]].push_back(i);
-		vertex_faces_map[face.indices[1]].push_back(i);
-		vertex_faces_map[face.indices[2]].push_back(i);
+		const unsigned int offset = i * 3;
+		const glm::vec3& v0 = vertices[indices[offset]];
+		const glm::vec3& v1 = vertices[indices[offset + 1]];
+		const glm::vec3& v2 = vertices[indices[offset + 2]];
+		face_normals.emplace_back(Math::ComputeFaceNormal(v0, v1, v2));
+		vertex_faces_map[indices[offset]].push_back(i);
+		vertex_faces_map[indices[offset + 1]].push_back(i);
+		vertex_faces_map[indices[offset + 2]].push_back(i);
 	}
 
 	
@@ -208,7 +117,7 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 				prev_normals.push_back(face_normals[i]);
 			}
 		}
-		vertices[vertex_index].normal = glm::normalize(acc_normal);
+		normals[vertex_index] = glm::normalize(acc_normal);
 	}
 	
 	auto stop = high_resolution_clock::now();
@@ -216,3 +125,166 @@ Mesh ObjParser::LoadFileFast(const std::string& file_name)
 	std::cout << duration.count() << " ms - load  - ( " << file_name << " )" << std::endl;
 	return mesh;
 }
+
+Mesh ObjParser::LoadFaceNormalLineMesh(const std::string& file_name, float line_length)
+{
+	std::vector<glm::vec3> loaded_points;
+	std::vector<Face> loaded_faces;
+	
+	LoadFile(file_name, loaded_points, loaded_faces);
+	//process face normal
+
+	Mesh face_normal_mesh;
+	face_normal_mesh.SetDrawType(DrawType::Lines);
+	std::vector<glm::vec3>& mesh_vertex = face_normal_mesh.GetVertices();
+	mesh_vertex.reserve(loaded_faces.size() * 2);
+	for (const Face& face:loaded_faces)
+	{
+		const glm::vec3& v0 = loaded_points[face.indices[0]];
+		const glm::vec3& v1 = loaded_points[face.indices[1]];
+		const glm::vec3& v2 = loaded_points[face.indices[2]];
+		const glm::vec3& face_normal = Math::ComputeFaceNormal(v0, v1, v2);
+		const glm::vec3 face_center = (v0 + v1 + v2) / 3.f;
+		mesh_vertex.push_back(face_center);
+		mesh_vertex.push_back(face_center + line_length*face_normal);
+	}
+	return face_normal_mesh;
+}
+
+Mesh ObjParser::LoadVertexNormalLineMesh(const std::string& file_name, float line_length)
+{
+	std::vector<glm::vec3> loaded_points;
+	std::vector<Face> loaded_faces;
+
+	LoadFile(file_name, loaded_points, loaded_faces);
+	//process face normal
+
+	Mesh vertex_normal_mesh;
+	vertex_normal_mesh.SetDrawType(DrawType::Lines);
+	std::vector<glm::vec3>& mesh_vertex = vertex_normal_mesh.GetVertices();
+	mesh_vertex.reserve(loaded_faces.size() * 2);
+	for (const Face& face : loaded_faces)
+	{
+		const glm::vec3& v0 = loaded_points[face.indices[0]];
+		const glm::vec3& v1 = loaded_points[face.indices[1]];
+		const glm::vec3& v2 = loaded_points[face.indices[2]];
+		const glm::vec3& face_normal = Math::ComputeFaceNormal(v0, v1, v2);
+		const glm::vec3 face_center = (v0 + v1 + v2) / 3.f;
+		mesh_vertex.push_back(face_center);
+		mesh_vertex.push_back(face_center + line_length * face_normal);
+	}
+	return vertex_normal_mesh;
+}
+
+void ObjParser::LoadFile(const std::string& file_name, std::vector<glm::vec3>& loaded_points, std::vector<Face>& loaded_faces)
+{
+	std::ifstream file(file_name);
+	std::stringstream stringstream;
+	std::string line;
+	std::string token;
+
+	glm::vec3 vertex{};
+	Face face{};
+
+	glm::vec3 min{ std::numeric_limits<float>().max() };
+	glm::vec3 max{ std::numeric_limits<float>().lowest() };
+
+	while (std::getline(file, line))
+	{
+		stringstream.clear();
+		stringstream.str(line);
+		stringstream >> token;
+
+		if (token == "v")
+		{
+			stringstream >> vertex.x;
+			stringstream >> vertex.y;
+			stringstream >> vertex.z;
+
+			min.x = std::min(min.x, vertex.x);
+			min.y = std::min(min.y, vertex.y);
+			min.z = std::min(min.z, vertex.z);
+
+			max.x = std::max(max.x, vertex.x);
+			max.y = std::max(max.y, vertex.y);
+			max.z = std::max(max.z, vertex.z);
+
+			loaded_points.push_back(vertex);
+		}
+		else if (token == "f")
+		{
+			for (int i = 0; i < 3; ++i)
+			{
+				stringstream >> face.indices[i];
+				//since index starts from 0
+				--(face.indices[i]);
+			}
+			loaded_faces.push_back(face);
+		}
+	}
+
+	//map to [-1,1] and center to origin.
+	glm::vec3 center{ (max + min) / 2.f };
+	const glm::vec3 scale = glm::vec3{ 2.f / (max - min) };
+	for (auto& vert : loaded_points)
+	{
+		vert = (vert - center) * scale;
+	}
+}
+
+void ObjParser::ParseFile(const std::string& file_name, std::vector<glm::vec3>& loaded_points,
+	std::vector<unsigned>& loaded_indices)
+{
+	std::ifstream file(file_name);
+	std::stringstream stringstream;
+	std::string line;
+	std::string token;
+
+	glm::vec3 vertex{};
+	unsigned int index = 0;
+	glm::vec3 min{ std::numeric_limits<float>().max() };
+	glm::vec3 max{ std::numeric_limits<float>().lowest() };
+	
+	while (std::getline(file, line))
+	{
+		stringstream.clear();
+		stringstream.str(line);
+		stringstream >> token;
+
+		if (token == "v")
+		{
+			stringstream >> vertex.x;
+			stringstream >> vertex.y;
+			stringstream >> vertex.z;
+
+			min.x = std::min(min.x, vertex.x);
+			min.y = std::min(min.y, vertex.y);
+			min.z = std::min(min.z, vertex.z);
+
+			max.x = std::max(max.x, vertex.x);
+			max.y = std::max(max.y, vertex.y);
+			max.z = std::max(max.z, vertex.z);
+
+			loaded_points.push_back(vertex);
+		}
+		else if (token == "f")
+		{
+			for (int i = 0; i < 3; ++i)
+			{
+				stringstream >> index;
+				//since index starts from 0
+				loaded_indices.push_back(index - 1);
+			}
+		}
+	}
+
+	//map to [-1,1] and center to origin.
+	glm::vec3 center{ (max + min) / 2.f };
+	const glm::vec3 scale = glm::vec3{ 2.f / (max - min) };
+	for (auto& vert : loaded_points)
+	{
+		vert = (vert - center) * scale;
+	}
+
+}
+

@@ -77,7 +77,7 @@ private:
 class ElementBuffer
 {
 public:
-	ElementBuffer(const std::vector<Face>& faces);
+	ElementBuffer(const std::vector<unsigned int>& indices);
 	virtual ~ElementBuffer();
 	void Bind() const;
 	void UnBind() const;

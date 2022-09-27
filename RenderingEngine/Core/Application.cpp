@@ -12,6 +12,13 @@ Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Application.h"
 #include "glad.h"
+
+namespace inner
+{
+	static std::shared_ptr<Application>app=nullptr;
+}
+
+
 Application::Application()
 	:m_Window(std::make_shared<Window>()),m_SceneManager(std::make_shared<SceneManager>())
 {
@@ -47,4 +54,15 @@ void Application::Close()
 {
 	m_SceneManager->GetCurrentScene()->OnDestroy();
 	m_Window->Close();
+}
+
+void Application::SetCurrentScene(std::shared_ptr<Scene> scene)
+{
+	m_SceneManager->SetCurrentScene(scene);
+}
+
+
+std::shared_ptr<Application> GetCurrentApplication()
+{
+	return inner::app;
 }

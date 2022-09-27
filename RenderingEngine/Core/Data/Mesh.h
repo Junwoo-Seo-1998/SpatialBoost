@@ -3,13 +3,27 @@
 #include<vector>
 #include"Core/Data/Vertex.h"
 #include"Core/Data/Face.h"
+#include<glad.h>
+enum class DrawType
+{
+	None,
+	Lines,
+	Triangles,
+};
+
+
 class Mesh
 {
 public:
-	std::vector<Vertex>& GetVertices();
-	std::vector<Face>& GetFaces();
-private:
-	std::vector<Vertex> m_Vertices;
-	std::vector<Face> m_Faces;
-};
+	void SetDrawType(DrawType type);
+	std::vector<glm::vec3>& GetVertices();
+	std::vector<glm::vec3>& GetNormals();
+	std::vector<unsigned int>& GetIndices();
 
+	GLenum GetGLDrawType() const;
+private:
+	DrawType m_DrawType = DrawType::None;
+	std::vector<glm::vec3> m_Vertices;
+	std::vector<glm::vec3> m_Normals;
+	std::vector<unsigned int> m_Indices;
+};

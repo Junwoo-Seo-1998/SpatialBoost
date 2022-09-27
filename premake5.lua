@@ -22,12 +22,14 @@ IncludeDir={}
 IncludeDir["GLFW"]="Libs/glfw/glfw/include/"
 IncludeDir["GLAD"]="Libs/glad/"
 IncludeDir["GLM"]="Libs/glm/"
+IncludeDir["ENTT"]="Libs/entt/"
 
 
 project "RenderingEngine"
     location "RenderingEngine"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "c++17"
     targetdir "bin/%{cfg.buildcfg}"
     objdir "bin/%{cfg.buildcfg}-obj"
     architecture "x86_64"
@@ -41,7 +43,8 @@ project "RenderingEngine"
         "RenderingEngine",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.GLAD}",
-        "%{IncludeDir.GLM}"
+        "%{IncludeDir.GLM}",
+        "%{IncludeDir.ENTT}"
     }
     files {
         "RenderingEngine/**.h",

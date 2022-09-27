@@ -18,13 +18,20 @@ class Application
 public:
 	Application();
 	virtual ~Application();
+
+public:
 	bool Init();
 	virtual void UserDefinedInit()=0;
 	void Update();
 	void Close();
+
+	void SetCurrentScene(std::shared_ptr<Scene> scene);
+
+
 	//for user to access it 
 protected:
 	std::shared_ptr<Window> m_Window;
 	std::shared_ptr<SceneManager> m_SceneManager;
 };
 
+static std::shared_ptr<Application> GetCurrentApplication();

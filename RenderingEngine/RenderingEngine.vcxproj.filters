@@ -60,6 +60,9 @@
     <ClInclude Include="Core\Layer\LayerManager.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Scene\Entity.h">
+      <Filter>Core\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Scene\Scene.h">
       <Filter>Core\Scene</Filter>
     </ClInclude>
@@ -67,6 +70,9 @@
       <Filter>Core\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\Math.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils\MeshGenerator.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\ObjParser.h">
@@ -78,6 +84,8 @@
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Component\TransformComponent.h" />
+    <ClInclude Include="Core\AssetManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -104,6 +112,9 @@
     <ClCompile Include="Core\Layer\LayerManager.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Scene\Entity.cpp">
+      <Filter>Core\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Scene\Scene.cpp">
       <Filter>Core\Scene</Filter>
     </ClCompile>
@@ -111,6 +122,9 @@
       <Filter>Core\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Core\Utils\Math.cpp">
+      <Filter>Core\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils\MeshGenerator.cpp">
       <Filter>Core\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Core\Utils\ObjParser.cpp">
@@ -123,5 +137,7 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Component\TransformComponent.cpp" />
+    <ClCompile Include="Core\AssetManager.cpp" />
   </ItemGroup>
 </Project>
