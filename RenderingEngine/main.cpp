@@ -20,6 +20,7 @@ End Header --------------------------------------------------------*/
 #include"Core/Graphics/Shader.h"
 #include<memory>
 
+#include "Core/AssetManager.h"
 #include "Core/Component/TransformComponent.h"
 #include"Core/Graphics/Buffer.h"
 #include"Core/Graphics/VertexArray.h"
@@ -33,9 +34,8 @@ private:
 	std::shared_ptr<VertexBuffer> vertex_buffer_class_normal;
 	std::shared_ptr<ElementBuffer> element_buffer;
 	std::shared_ptr<Shader> shader;
-
+	std::shared_ptr<Mesh> shared_mesh;
 	Mesh mesh;
-
 	Entity bunny;
 	const char* vertexShaderSource = R"(
 		#version 460 core
@@ -44,22 +44,19 @@ private:
 		uniform mat4 model;
 		uniform mat4 view;
 		uniform mat4 projection;
-		uniform vec3 CamPos;
 		out vec3 Normal;
-		out vec3 LightPos;
 		out vec3 FragPos;
 		void main()
 		{
-			gl_Position = projection*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
-			Normal=aNormal;
-			LightPos=CamPos;
+			Normal=vec3(model*vec4(aNormal,1.0));
 			FragPos=vec3(model*vec4(aPos,1.0));
+			gl_Position = projection*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
 		}
 		)";
 	const char* fragShaderSource = R"(
 		#version 460 core
 		in vec3 Normal;
-		in vec3 LightPos;
+		uniform vec3 LightPos;
 		in vec3 FragPos;
 
 		out vec4 FragColor;
@@ -105,10 +102,11 @@ private:
 		ObjParser parser;
 		//mesh = std::move(parser.LoadFile("../Assets/bunny_high_poly.obj"));
 		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
-		mesh = parser.LoadFile("../Assets/bunny_high_poly.obj");
+		//mesh = parser.LoadFile("../Assets/bunny_high_poly.obj");
 		//mesh = parser.LoadFile("../Assets/cube2.obj");
 		//mesh = parser.LoadFaceNormalLineMesh("../Assets/cube2.obj", 0.2);
 		//mesh = parser.LoadFaceNormalLineMesh("Assets/bunny_high_poly.obj", 0.1);
+		shared_mesh = AssetManager::LoadMeshFromFile("../Assets/bunny_high_poly.obj");
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
@@ -127,10 +125,12 @@ private:
 		shader->SetMat4("model", obj_to_world);
 		shader->SetMat4("view", world_to_cam);
 		shader->SetMat4("projection", perspective);
-		shader->SetFloat3("CamPos", { 10,10,10 });
+		shader->SetFloat3("LightPos", { 0,0,10 });
 
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
+
+		/*
 		vertex_buffer_class = std::make_shared<VertexBuffer>(mesh.GetVertices().size() * sizeof(glm::vec3));
 		vertex_buffer_class->BufferData(mesh.GetVertices().data(), mesh.GetVertices().size() * sizeof(glm::vec3));
 		vertex_buffer_class->DescribeData({ {0,Float3}});
@@ -143,20 +143,34 @@ private:
 		vertex_array->AttachBuffer(*vertex_buffer_class_normal);
 		element_buffer = std::make_shared<ElementBuffer>(mesh.GetIndices());
 		vertex_array->AttachBuffer(*element_buffer);
+
+		*/
+		
+
+
 		bunny = CreateEntity();
 	};
-	float i = 0;
+	float ie = 0;
 	virtual void Update() 
 	{
+		
 		shader->Use();
 		vertex_array->Bind();
+		;
+		vertex_array->AttachBuffer(*shared_mesh->GetBuffers()[0]);
+		vertex_array->AttachBuffer(*shared_mesh->GetBuffers()[1]);
+
+
 		auto trans = bunny.GetComponent<TransformComponent>();
-		trans.Rotation = { 0, i+=0.02f, 0 };
+		ie += 0.02;
+		trans.Rotation = { 0, ie, 0 };
 		shader->SetMat4("model", trans.GetTransform());
+		shader->SetFloat3("LightPos", { 10,0,10 });
 		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
 		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
-		glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+		//glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 		//glDrawArrays(mesh.GetGLDrawType(), 0, mesh.GetVertices().size());
+		glDrawArrays(shared_mesh->GetGLDrawType(), 0, shared_mesh->GetVertices().size());
 	};
 	virtual void LateUpdate() {};
 	virtual void OnDisable() {};
