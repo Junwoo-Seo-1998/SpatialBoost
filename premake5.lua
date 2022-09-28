@@ -55,7 +55,8 @@ project "RenderingEngine"
     }
 
     postbuildcommands {
-        "{COPYDIR} \"../Assets\" \"../bin/%{cfg.buildcfg}/Assets\""
+        "{COPYDIR} \"../Assets\" \"../bin/%{cfg.buildcfg}/Assets\"",
+        "{COPYDIR} \"../Assets\" \"../RenderingEngine/Assets\"",
     }
 
 

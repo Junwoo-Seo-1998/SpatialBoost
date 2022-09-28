@@ -14,7 +14,7 @@ public:
 	static std::shared_ptr<Mesh> GenerateFaceNormalMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
 		const std::vector<glm::vec3>& face_normals);
 	static std::shared_ptr<Mesh> GenerateFaceNormalLineMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
-		const std::vector<glm::vec3>& face_normals);
+		const std::vector<glm::vec3>& face_normals, float normal_len = 0.1f);
 
 
 	static std::vector<glm::vec3> GenerateFaceNormals(std::vector<glm::vec3>& loaded_points, std::vector<unsigned int>& loaded_index);

@@ -21,6 +21,7 @@ End Header --------------------------------------------------------*/
 #include<memory>
 
 #include "Core/AssetManager.h"
+#include "Core/Component/RendererComponent.h"
 #include "Core/Component/TransformComponent.h"
 #include"Core/Graphics/Buffer.h"
 #include"Core/Graphics/VertexArray.h"
@@ -37,64 +38,7 @@ private:
 	std::shared_ptr<Mesh> shared_mesh;
 	Mesh mesh;
 	Entity bunny;
-	const char* vertexShaderSource = R"(
-		#version 460 core
-		layout (location = 0) in vec3 aPos;
-		layout (location = 1) in vec3 aNormal;
-		uniform mat4 model;
-		uniform mat4 view;
-		uniform mat4 projection;
-		out vec3 Normal;
-		out vec3 FragPos;
-		void main()
-		{
-			Normal=vec3(model*vec4(aNormal,1.0));
-			FragPos=vec3(model*vec4(aPos,1.0));
-			gl_Position = projection*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
-		}
-		)";
-	const char* fragShaderSource = R"(
-		#version 460 core
-		in vec3 Normal;
-		uniform vec3 LightPos;
-		in vec3 FragPos;
-
-		out vec4 FragColor;
-		void main()
-		{
-			vec3 LightDir=normalize(LightPos-FragPos);
-			float diff=max(dot(Normal,LightDir),0.f);
-			vec3 diffuse=diff*vec3(1.f, 1.f, 1.f);
-			//FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-
-			float ambientStrength=0.1;
-			vec3 ambient = ambientStrength * vec3(1.f, 1.f, 1.f);
-			vec3 result=(ambient+diffuse)*vec3(1.0f, 0.5f, 0.2f);
-			FragColor = vec4(result, 1.0f);
-		} 
-		)";
-
-	const char* DrawNormalVertexShaderSource = R"(
-		#version 460 core
-		layout (location = 0) in vec3 aPos;
-		uniform mat4 model;
-		uniform mat4 view;
-		uniform mat4 projection;
-		
-		void main()
-		{
-			gl_Position = projection*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
-		}
-		)";
-	const char* DrawNormalFragShaderSource = R"(
-		#version 460 core
-		out vec4 FragColor;
-		
-		void main()
-		{
-			FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-		} 
-		)";
+	
 	virtual void Awake() {};
 	virtual void OnEnable() {};
 	virtual void Start() 
@@ -106,10 +50,13 @@ private:
 		//mesh = parser.LoadFile("../Assets/cube2.obj");
 		//mesh = parser.LoadFaceNormalLineMesh("../Assets/cube2.obj", 0.2);
 		//mesh = parser.LoadFaceNormalLineMesh("Assets/bunny_high_poly.obj", 0.1);
-		shared_mesh = AssetManager::LoadMeshFromFile("../Assets/bunny_high_poly.obj");
+		shared_mesh = AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj");
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
+
+		
+		
 
 		auto obj_to_world = glm::mat4{
 			{1,0,0,0},
@@ -119,13 +66,12 @@ private:
 		};
 		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
 		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
-		
-		shader = std::make_shared<Shader>(vertexShaderSource, fragShaderSource);
-		//shader = std::make_shared<Shader>(DrawNormalVertexShaderSource, DrawNormalFragShaderSource);
+
+		shader = AssetManager::LoadShaderFromFile("Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
 		shader->SetMat4("model", obj_to_world);
 		shader->SetMat4("view", world_to_cam);
 		shader->SetMat4("projection", perspective);
-		shader->SetFloat3("LightPos", { 0,0,10 });
+		//shader->SetFloat3("LightPos", { 0,0,10 });
 
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
@@ -149,6 +95,7 @@ private:
 
 
 		bunny = CreateEntity();
+		bunny.AddComponent<MeshRendererComponent>(AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj"));
 	};
 	float ie = 0;
 	virtual void Update() 
@@ -156,20 +103,23 @@ private:
 		
 		shader->Use();
 		vertex_array->Bind();
-		;
 		vertex_array->AttachBuffer(*shared_mesh->GetBuffers()[0]);
-		vertex_array->AttachBuffer(*shared_mesh->GetBuffers()[1]);
+		//vertex_array->AttachBuffer(*shared_mesh->GetBuffers()[1]);
 
 
 		auto trans = bunny.GetComponent<TransformComponent>();
 		ie += 0.02;
 		trans.Rotation = { 0, ie, 0 };
 		shader->SetMat4("model", trans.GetTransform());
-		shader->SetFloat3("LightPos", { 10,0,10 });
+		//shader->SetFloat3("LightPos", { 10,0,10 });
 		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
 		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
 		//glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 		//glDrawArrays(mesh.GetGLDrawType(), 0, mesh.GetVertices().size());
+
+
+		//for (GetRegistry().)
+
 		glDrawArrays(shared_mesh->GetGLDrawType(), 0, shared_mesh->GetVertices().size());
 	};
 	virtual void LateUpdate() {};

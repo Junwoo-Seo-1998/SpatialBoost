@@ -69,7 +69,8 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Debug\Assets"</Command>
+      <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Debug\Assets"
+xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
@@ -92,11 +93,14 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Release\Assets"</Command>
+      <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Release\Assets"
+xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\AssetManager.h" />
+    <ClInclude Include="Core\Component\RendererComponent.h" />
     <ClInclude Include="Core\Component\TransformComponent.h" />
     <ClInclude Include="Core\Data\Face.h" />
     <ClInclude Include="Core\Data\Mesh.h" />
@@ -111,7 +115,6 @@
     <ClInclude Include="Core\Scene\Entity.h" />
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
-    <ClInclude Include="Core\AssetManager.h" />
     <ClInclude Include="Core\Utils\Math.h" />
     <ClInclude Include="Core\Utils\MeshGenerator.h" />
     <ClInclude Include="Core\Utils\ObjParser.h" />
@@ -120,6 +123,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp" />
+    <ClCompile Include="Core\AssetManager.cpp" />
+    <ClCompile Include="Core\Component\RendererComponent.cpp" />
     <ClCompile Include="Core\Component\TransformComponent.cpp" />
     <ClCompile Include="Core\Data\Mesh.cpp" />
     <ClCompile Include="Core\Graphics\Buffer.cpp" />
@@ -131,7 +136,6 @@
     <ClCompile Include="Core\Scene\Entity.cpp" />
     <ClCompile Include="Core\Scene\Scene.cpp" />
     <ClCompile Include="Core\Scene\SceneManager.cpp" />
-    <ClCompile Include="Core\AssetManager.cpp" />
     <ClCompile Include="Core\Utils\Math.cpp" />
     <ClCompile Include="Core\Utils\MeshGenerator.cpp" />
     <ClCompile Include="Core\Utils\ObjParser.cpp" />

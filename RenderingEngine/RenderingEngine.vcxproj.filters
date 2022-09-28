@@ -4,6 +4,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Component">
+      <UniqueIdentifier>{101E4FE1-FCEB-42E7-E57F-B30DD1EC1E4C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Data">
       <UniqueIdentifier>{57F6BA15-C360-6F8C-0C9F-203278484DE1}</UniqueIdentifier>
     </Filter>
@@ -29,6 +32,12 @@
   <ItemGroup>
     <ClInclude Include="Core\Application.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\AssetManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Component\TransformComponent.h">
+      <Filter>Core\Component</Filter>
     </ClInclude>
     <ClInclude Include="Core\Data\Face.h">
       <Filter>Core\Data</Filter>
@@ -84,12 +93,17 @@
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Component\TransformComponent.h" />
-    <ClInclude Include="Core\AssetManager.h" />
+    <ClInclude Include="Core\Component\RendererComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\AssetManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Component\TransformComponent.cpp">
+      <Filter>Core\Component</Filter>
     </ClCompile>
     <ClCompile Include="Core\Data\Mesh.cpp">
       <Filter>Core\Data</Filter>
@@ -137,7 +151,6 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Component\TransformComponent.cpp" />
-    <ClCompile Include="Core\AssetManager.cpp" />
+    <ClCompile Include="Core\Component\RendererComponent.cpp" />
   </ItemGroup>
 </Project>
