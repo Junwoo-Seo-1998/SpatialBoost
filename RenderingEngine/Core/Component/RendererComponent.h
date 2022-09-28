@@ -15,3 +15,5 @@ struct MeshRendererComponent
 
 	std::shared_ptr<Mesh> mesh;
 };
+
+

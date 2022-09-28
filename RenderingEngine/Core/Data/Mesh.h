@@ -28,7 +28,7 @@ public:
 	
 	GLenum GetGLDrawType() const;
 	void SetUseIndex(bool use);
-
+	bool GetUseIndex() const;
 	void AttachBuffer(std::shared_ptr<VertexBuffer> buffer);
 	void AttachBuffer(std::shared_ptr<ElementBuffer> buffer);
 

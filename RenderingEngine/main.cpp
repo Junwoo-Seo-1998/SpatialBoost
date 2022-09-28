@@ -34,7 +34,9 @@ private:
 	std::shared_ptr<VertexBuffer> vertex_buffer_class;
 	std::shared_ptr<VertexBuffer> vertex_buffer_class_normal;
 	std::shared_ptr<ElementBuffer> element_buffer;
-	std::shared_ptr<Shader> shader;
+	
+	std::shared_ptr<Shader> light_shader;
+	std::shared_ptr<Shader> line_shader;
 	std::shared_ptr<Mesh> shared_mesh;
 	Mesh mesh;
 	Entity bunny;
@@ -50,28 +52,24 @@ private:
 		//mesh = parser.LoadFile("../Assets/cube2.obj");
 		//mesh = parser.LoadFaceNormalLineMesh("../Assets/cube2.obj", 0.2);
 		//mesh = parser.LoadFaceNormalLineMesh("Assets/bunny_high_poly.obj", 0.1);
-		shared_mesh = AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj");
+		//shared_mesh = AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj","bunny");
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
 		
-		
 
-		auto obj_to_world = glm::mat4{
-			{1,0,0,0},
-			{0,1,0,0},
-			{0,0,1,0},
-			{0,0,0,1}
-		};
 		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
 		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
 
-		shader = AssetManager::LoadShaderFromFile("Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
-		shader->SetMat4("model", obj_to_world);
-		shader->SetMat4("view", world_to_cam);
-		shader->SetMat4("projection", perspective);
-		//shader->SetFloat3("LightPos", { 0,0,10 });
+		line_shader = AssetManager::LoadShaderFromFile("Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
+		line_shader->SetMat4("view", world_to_cam);
+		line_shader->SetMat4("projection", perspective);
+
+		light_shader = AssetManager::LoadShaderFromFile("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+		light_shader->SetMat4("view", world_to_cam);
+		light_shader->SetMat4("projection", perspective);
+		light_shader->SetFloat3("LightPos", { 0,0,10 });
 
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
@@ -93,34 +91,55 @@ private:
 		*/
 		
 
-
+		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
 		bunny = CreateEntity();
-		bunny.AddComponent<MeshRendererComponent>(AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj"));
+		bunny.AddComponent<LineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
+		bunny.AddComponent<MeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
 	};
 	float ie = 0;
 	virtual void Update() 
 	{
-		
-		shader->Use();
 		vertex_array->Bind();
-		vertex_array->AttachBuffer(*shared_mesh->GetBuffers()[0]);
-		//vertex_array->AttachBuffer(*shared_mesh->GetBuffers()[1]);
-
-
-		auto trans = bunny.GetComponent<TransformComponent>();
+		auto& trans = bunny.GetComponent<TransformComponent>();
 		ie += 0.02;
 		trans.Rotation = { 0, ie, 0 };
-		shader->SetMat4("model", trans.GetTransform());
-		//shader->SetFloat3("LightPos", { 10,0,10 });
-		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
-		auto perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
-		//glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(), GL_UNSIGNED_INT, nullptr);
-		//glDrawArrays(mesh.GetGLDrawType(), 0, mesh.GetVertices().size());
 
 
-		//for (GetRegistry().)
+		line_shader->Use();
+		auto LineMeshes = GetRegistry().view<TransformComponent, LineRendererComponent>();
+		for (auto& entity : LineMeshes)
+		{
+			auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, LineRendererComponent>(entity);
+			line_shader->SetMat4("model", TransformComp.GetTransform());
+			for(auto buffer:LineRendererComp.mesh->GetBuffers())
+			{
+				vertex_array->AttachBuffer(*buffer);
+			}
 
-		glDrawArrays(shared_mesh->GetGLDrawType(), 0, shared_mesh->GetVertices().size());
+			glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices().size());
+		}
+		light_shader->Use();
+		auto Meshes = GetRegistry().view<TransformComponent, MeshRendererComponent>();
+		for (auto& entity : Meshes)
+		{
+			auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, MeshRendererComponent>(entity);
+			light_shader->SetMat4("model", TransformComp.GetTransform());
+			for (auto buffer : MeshRendererComp.mesh->GetBuffers())
+			{
+				vertex_array->AttachBuffer(*buffer);
+			}
+
+			if (mesh.GetUseIndex())
+			{
+				vertex_array->AttachBuffer(*mesh.GetIndexBuffer());
+				glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), MeshRendererComp.mesh->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+			}
+			else
+			{
+				glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, MeshRendererComp.mesh->GetVertices().size());
+			}
+
+		}
 	};
 	virtual void LateUpdate() {};
 	virtual void OnDisable() {};

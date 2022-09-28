@@ -50,6 +50,11 @@ void Mesh::SetUseIndex(bool use)
 	m_UseIndex = use;
 }
 
+bool Mesh::GetUseIndex() const
+{
+	return m_UseIndex;
+}
+
 void Mesh::AttachBuffer(std::shared_ptr<VertexBuffer> buffer)
 {
 	m_Buffers.push_back(buffer);
