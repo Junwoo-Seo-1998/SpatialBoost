@@ -39,43 +39,33 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalMesh(const std::vector<gl
                                                             const std::vector<unsigned>& loaded_index, const std::vector<glm::vec3>& face_normals)
 {
 	std::shared_ptr<Mesh> mesh=std::make_shared<Mesh>();
-	mesh->SetDrawType(DrawType::Triangles);
 	mesh->SetUseIndex(false);
-	std::vector<glm::vec3> new_vertex{};
-	std::vector<glm::vec3> new_normal{};
+	
  	const unsigned int faces = loaded_index.size() / 3;
+	std::shared_ptr<std::vector<Vertex>> new_vertex = std::make_shared<std::vector<Vertex>>();
 	for (int i=0; i<faces; ++i)
 	{
 		const unsigned int offset = i * 3;
-		new_vertex.push_back(loaded_points[loaded_index[offset]]);
-		new_vertex.push_back(loaded_points[loaded_index[offset + 1]]);
-		new_vertex.push_back(loaded_points[loaded_index[offset + 2]]);
-		new_normal.push_back(face_normals[i]);
-		new_normal.push_back(face_normals[i]);
-		new_normal.push_back(face_normals[i]);
+		new_vertex->push_back({ loaded_points[loaded_index[offset]],face_normals[i] });
+		new_vertex->push_back({ loaded_points[loaded_index[offset + 1]],face_normals[i] });
+		new_vertex->push_back({ loaded_points[loaded_index[offset + 2]],face_normals[i] });
 	}
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex.size() * sizeof(glm::vec3));
-	std::shared_ptr<VertexBuffer> normal_buffer = std::make_shared<VertexBuffer>(new_normal.size() * sizeof(glm::vec3));
-	vertex_buffer->BufferData(new_vertex.data(), new_vertex.size() * sizeof(glm::vec3));
-	normal_buffer->BufferData(new_normal.data(), new_normal.size() * sizeof(glm::vec3));
+	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->DescribeData({ {0,Float3},{1,Float3} });
 
-	vertex_buffer->DescribeData({ {0,Float3}});
-	normal_buffer->DescribeData({ {1,Float3}});
 	mesh->AttachBuffer(vertex_buffer);
-	mesh->AttachBuffer(normal_buffer);
 
 	mesh->SetVertices(new_vertex);
-	mesh->SetNormals(new_normal);
+
 	return mesh;
 }
 
-std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalLineMesh(const std::vector<glm::vec3>& loaded_points,
+std::shared_ptr<LineMesh> MeshGenerator::GenerateFaceNormalLineMesh(const std::vector<glm::vec3>& loaded_points,
 	const std::vector<unsigned>& loaded_index, const std::vector<glm::vec3>& face_normals, float normal_len)
 {
-	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-	mesh->SetDrawType(DrawType::Lines);
-	mesh->SetUseIndex(false);
-	std::vector<glm::vec3> new_vertex{};
+	std::shared_ptr<LineMesh> mesh = std::make_shared<LineMesh>();
+	std::shared_ptr<std::vector<glm::vec3>> new_vertex = std::make_shared<std::vector<glm::vec3>>();
 	const unsigned int faces = loaded_index.size() / 3;
 	for (int i = 0; i < faces; ++i)
 	{
@@ -84,12 +74,12 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalLineMesh(const std::vecto
 		const glm::vec3& v1 = loaded_points[loaded_index[offset + 1]];
 		const glm::vec3& v2 = loaded_points[loaded_index[offset + 2]];
 		const glm::vec3 face_center = (v0 + v1 + v2) / 3.f;
-		new_vertex.push_back(face_center);
-		new_vertex.push_back(face_center + normal_len * face_normals[i]);
+		new_vertex->push_back(face_center);
+		new_vertex->push_back(face_center + normal_len * face_normals[i]);
 	}
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex.size() * sizeof(glm::vec3));
+	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex.data(), new_vertex.size() * sizeof(glm::vec3));
+	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(glm::vec3));
 
 	vertex_buffer->DescribeData({ {0,Float3} });
 	mesh->AttachBuffer(vertex_buffer);
@@ -103,49 +93,45 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateVertexNormalMesh(const std::vector<
 	const std::vector<unsigned>& loaded_index, const std::vector<glm::vec3>& vertex_normals)
 {
 	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-	mesh->SetDrawType(DrawType::Triangles);
 	mesh->SetUseIndex(true);
+	const unsigned int vertices = loaded_points.size();
+	std::shared_ptr<std::vector<Vertex>> new_vertex = std::make_shared<std::vector<Vertex>>();
+	new_vertex->reserve(vertices);
+	for (int i = 0; i < vertices; ++i)
+	{
+		new_vertex->push_back({ loaded_points[i], vertex_normals[i] });
+	}
 
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(loaded_points.size() * sizeof(glm::vec3));
-	std::shared_ptr<VertexBuffer> normal_buffer = std::make_shared<VertexBuffer>(vertex_normals.size() * sizeof(glm::vec3));
-	vertex_buffer->BufferData(loaded_points.data(), loaded_points.size() * sizeof(glm::vec3));
-	normal_buffer->BufferData(vertex_normals.data(), vertex_normals.size() * sizeof(glm::vec3));
 
-	vertex_buffer->DescribeData({ {0,Float3} });
-	normal_buffer->DescribeData({ {1,Float3} });
+	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->DescribeData({ {0,Float3},{1,Float3} });
 
 	std::shared_ptr<ElementBuffer> index_buffer = std::make_shared<ElementBuffer>(loaded_index);
 	mesh->AttachBuffer(vertex_buffer);
-	mesh->AttachBuffer(normal_buffer);
 	mesh->AttachBuffer(index_buffer);
 
-	//todo: change it to ptr!
-	std::vector<glm::vec3> points = loaded_points;
-	std::vector<glm::vec3> normals = vertex_normals;
-	mesh->SetVertices(points);
-	mesh->SetNormals(normals);
-	std::vector<unsigned> index = loaded_index;
-	mesh->SetIndices(index);
+	mesh->SetVertices(new_vertex);
+	std::shared_ptr<std::vector<unsigned>> new_index = std::make_shared<std::vector<unsigned>>(loaded_index);
+	mesh->SetIndices(new_index);
 	return mesh;
 }
 
-std::shared_ptr<Mesh> MeshGenerator::GenerateVertexNormalLineMesh(const std::vector<glm::vec3>& loaded_points,
+std::shared_ptr<LineMesh> MeshGenerator::GenerateVertexNormalLineMesh(const std::vector<glm::vec3>& loaded_points,
 	const std::vector<unsigned>& loaded_index, const std::vector<glm::vec3>& vertex_normals, float normal_len)
 {
-	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-	mesh->SetDrawType(DrawType::Lines);
-	mesh->SetUseIndex(false);
-	std::vector<glm::vec3> new_vertex{};
-	new_vertex.reserve(vertex_normals.size() + loaded_index.size());
+	std::shared_ptr<LineMesh> mesh = std::make_shared<LineMesh>();
+	std::shared_ptr<std::vector<glm::vec3>> new_vertex = std::make_shared<std::vector<glm::vec3>>();
+	new_vertex->reserve(vertex_normals.size() + loaded_index.size());
 	const unsigned int total_vertex= static_cast<unsigned int>(loaded_points.size());
 	for (unsigned int i = 0; i < total_vertex; ++i)
 	{
-		new_vertex.push_back(loaded_points[i]);
-		new_vertex.push_back(loaded_points[i] + normal_len * vertex_normals[i]);
+		new_vertex->push_back(loaded_points[i]);
+		new_vertex->push_back(loaded_points[i] + normal_len * vertex_normals[i]);
 	}
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex.size() * sizeof(glm::vec3));
+	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex.data(), new_vertex.size() * sizeof(glm::vec3));
+	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(glm::vec3));
 
 	vertex_buffer->DescribeData({ {0,Float3} });
 	mesh->AttachBuffer(vertex_buffer);

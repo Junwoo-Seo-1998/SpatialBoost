@@ -13,12 +13,12 @@ public:
 
 	static std::shared_ptr<Mesh> GenerateFaceNormalMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
 		const std::vector<glm::vec3>& face_normals);
-	static std::shared_ptr<Mesh> GenerateFaceNormalLineMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
+	static std::shared_ptr<LineMesh> GenerateFaceNormalLineMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
 		const std::vector<glm::vec3>& face_normals, float normal_len = 0.1f);
 
 	static std::shared_ptr<Mesh> GenerateVertexNormalMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
 		const std::vector<glm::vec3>& vertex_normals);
-	static std::shared_ptr<Mesh> GenerateVertexNormalLineMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
+	static std::shared_ptr<LineMesh> GenerateVertexNormalLineMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
 		const std::vector<glm::vec3>& vertex_normals, float normal_len = 0.1f);
 
 

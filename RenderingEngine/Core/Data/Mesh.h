@@ -13,34 +13,52 @@ enum class DrawType
 	Triangles,
 };
 
-
-class Mesh
+class BaseMesh
 {
 public:
+	BaseMesh(DrawType draw_type, bool use_index);
 	void SetDrawType(DrawType type);
-	std::vector<glm::vec3>& GetVertices();
-	std::vector<glm::vec3>& GetNormals();
-	std::vector<unsigned int>& GetIndices();
-
-	void SetVertices(std::vector<glm::vec3>& vertices);
-	void SetNormals(std::vector<glm::vec3>& normals);
-	void SetIndices(std::vector<unsigned int>& indices);
-	
 	GLenum GetGLDrawType() const;
 	void SetUseIndex(bool use);
 	bool GetUseIndex() const;
+protected:
+	DrawType m_DrawType = DrawType::None;
+	bool m_UseIndex = false;
+};
+
+class LineMesh : public BaseMesh
+{
+public:
+	LineMesh();
+	void AttachBuffer(std::shared_ptr<VertexBuffer> buffer);
+	std::shared_ptr<VertexBuffer> GetBuffer() const;
+	void SetVertices(std::shared_ptr<std::vector<glm::vec3>> vertices);
+	std::shared_ptr<std::vector<glm::vec3>> GetVertices() const;
+
+private:
+	std::shared_ptr<VertexBuffer> m_Buffer;
+	std::shared_ptr<std::vector<glm::vec3>> m_Vertices;
+};
+
+class Mesh : public BaseMesh
+{
+public:
+	Mesh();
+	std::shared_ptr<std::vector<Vertex>> GetVertices() const;
+	std::shared_ptr<std::vector<unsigned int>> GetIndices() const;
+
+	void SetVertices(std::shared_ptr<std::vector<Vertex>> vertices);
+	void SetIndices(std::shared_ptr<std::vector<unsigned int>> indices);
+
 	void AttachBuffer(std::shared_ptr<VertexBuffer> buffer);
 	void AttachBuffer(std::shared_ptr<ElementBuffer> buffer);
 
-	std::vector<std::shared_ptr<VertexBuffer>>& GetBuffers();
-	std::shared_ptr<ElementBuffer> GetIndexBuffer();
+	std::shared_ptr<VertexBuffer> GetBuffer() const;
+	std::shared_ptr<ElementBuffer> GetIndexBuffer() const;
 private:
-	DrawType m_DrawType = DrawType::None;
-	bool m_UseIndex = false;
-	std::vector<glm::vec3> m_Vertices;
-	std::vector<glm::vec3> m_Normals;
-	std::vector<unsigned int> m_Indices;
+	std::shared_ptr<std::vector<Vertex>> m_Vertices;
+	std::shared_ptr <std::vector<unsigned int>> m_Indices;
 
-	std::vector<std::shared_ptr<VertexBuffer>> m_Buffers;
+	std::shared_ptr<VertexBuffer> m_Buffer;
 	std::shared_ptr<ElementBuffer> m_IndexBuffer;
 };

@@ -27,6 +27,13 @@ End Header --------------------------------------------------------*/
 #include"Core/Graphics/VertexArray.h"
 #include "imgui.h"
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
+
+enum class select
+{
+	DrawVertexNormal=0,
+	DrawFaceNormal
+};
+
 class MyScene : public Scene
 {
 public:
@@ -39,6 +46,8 @@ private:
 	glm::mat4 perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
 
 	bool drawNormal = false;
+	int radio = static_cast<int>(select::DrawVertexNormal);
+	Entity bunny;
 
 	virtual void Awake() {};
 	virtual void OnEnable() {};
@@ -55,33 +64,50 @@ private:
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
 
-		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "bunny");
-		auto bunny = CreateEntity();
-		bunny.AddComponent<LineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
-		bunny.AddComponent<MeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
+		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
+		bunny = CreateEntity();
+		bunny.GetComponent<TransformComponent>().Scale = { 2,2,2 };
+		bunny.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
+		bunny.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
+		bunny.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
+		bunny.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
 	};
 	float ie = 0;
 	virtual void Update() 
 	{
 		vertex_array->Bind();
 		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
-
+		bunny.GetComponent<TransformComponent>().Rotation = { 0,ie+=0.01f,0 };
 		if (drawNormal)
 		{
 			line_shader->Use();
 			line_shader->SetMat4("view", world_to_cam);
 			line_shader->SetMat4("projection", perspective);
-			auto LineMeshes = GetRegistry().view<TransformComponent, LineRendererComponent>();
-			for (auto& entity : LineMeshes)
+			if (radio == static_cast<int>(select::DrawFaceNormal))
 			{
-				auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, LineRendererComponent>(entity);
-				line_shader->SetMat4("model", TransformComp.GetTransform());
-				for (auto buffer : LineRendererComp.mesh->GetBuffers())
+				auto LineMeshes = GetRegistry().view<TransformComponent, FaceNormalLineRendererComponent>();
+				for (auto& entity : LineMeshes)
 				{
-					vertex_array->AttachBuffer(*buffer);
-				}
+					auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, FaceNormalLineRendererComponent>(entity);
+					line_shader->SetMat4("model", TransformComp.GetTransform());
 
-				glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices().size());
+					vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
+
+					glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices()->size());
+				}
+			}
+			else
+			{
+				auto LineMeshes = GetRegistry().view<TransformComponent, VertexNormalLineRendererComponent>();
+				for (auto& entity : LineMeshes)
+				{
+					auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, VertexNormalLineRendererComponent>(entity);
+					line_shader->SetMat4("model", TransformComp.GetTransform());
+
+					vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
+
+					glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices()->size());
+				}
 			}
 		}
 
@@ -89,33 +115,58 @@ private:
 		light_shader->SetMat4("view", world_to_cam);
 		light_shader->SetMat4("projection", perspective);
 		light_shader->SetFloat3("LightPos", { 0,0,10 });
-		auto Meshes = GetRegistry().view<TransformComponent, MeshRendererComponent>();
-		for (auto& entity : Meshes)
+		if (radio == static_cast<int>(select::DrawFaceNormal))
 		{
-			auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, MeshRendererComponent>(entity);
-			light_shader->SetMat4("model", TransformComp.GetTransform());
-			for (auto buffer : MeshRendererComp.mesh->GetBuffers())
+			auto Meshes = GetRegistry().view<TransformComponent, FaceNormalMeshRendererComponent>();
+			for (auto& entity : Meshes)
 			{
-				vertex_array->AttachBuffer(*buffer);
-			}
+				auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, FaceNormalMeshRendererComponent>(entity);
+				light_shader->SetMat4("model", TransformComp.GetTransform());
 
-			if (MeshRendererComp.mesh->GetUseIndex())
-			{
-				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
-				glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), MeshRendererComp.mesh->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
-			}
-			else
-			{
-				glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, MeshRendererComp.mesh->GetVertices().size());
-			}
+				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
 
+				if (MeshRendererComp.mesh->GetUseIndex())
+				{
+					vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
+					glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), MeshRendererComp.mesh->GetIndices()->size(), GL_UNSIGNED_INT, nullptr);
+				}
+				else
+				{
+					glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, MeshRendererComp.mesh->GetVertices()->size());
+				}
+
+			}
 		}
+		else
+		{
+			auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>();
+			for (auto& entity : Meshes)
+			{
+				auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, VertexNormalMeshRendererComponent>(entity);
+				light_shader->SetMat4("model", TransformComp.GetTransform());
+
+				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
+
+				if (MeshRendererComp.mesh->GetUseIndex())
+				{
+					vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
+					glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), MeshRendererComp.mesh->GetIndices()->size(), GL_UNSIGNED_INT, nullptr);
+				}
+				else
+				{
+					glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, MeshRendererComp.mesh->GetVertices()->size());
+				}
+
+			}
+		}
+		
 	}
 	virtual void LateUpdate()
 	{
 		ImGui::Begin("Control");
 		ImGui::Checkbox("DrawNormal", &drawNormal);
-		//ImGui::RadioButton()
+		ImGui::RadioButton("DrawVertexNormal", &radio, static_cast<int>(select::DrawVertexNormal)); ImGui::SameLine();
+		ImGui::RadioButton("DrawFaceNormal", &radio, static_cast<int>(select::DrawFaceNormal));
 		ImGui::End();
 	}
 	virtual void OnEvent(Event& event)
@@ -147,6 +198,5 @@ class MyApp : public Application
 };
 std::shared_ptr<Application> CoreMain()
 {
-	std::cout<<"Vertex:" << sizeof(Vertex) << std::endl;
 	return std::make_shared<MyApp>();
 }

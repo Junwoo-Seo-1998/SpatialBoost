@@ -7,9 +7,9 @@
 #include <iostream>
 #include <sstream>
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
-std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalLineMesh;
+std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
-std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalLineMesh;
+std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
 	std::vector<glm::vec3> loaded_points;
@@ -32,7 +32,7 @@ std::shared_ptr<Mesh> AssetManager::GetVertexNormalMesh(const std::string& name)
 	return m_VertexNormalMesh[name];
 }
 
-std::shared_ptr<Mesh> AssetManager::GetVertexNormalLineMesh(const std::string& name)
+std::shared_ptr<LineMesh> AssetManager::GetVertexNormalLineMesh(const std::string& name)
 {
 	return m_VertexNormalLineMesh[name];
 }
@@ -42,7 +42,7 @@ std::shared_ptr<Mesh> AssetManager::GetFaceNormalMesh(const std::string& name)
 	return m_FaceNormalMesh[name];
 }
 
-std::shared_ptr<Mesh> AssetManager::GetFaceNormalLineMesh(const std::string& name)
+std::shared_ptr<LineMesh> AssetManager::GetFaceNormalLineMesh(const std::string& name)
 {
 	return m_FaceNormalLineMesh[name];
 }
