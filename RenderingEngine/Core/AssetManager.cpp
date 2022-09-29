@@ -10,7 +10,7 @@ std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNorm
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalLineMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalLineMesh;
-std::shared_ptr<Mesh> AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
+void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
 	std::vector<glm::vec3> loaded_points;
 	std::vector<unsigned int> loaded_indices;
@@ -18,14 +18,13 @@ std::shared_ptr<Mesh> AssetManager::LoadMeshFromFile(const std::string& file_nam
 
 	std::vector<glm::vec3> generated_face_normal{ MeshGenerator::GenerateFaceNormals(loaded_points, loaded_indices) };
 	
-	//std::vector<glm::vec3> generated_vertex_normal{ MeshGenerator::GenerateVertexNormals(loaded_points, generated_face_normal,loaded_indices) };
+	std::vector<glm::vec3> generated_vertex_normal{ MeshGenerator::GenerateVertexNormals(loaded_points, generated_face_normal,loaded_indices) };
 
 	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(loaded_points, loaded_indices, generated_face_normal);
 	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(loaded_points, loaded_indices, generated_face_normal);
 
-	return  MeshGenerator::GenerateFaceNormalLineMesh(loaded_points, loaded_indices, generated_face_normal);
-
-
+	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(loaded_points, loaded_indices, generated_vertex_normal);
+	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(loaded_points, loaded_indices, generated_vertex_normal);
 }
 
 std::shared_ptr<Mesh> AssetManager::GetVertexNormalMesh(const std::string& name)

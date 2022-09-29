@@ -9,7 +9,7 @@ class Shader;
 class AssetManager
 {
 public:
-	static std::shared_ptr<Mesh> LoadMeshFromFile(const std::string& file_name, const std::string& key_name);
+	static void LoadMeshFromFile(const std::string& file_name, const std::string& key_name);
 	static std::shared_ptr<Mesh> GetVertexNormalMesh(const std::string& name);
 	static std::shared_ptr<Mesh> GetVertexNormalLineMesh(const std::string& name);
 	static std::shared_ptr<Mesh> GetFaceNormalMesh(const std::string& name);

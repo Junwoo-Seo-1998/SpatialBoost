@@ -45,7 +45,7 @@ private:
 	virtual void OnEnable() {};
 	virtual void Start() 
 	{
-		ObjParser parser;
+		//ObjParser parser;
 		//mesh = std::move(parser.LoadFile("../Assets/bunny_high_poly.obj"));
 		//mesh=parser.LoadFile("../Assets/bunny_high_poly.obj");
 		//mesh = parser.LoadFile("../Assets/bunny_high_poly.obj");
@@ -91,9 +91,9 @@ private:
 		*/
 		
 
-		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
+		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "bunny");
 		bunny = CreateEntity();
-		bunny.AddComponent<LineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
+		bunny.AddComponent<LineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
 		bunny.AddComponent<MeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
 	};
 	float ie = 0;
@@ -129,9 +129,9 @@ private:
 				vertex_array->AttachBuffer(*buffer);
 			}
 
-			if (mesh.GetUseIndex())
+			if (MeshRendererComp.mesh->GetUseIndex())
 			{
-				vertex_array->AttachBuffer(*mesh.GetIndexBuffer());
+				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
 				glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), MeshRendererComp.mesh->GetIndices().size(), GL_UNSIGNED_INT, nullptr);
 			}
 			else
