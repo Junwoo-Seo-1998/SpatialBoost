@@ -13,6 +13,7 @@ Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Core/Window/Window.h"
 
+class WindowResizeEvent;
 class ImGuiRenderer;
 class Scene;
 class SceneManager;
@@ -24,9 +25,13 @@ public:
 	virtual ~Application();
 
 public:
+	void OnEvent(Event& event);
+	bool OnWindowResize(WindowResizeEvent& event);
+
 	bool Init();
 	virtual void UserDefinedInit()=0;
 	void Update();
+
 	void Close();
 
 	void SetCurrentScene(std::shared_ptr<Scene> scene);

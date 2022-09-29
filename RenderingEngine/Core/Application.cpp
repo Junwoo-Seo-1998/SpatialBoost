@@ -11,9 +11,13 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Application.h"
+
+#include <iostream>
+
 #include "glad.h"
 #include "Core/Scene/SceneManager.h"
 #include "Core/Layer/Layer.h"
+#include "Event/ApplicationEvents/ApplicationEvents.h"
 #include "ImGui/ImGuiRenderer.h"
 #include "Layer/LayerManager.h"
 
@@ -31,20 +35,42 @@ Application::Application()
 
 Application::~Application()
 {
-	Close();
+}
+
+void Application::OnEvent(Event& event)
+{
+	EventDispatcher  dispatcher(event);
+	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(OnWindowResize));
+	m_SceneManager->GetCurrentScene()->OnEvent(event);
+}
+
+bool Application::OnWindowResize(WindowResizeEvent& event)
+{
+	auto [width, height] = event.GetWidthAndHeight();
+
+	if (width == 0 || height == 0)
+	{
+		return false;
+	}
+
+	std::cout << event.GetEventNameString() << std::endl;
+
+	glViewport(0, 0, width, height);
+	return false;
 }
 
 bool Application::Init()
 {
 	if (!m_Window->Init())
 		return false;
+	m_Window->SetEventCallbackFunction(BIND_EVENT_FUNCTION(OnEvent));
 	return true;
 }
 
 void Application::Update()
 {
 	//TODO: remove this after testing.
-	glViewport(0, 0, 800, 800);
+
 	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
 	m_SceneManager->GetCurrentScene()->Start();
 	while (!m_Window->ShouldClose())
@@ -57,6 +83,7 @@ void Application::Update()
 		m_Window->Update();
 
 	}
+	
 }
 
 void Application::Close()
@@ -64,6 +91,7 @@ void Application::Close()
 	m_ImGuiRenderer->OnDestroy();
 	m_SceneManager->GetCurrentScene()->OnDestroy();
 	m_Window->Close();
+	
 }
 
 void Application::SetCurrentScene(std::shared_ptr<Scene> scene)

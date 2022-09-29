@@ -3,6 +3,7 @@
 #include <entt/entt.hpp>
 
 #include "Entity.h"
+class Event;
 class SceneManager;
 class Application;
 
@@ -17,6 +18,7 @@ public:
 	virtual void LateUpdate() = 0;
 	virtual void OnDisable() = 0;
 	virtual void OnDestroy() = 0;
+	virtual void OnEvent(Event& event) = 0;
 
 	Entity CreateEntity();
 	entt::registry& GetRegistry();

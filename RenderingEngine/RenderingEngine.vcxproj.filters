@@ -10,6 +10,12 @@
     <Filter Include="Core\Data">
       <UniqueIdentifier>{57F6BA15-C360-6F8C-0C9F-203278484DE1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Event">
+      <UniqueIdentifier>{FF1F37CD-EBD7-781A-54DF-517640B6130B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Event\InputEvents">
+      <UniqueIdentifier>{330EA025-1F08-C977-0875-5F88F40D2FE4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Graphics">
       <UniqueIdentifier>{2E10C882-9AD0-43B9-630B-8D36CF8A8895}</UniqueIdentifier>
     </Filter>
@@ -57,6 +63,12 @@
     <ClInclude Include="Core\EntryPoint.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Event\Event.h">
+      <Filter>Core\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Event\InputEvents\KeyBoardEvent.h">
+      <Filter>Core\Event\InputEvents</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Graphics\Buffer.h">
       <Filter>Core\Graphics</Filter>
     </ClInclude>
@@ -87,10 +99,16 @@
     <ClInclude Include="Core\Scene\SceneManager.h">
       <Filter>Core\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\KeyCodes.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Utils\Math.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\MeshGenerator.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils\MouseCodes.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\ObjParser.h">
@@ -102,6 +120,7 @@
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Event\ApplicationEvents\ApplicationEvents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -119,6 +138,12 @@
     <ClCompile Include="Core\Data\Mesh.cpp">
       <Filter>Core\Data</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Event\Event.cpp">
+      <Filter>Core\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Event\InputEvents\KeyBoardEvent.cpp">
+      <Filter>Core\Event\InputEvents</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Graphics\Buffer.cpp">
       <Filter>Core\Graphics</Filter>
     </ClCompile>
@@ -127,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="Core\Graphics\VertexArray.cpp">
       <Filter>Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ImGui\BuildImGui.cpp">
+      <Filter>Core\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Core\ImGui\ImGuiRenderer.cpp">
       <Filter>Core\ImGui</Filter>
@@ -162,6 +190,6 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\ImGui\BuildImGui.cpp" />
+    <ClCompile Include="Core\Event\ApplicationEvents\ApplicationEvents.cpp" />
   </ItemGroup>
 </Project>

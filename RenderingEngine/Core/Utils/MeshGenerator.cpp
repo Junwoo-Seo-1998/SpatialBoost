@@ -28,8 +28,15 @@ std::vector<glm::vec3> MeshGenerator::GenerateSphere(float rad, int segments, in
 	return point;
 }
 
+std::vector<glm::vec3> MeshGenerator::GenerateOrbit(float rad, int numDivisions)
+{
+	//clamp
+	numDivisions = std::max(numDivisions, 10);
+	return std::vector<glm::vec3>();
+}
+
 std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalMesh(const std::vector<glm::vec3>& loaded_points,
-	const std::vector<unsigned>& loaded_index, const std::vector<glm::vec3>& face_normals)
+                                                            const std::vector<unsigned>& loaded_index, const std::vector<glm::vec3>& face_normals)
 {
 	std::shared_ptr<Mesh> mesh=std::make_shared<Mesh>();
 	mesh->SetDrawType(DrawType::Triangles);

@@ -14,6 +14,10 @@ End Header --------------------------------------------------------*/
 #include "GLFW/glfw3.h"
 #include "glad.h"
 #include <iostream>
+
+#include "Core/Event/ApplicationEvents/ApplicationEvents.h"
+#include "Core/Event/InputEvents/KeyBoardEvent.h"
+
 bool WindowGLFW::Init()
 {
 	if (glfwInit() != GLFW_TRUE)
@@ -24,12 +28,49 @@ bool WindowGLFW::Init()
 		glfwTerminate();
 		return false;
 	}
+	m_WindowData.window = m_Window;
 	glfwMakeContextCurrent(m_Window);
 	gladLoadGL();
 	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 	std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
 	glClearColor(0.529f, 0.808f, 0.98f, 1.f);
+
+	//set glfw callback
+		//so that we can use data of window in glfw call backs.
+	glfwSetWindowUserPointer(static_cast<GLFWwindow*>(m_WindowData.window), &m_WindowData);
+	glfwSetKeyCallback(static_cast<GLFWwindow*>(m_WindowData.window), [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			switch (action)
+			{
+			case GLFW_PRESS:
+			{
+				KeyBoardPressedEvent event(static_cast<KeyCode>(key), 0);
+				data.eventCallback(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				break;
+			}
+			case GLFW_REPEAT:
+			{
+				break;
+			}
+			}
+		});
+
+	glfwSetWindowSizeCallback(static_cast<GLFWwindow*>(m_WindowData.window), [](GLFWwindow* window, int width, int height)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			data.width = width;
+			data.height = height;
+
+			WindowResizeEvent event(width, height);
+			data.eventCallback(event);
+		});
 	return true;
 }
 

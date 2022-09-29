@@ -106,6 +106,9 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Data\Mesh.h" />
     <ClInclude Include="Core\Data\Vertex.h" />
     <ClInclude Include="Core\EntryPoint.h" />
+    <ClInclude Include="Core\Event\ApplicationEvents\ApplicationEvents.h" />
+    <ClInclude Include="Core\Event\Event.h" />
+    <ClInclude Include="Core\Event\InputEvents\KeyBoardEvent.h" />
     <ClInclude Include="Core\Graphics\Buffer.h" />
     <ClInclude Include="Core\Graphics\Shader.h" />
     <ClInclude Include="Core\Graphics\VertexArray.h" />
@@ -116,8 +119,10 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Scene\Entity.h" />
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
+    <ClInclude Include="Core\Utils\KeyCodes.h" />
     <ClInclude Include="Core\Utils\Math.h" />
     <ClInclude Include="Core\Utils\MeshGenerator.h" />
+    <ClInclude Include="Core\Utils\MouseCodes.h" />
     <ClInclude Include="Core\Utils\ObjParser.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
@@ -128,6 +133,9 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Component\RendererComponent.cpp" />
     <ClCompile Include="Core\Component\TransformComponent.cpp" />
     <ClCompile Include="Core\Data\Mesh.cpp" />
+    <ClCompile Include="Core\Event\ApplicationEvents\ApplicationEvents.cpp" />
+    <ClCompile Include="Core\Event\Event.cpp" />
+    <ClCompile Include="Core\Event\InputEvents\KeyBoardEvent.cpp" />
     <ClCompile Include="Core\Graphics\Buffer.cpp" />
     <ClCompile Include="Core\Graphics\Shader.cpp" />
     <ClCompile Include="Core\Graphics\VertexArray.cpp" />

@@ -13,6 +13,12 @@ End Header --------------------------------------------------------*/
 #include "Window.h"
 //for now glfw
 #include "Core/Window/API/WindowGLFW.h"
+
+void WindowAPI::SetEventCallbackFunction(const EventCallbackFunction& callback)
+{
+	m_WindowData.eventCallback = callback;
+}
+
 bool Window::Init()
 {
 	m_WindowAPI = std::make_shared<WindowGLFW>();
@@ -37,4 +43,9 @@ void Window::Update()
 void Window::Close()
 {
 	m_WindowAPI->Close();
+}
+
+void Window::SetEventCallbackFunction(const EventCallbackFunction& callback)
+{
+	m_WindowAPI->SetEventCallbackFunction(callback);
 }
