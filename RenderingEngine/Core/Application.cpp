@@ -12,6 +12,10 @@ Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Application.h"
 #include "glad.h"
+#include "Core/Scene/SceneManager.h"
+#include "Core/Layer/Layer.h"
+#include "ImGui/ImGuiRenderer.h"
+#include "Layer/LayerManager.h"
 
 namespace inner
 {
@@ -20,13 +24,14 @@ namespace inner
 
 
 Application::Application()
-	:m_Window(std::make_shared<Window>()),m_SceneManager(std::make_shared<SceneManager>())
+	:m_Window(std::make_shared<Window>()),m_SceneManager(std::make_shared<SceneManager>()), m_ImGuiRenderer(std::make_shared<ImGuiRenderer>())
 {
 
 }
 
 Application::~Application()
 {
+	Close();
 }
 
 bool Application::Init()
@@ -40,18 +45,23 @@ void Application::Update()
 {
 	//TODO: remove this after testing.
 	glViewport(0, 0, 800, 800);
+	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
 	m_SceneManager->GetCurrentScene()->Start();
 	while (!m_Window->ShouldClose())
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_ImGuiRenderer->GuiBegin();
 		m_SceneManager->GetCurrentScene()->Update();
 		m_SceneManager->GetCurrentScene()->LateUpdate();
+		m_ImGuiRenderer->GuiEnd();
 		m_Window->Update();
+
 	}
 }
 
 void Application::Close()
 {
+	m_ImGuiRenderer->OnDestroy();
 	m_SceneManager->GetCurrentScene()->OnDestroy();
 	m_Window->Close();
 }

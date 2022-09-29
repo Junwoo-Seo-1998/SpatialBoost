@@ -18,11 +18,13 @@ workspace "RenderingEngine"
 
 include "Libs/glfw"
 include "Libs/glad"
+include "Libs/imgui"
 IncludeDir={}
 IncludeDir["GLFW"]="Libs/glfw/glfw/include/"
 IncludeDir["GLAD"]="Libs/glad/"
 IncludeDir["GLM"]="Libs/glm/"
 IncludeDir["ENTT"]="Libs/entt/"
+IncludeDir["IMGUI"]="Libs/imgui/"
 
 
 project "RenderingEngine"
@@ -36,7 +38,8 @@ project "RenderingEngine"
     links {
         "GLFW",
         "GLAD",
-        "opengl32.lib"
+        "opengl32.lib",
+        "ImGui"
     }
     includedirs
     {
@@ -44,7 +47,8 @@ project "RenderingEngine"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.GLAD}",
         "%{IncludeDir.GLM}",
-        "%{IncludeDir.ENTT}"
+        "%{IncludeDir.ENTT}",
+        "%{IncludeDir.IMGUI}"
     }
     files {
         "RenderingEngine/**.h",

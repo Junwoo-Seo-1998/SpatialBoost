@@ -23,5 +23,5 @@ public:
     virtual bool ShouldClose() override;
     virtual void Update() override;
     virtual void Close() override;
+    virtual void* GetWindowHandle() override;
 };
-

@@ -17,22 +17,21 @@ class WindowAPI
 public:
 	virtual bool Init() = 0;
 	virtual bool ShouldClose() = 0;
+	virtual void* GetWindowHandle() = 0;
 	virtual void Update() = 0;
 	virtual void Close() = 0;
 };
-//struct WindowHandle;
+
 class Window
 {
 private:
-	struct StaticData
-	{
-		std::shared_ptr<WindowAPI> m_WindowAPI = nullptr;
-	} m_StaticData;
-	
+
+	std::shared_ptr<WindowAPI> m_WindowAPI = nullptr;
+
 public:
 	bool Init();
 	bool ShouldClose();
+	void* GetWindowHandle();
 	void Update();
 	void Close();
 };
-

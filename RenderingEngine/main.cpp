@@ -25,6 +25,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Component/TransformComponent.h"
 #include"Core/Graphics/Buffer.h"
 #include"Core/Graphics/VertexArray.h"
+#include "imgui.h"
 class MyScene : public Scene
 {
 public:
@@ -141,7 +142,10 @@ private:
 
 		}
 	};
-	virtual void LateUpdate() {};
+	virtual void LateUpdate()
+	{
+		ImGui::ShowDemoWindow();
+	}
 	virtual void OnDisable() {};
 	virtual void OnDestroy() 
 	{

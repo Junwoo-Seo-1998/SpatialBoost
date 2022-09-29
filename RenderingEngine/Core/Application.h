@@ -12,7 +12,11 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Core/Window/Window.h"
-#include"Core/Scene/SceneManager.h"
+
+class ImGuiRenderer;
+class Scene;
+class SceneManager;
+
 class Application
 {
 public:
@@ -32,6 +36,7 @@ public:
 protected:
 	std::shared_ptr<Window> m_Window;
 	std::shared_ptr<SceneManager> m_SceneManager;
+	std::shared_ptr<ImGuiRenderer> m_ImGuiRenderer;
 };
 
 static std::shared_ptr<Application> GetCurrentApplication();

@@ -15,21 +15,26 @@ End Header --------------------------------------------------------*/
 #include "Core/Window/API/WindowGLFW.h"
 bool Window::Init()
 {
-	m_StaticData.m_WindowAPI = std::make_shared<WindowGLFW>();
-	return m_StaticData.m_WindowAPI->Init();
+	m_WindowAPI = std::make_shared<WindowGLFW>();
+	return m_WindowAPI->Init();
 }
 
 bool Window::ShouldClose()
 {
-	return m_StaticData.m_WindowAPI->ShouldClose();
+	return m_WindowAPI->ShouldClose();
+}
+
+void* Window::GetWindowHandle()
+{
+	return m_WindowAPI->GetWindowHandle();
 }
 
 void Window::Update()
 {
-	m_StaticData.m_WindowAPI->Update();
+	m_WindowAPI->Update();
 }
 
 void Window::Close()
 {
-	m_StaticData.m_WindowAPI->Close();
+	m_WindowAPI->Close();
 }

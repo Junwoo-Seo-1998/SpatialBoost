@@ -16,10 +16,10 @@ End Header --------------------------------------------------------*/
 #include <iostream>
 bool WindowGLFW::Init()
 {
-	if (glfwInit()!=GLFW_TRUE)
+	if (glfwInit() != GLFW_TRUE)
 		return false;
 	m_Window = glfwCreateWindow(800, 800, "CS300! - junwoo.seo", nullptr, nullptr);
-	if (m_Window==NULL)
+	if (m_Window == NULL)
 	{
 		glfwTerminate();
 		return false;
@@ -47,4 +47,9 @@ void WindowGLFW::Update()
 void WindowGLFW::Close()
 {
 	glfwTerminate();
+}
+
+void* WindowGLFW::GetWindowHandle()
+{
+	return m_Window;
 }
