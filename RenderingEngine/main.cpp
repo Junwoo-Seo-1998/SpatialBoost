@@ -27,6 +27,7 @@ End Header --------------------------------------------------------*/
 #include"Core/Graphics/VertexArray.h"
 #include "imgui.h"
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
+#include "Core/Utils/MeshGenerator.h"
 
 enum class select
 {
@@ -66,11 +67,15 @@ private:
 
 		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
 		bunny = CreateEntity();
-		bunny.GetComponent<TransformComponent>().Scale = { 2,2,2 };
+		//bunny.GetComponent<TransformComponent>().Scale = { 2,2,2 };
 		bunny.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
 		bunny.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
 		bunny.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
 		bunny.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
+
+		auto orbit = CreateEntity();
+		orbit.GetComponent<TransformComponent>().Scale = { 2,1, 1 };
+		orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(1.f));
 	};
 	float ie = 0;
 	virtual void Update() 
@@ -78,11 +83,23 @@ private:
 		vertex_array->Bind();
 		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
 		bunny.GetComponent<TransformComponent>().Rotation = { 0,ie+=0.01f,0 };
+
+		line_shader->Use();
+		line_shader->SetMat4("view", world_to_cam);
+		line_shader->SetMat4("projection", perspective);
+		auto LineMeshes = GetRegistry().view<TransformComponent, LineRendererComponent>();
+		for (auto& entity : LineMeshes)
+		{
+			auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, LineRendererComponent>(entity);
+			line_shader->SetMat4("model", TransformComp.GetTransform());
+
+			vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
+
+			glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices()->size());
+		}
+
 		if (drawNormal)
 		{
-			line_shader->Use();
-			line_shader->SetMat4("view", world_to_cam);
-			line_shader->SetMat4("projection", perspective);
 			if (radio == static_cast<int>(select::DrawFaceNormal))
 			{
 				auto LineMeshes = GetRegistry().view<TransformComponent, FaceNormalLineRendererComponent>();

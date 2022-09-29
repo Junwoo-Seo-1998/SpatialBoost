@@ -2,6 +2,11 @@
 
 #include "Core/Data/Mesh.h"
 
+LineRendererComponent::LineRendererComponent(std::shared_ptr<LineMesh> mesh)
+	:mesh(mesh)
+{
+}
+
 FaceNormalLineRendererComponent::FaceNormalLineRendererComponent(std::shared_ptr<LineMesh> mesh)
 	:mesh(mesh)
 {

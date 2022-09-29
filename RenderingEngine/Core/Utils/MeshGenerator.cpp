@@ -28,11 +28,41 @@ std::vector<glm::vec3> MeshGenerator::GenerateSphere(float rad, int segments, in
 	return point;
 }
 
-std::vector<glm::vec3> MeshGenerator::GenerateOrbit(float rad, int numDivisions)
+std::shared_ptr<LineMesh> MeshGenerator::GenerateOrbit(float radius, int numDivisions)
 {
 	//clamp
+	radius = std::max(radius, 0.0001f);
 	numDivisions = std::max(numDivisions, 10);
-	return std::vector<glm::vec3>();
+
+	std::shared_ptr<LineMesh> mesh = std::make_shared<LineMesh>();
+	mesh->SetUseIndex(false);
+
+	const float pi = glm::pi<float>();
+	float d_theta = 2.f * pi / static_cast<float>(numDivisions);
+	float theta = 0.f;
+	std::shared_ptr<std::vector<glm::vec3>> new_vertex = std::make_shared<std::vector<glm::vec3>>();
+	glm::vec3 prev{ radius * glm::cos(theta), radius * glm::sin(theta), 0 };
+	theta += d_theta;
+	for (int step=1; step<numDivisions; ++step)
+	{
+		new_vertex->push_back(prev);
+		prev = glm::vec3{ radius * glm::cos(theta), radius * glm::sin(theta), 0 };
+		new_vertex->push_back(prev);
+		theta += d_theta;
+	}
+	new_vertex->push_back(prev);
+	new_vertex->push_back((*new_vertex)[0]);
+
+	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
+
+	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(glm::vec3));
+
+	vertex_buffer->DescribeData({ {0,Float3} });
+	mesh->AttachBuffer(vertex_buffer);
+
+	mesh->SetVertices(new_vertex);
+
+	return mesh;
 }
 
 std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalMesh(const std::vector<glm::vec3>& loaded_points,

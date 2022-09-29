@@ -3,6 +3,13 @@
 class LineMesh;
 class Mesh;
 
+struct LineRendererComponent
+{
+	LineRendererComponent(std::shared_ptr<LineMesh> mesh);
+
+	std::shared_ptr<LineMesh> mesh;
+};
+
 struct FaceNormalLineRendererComponent
 {
 	FaceNormalLineRendererComponent(std::shared_ptr<LineMesh> mesh);
