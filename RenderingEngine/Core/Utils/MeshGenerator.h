@@ -6,8 +6,10 @@
 
 class MeshGenerator
 {
+	typedef std::shared_ptr<std::vector<glm::vec3>> PointsPtr;
+	typedef std::shared_ptr<std::vector<unsigned int>> IndicesPtr;
 public:
-	static std::vector<glm::vec3> GenerateSphere(float rad = 1.f, int segments = 30, int rings = 30);
+	static std::tuple<PointsPtr, IndicesPtr> GenerateSpherePointsWithIndices(float radius = 1.f, int segments = 30, int rings = 30);
 	static std::shared_ptr<LineMesh> GenerateOrbit(float radius = 1.f, int numDivisions = 30);
 
 

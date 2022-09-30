@@ -47,6 +47,20 @@ std::shared_ptr<LineMesh> AssetManager::GetFaceNormalLineMesh(const std::string&
 	return m_FaceNormalLineMesh[name];
 }
 
+void AssetManager::GenerateSphere(const std::string& key_name, float radius, int segments, int rings)
+{
+	auto [gen_points, gen_indices] = MeshGenerator::GenerateSpherePointsWithIndices(radius, segments, rings);
+	std::vector<glm::vec3> generated_face_normal{ MeshGenerator::GenerateFaceNormals(*gen_points, *gen_indices) };
+
+	std::vector<glm::vec3> generated_vertex_normal{ MeshGenerator::GenerateVertexNormals(*gen_points, generated_face_normal,*gen_indices) };
+
+	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(*gen_points, *gen_indices, generated_face_normal);
+	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(*gen_points, *gen_indices, generated_face_normal);
+
+	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
+}
+
 std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& vert_file, const std::string& frag_file)
 {
 	

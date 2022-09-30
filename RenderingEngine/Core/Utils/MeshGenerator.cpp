@@ -5,27 +5,80 @@
 
 #include "Math.h"
 
-std::vector<glm::vec3> MeshGenerator::GenerateSphere(float rad, int segments, int rings)
+std::tuple<MeshGenerator::PointsPtr, MeshGenerator::IndicesPtr>
+MeshGenerator::GenerateSpherePointsWithIndices(float radius, int segments, int rings)
 {
 	//clamp
 	segments = std::max(segments, 3);
 	rings = std::max(rings, 3);
-	
-	std::vector<glm::vec3> point;
-	float theta_step = glm::pi<float>() / static_cast<float>(rings);
-	float theta = 0.f;
-	
+	const float pi = glm::pi<float>();
+	PointsPtr points = std::make_shared<std::vector<glm::vec3>>();
+	float theta_step = pi / static_cast<float>(rings);
+	float p_step = 2.f * pi / static_cast<float>(segments);
+
+	float theta = theta_step;
 	for (int ring = 1; ring < rings; ++ring)
 	{
-		theta += theta_step;
-		float ring_rad = rad * std::sin(theta);
+		float ring_rad = radius * std::sin(theta);
+		float p = 0.f;
 		for (int segment = 0; segment < segments; ++segment)
 		{
-			
+			points->push_back({ ring_rad * glm::sin(p),radius * std::cos(theta) , ring_rad * glm::cos(p) });
+			p += p_step;
 		}
+		theta += theta_step;
+	}
+	IndicesPtr indices = std::make_shared<std::vector<unsigned int>>();
+	int sides = rings - 2; //- top and bottom
+	for (int side = 0; side < sides; ++side)
+	{
+		int current_circle = side * segments;
+		int next_circle = (side + 1) * segments;
+		for (int segment = 0; segment < segments; ++segment)
+		{
+			//triangle 1
+			//*
+			//**
+			indices->push_back(current_circle + segment);
+			indices->push_back(next_circle + segment);
+			indices->push_back(next_circle + (segment + 1) % segments);
+
+			//triangle 2
+			//**
+			// *
+			indices->push_back(current_circle + segment);
+			indices->push_back(next_circle + (segment + 1) % segments);
+			indices->push_back(current_circle + (segment + 1) % segments);
+		}	
 	}
 
-	return point;
+	
+	//top
+	points->push_back({ 0,radius,0 });
+	int	top_index = points->size() - 1;
+	for (int segment = 0; segment < segments; ++segment)
+	{
+		//triangle 1
+		//*  top
+		//** first circle
+		indices->push_back(top_index);
+		indices->push_back(segment % segments);
+		indices->push_back((segment + 1) % segments);
+	}
+	//bottom
+	int last_circle = sides * segments;
+	points->push_back({ 0,-radius,0 });
+	int	bottom_index = points->size() - 1;
+	for (int segment = 0; segment < segments; ++segment)
+	{
+		//triangle
+		//** last_circle
+		// * bottom
+		indices->push_back(last_circle + segment % segments);
+		indices->push_back(bottom_index);
+		indices->push_back(last_circle + (segment + 1) % segments);
+	}
+	return { points,indices };
 }
 
 std::shared_ptr<LineMesh> MeshGenerator::GenerateOrbit(float radius, int numDivisions)
