@@ -66,23 +66,23 @@ private:
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
 
-		//AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
-		//bunny = CreateEntity();
-		////bunny.GetComponent<TransformComponent>().Scale = { 2,2,2 };
-		//bunny.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
-		//bunny.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
-		//bunny.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
-		//bunny.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
+		AssetManager::LoadMeshFromFile("Assets/triangle.obj", "bunny");
+		bunny = CreateEntity();
+		bunny.GetComponent<TransformComponent>().Scale = { 2,2,2 };
+		bunny.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
+		bunny.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
+		bunny.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
+		bunny.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
 		//
-		AssetManager::GenerateSphere("Sphere", 1.f);
+		AssetManager::GenerateSphere("Sphere", 0.1f);
 		sphere = CreateEntity();
 		//bunny = sphere;
-		sphere.GetComponent<TransformComponent>().Scale = { 2,2,2 };
-		sphere.GetComponent<TransformComponent>().Rotation = { 0,0,45 };
-		sphere.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("Sphere"));
-		sphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Sphere"));
-		sphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("Sphere"));
-		sphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("Sphere"));
+		//sphere.GetComponent<TransformComponent>().Scale = { 1,1,1 };
+		//sphere.GetComponent<TransformComponent>().Rotation = { 0,0,45 };
+		//sphere.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("Sphere"));
+		//sphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Sphere"));
+		//sphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("Sphere"));
+		//sphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("Sphere"));
 		//auto orbit = CreateEntity();
 		//orbit.GetComponent<TransformComponent>().Scale = { 2,1, 1 };
 		//orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(1.f));

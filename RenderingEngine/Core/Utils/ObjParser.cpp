@@ -25,7 +25,9 @@ void ObjParser::ParseFile(const std::string& file_name, std::vector<glm::vec3>& 
 	unsigned int index = 0;
 	glm::vec3 min{ std::numeric_limits<float>().max() };
 	glm::vec3 max{ std::numeric_limits<float>().lowest() };
-	
+
+
+	std::vector<unsigned int> indices;
 	while (std::getline(file, line))
 	{
 		stringstream.clear();
@@ -50,18 +52,33 @@ void ObjParser::ParseFile(const std::string& file_name, std::vector<glm::vec3>& 
 		}
 		else if (token == "f")
 		{
-			for (int i = 0; i < 3; ++i)
+			indices.clear();
+			while (stringstream >> index)
 			{
-				stringstream >> index;
-				//since index starts from 0
-				loaded_indices.push_back(index - 1);
+				indices.push_back(index - 1);
+			}
+			unsigned int size = indices.size();
+
+			int first = 0;
+			int prev = 1;
+			for (unsigned int i = 2; i < size; ++i)
+			{
+				loaded_indices.push_back(indices[first]);
+				loaded_indices.push_back(indices[prev]);
+				loaded_indices.push_back(indices[i]);
+				prev = i;
 			}
 		}
 	}
 
 	//map to [-1,1] and center to origin.
 	glm::vec3 center{ (max + min) / 2.f };
-	const glm::vec3 scale = glm::vec3{ 2.f / (max - min) };
+	glm::vec3 size = max - min;
+	size.x = size.x == 0.f ? 1.f : size.x;
+	size.y = size.y == 0.f ? 1.f : size.y;
+	size.z = size.z == 0.f ? 1.f : size.z;
+	const glm::vec3 scale = glm::vec3{ 2.f / size };
+
 	for (auto& vert : loaded_points)
 	{
 		vert = (vert - center) * scale;
