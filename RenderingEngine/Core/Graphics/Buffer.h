@@ -11,7 +11,6 @@ Project: junwoo.seo_cs300_1
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
-#include"Core/Data/Face.h"
 #include<vector>
 #include<glad.h>
 

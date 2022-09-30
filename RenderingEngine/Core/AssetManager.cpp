@@ -1,7 +1,18 @@
 #include "AssetManager.h"
-
 #include "Utils/MeshGenerator.h"
 #include "Utils/ObjParser.h"
+/* Start Header -------------------------------------------------------
+Copyright (C) 2022 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the prior written
+consent of DigiPen Institute of Technology is prohibited.
+File Name: AssetManager.cpp
+Purpose: AssetManager for the engine.
+Language: C++ MSVC(2022)
+Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
+Project: junwoo.seo_cs300_1
+Author: Junwoo Seo, junwoo.seo, 0055213
+Creation date: Sep 05 2022
+End Header --------------------------------------------------------*/
 #include "Core/Graphics/Shader.h"
 #include <fstream>
 #include <iostream>
@@ -12,6 +23,7 @@ std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormal
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
+	std::cout << "Load - " << file_name << std::endl;
 	std::vector<glm::vec3> loaded_points;
 	std::vector<unsigned int> loaded_indices;
 	ObjParser::ParseFile(file_name, loaded_points, loaded_indices);

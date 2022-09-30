@@ -17,6 +17,7 @@ End Header --------------------------------------------------------*/
 #include"Core/Utils/Math.h"
 #include"Core/Graphics/Shader.h"
 #include<memory>
+#include <glm/ext/scalar_constants.hpp>
 
 #include "Core/AssetManager.h"
 #include "Core/Component/RendererComponent.h"
@@ -48,6 +49,7 @@ private:
 	bool drawNormal = false;
 	int radio = static_cast<int>(select::DrawVertexNormal);
 	Entity demo_mesh;
+	Entity orbit;
 	std::string current_mesh = "bunny";
 	virtual void Awake()
 	{
@@ -58,7 +60,8 @@ private:
 		AssetManager::LoadMeshFromFile("Assets/sphere_modified.obj", "sphere_modified");
 		AssetManager::LoadMeshFromFile("Assets/triangle.obj", "triangle");
 		//generated sphere
-		AssetManager::GenerateSphere("Sphere", 0.1f);
+		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f,10,10);
+		AssetManager::GenerateSphere("GeneratedSphere", 0.5f);
 	}
 
 	virtual void OnEnable() {}
@@ -82,11 +85,24 @@ private:
 		demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
 		demo_mesh.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
 		
-
-		auto orbit = CreateEntity();
-		orbit.GetComponent<TransformComponent>().Scale = { 1,1, 1 };
-		orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(2.f));
-
+		float radius = 2.f;
+		orbit = CreateEntity();
+		auto& parent_transform = orbit.GetComponent<TransformComponent>();
+		orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(radius));
+		float d_theta = 2.f * glm::pi<float>() / static_cast<float>(8);
+		float theta = 0.f;
+		for (int step = 0; step < 8; ++step)
+		{
+			glm::vec3 position{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
+			auto GeneratedSphere = CreateEntity();
+			GeneratedSphere.GetComponent<TransformComponent>().Position = position;
+			GeneratedSphere.GetComponent<TransformComponent>().Parent = &parent_transform;
+			GeneratedSphere.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("GeneratedOrbitSphere"));
+			GeneratedSphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("GeneratedOrbitSphere"));
+			GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("GeneratedOrbitSphere"));
+			GeneratedSphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
+			theta += d_theta;
+		}
 	};
 	float ie = 0;
 	virtual void Update() 
@@ -106,12 +122,10 @@ private:
 		demo_mesh.GetComponent<VertexNormalLineRendererComponent>().mesh = AssetManager::GetVertexNormalLineMesh(current_mesh);
 		demo_mesh.GetComponent<VertexNormalMeshRendererComponent>().mesh = AssetManager::GetVertexNormalMesh(current_mesh);
 
+		demo_mesh.GetComponent<TransformComponent>().Rotation = { 0,ie += 0.01f,0 };
+		orbit.GetComponent<TransformComponent>().Rotation = { 0,ie += 0.01f,0 };
 
 		vertex_array->Bind();
-		
-		demo_mesh.GetComponent<TransformComponent>().Rotation = { 0,ie += 0.01f,0 };
-
-		
 
 		line_shader->Use();
 		line_shader->SetMat4("view", world_to_cam);
@@ -124,35 +138,35 @@ private:
 
 			vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
 
-			glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices()->size());
+			glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
 		}
 
 		if (drawNormal)
 		{
 			if (radio == static_cast<int>(select::DrawFaceNormal))
 			{
-				auto LineMeshes = GetRegistry().view<TransformComponent, FaceNormalLineRendererComponent>();
-				for (auto& entity : LineMeshes)
+				auto FaceNormalLineMeshes = GetRegistry().view<TransformComponent, FaceNormalLineRendererComponent>();
+				for (auto& entity : FaceNormalLineMeshes)
 				{
-					auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, FaceNormalLineRendererComponent>(entity);
+					auto [TransformComp, LineRendererComp] = FaceNormalLineMeshes.get<TransformComponent, FaceNormalLineRendererComponent>(entity);
 					line_shader->SetMat4("model", TransformComp.GetTransform());
 
 					vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
 
-					glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices()->size());
+					glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
 				}
 			}
 			else
 			{
-				auto LineMeshes = GetRegistry().view<TransformComponent, VertexNormalLineRendererComponent>();
-				for (auto& entity : LineMeshes)
+				auto VertexNormalLineMeshes = GetRegistry().view<TransformComponent, VertexNormalLineRendererComponent>();
+				for (auto& entity : VertexNormalLineMeshes)
 				{
-					auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, VertexNormalLineRendererComponent>(entity);
+					auto [TransformComp, LineRendererComp] = VertexNormalLineMeshes.get<TransformComponent, VertexNormalLineRendererComponent>(entity);
 					line_shader->SetMat4("model", TransformComp.GetTransform());
 
 					vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
 
-					glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, LineRendererComp.mesh->GetVertices()->size());
+					glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
 				}
 			}
 		}
@@ -174,11 +188,11 @@ private:
 				if (MeshRendererComp.mesh->GetUseIndex())
 				{
 					vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
-					glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), MeshRendererComp.mesh->GetIndices()->size(), GL_UNSIGNED_INT, nullptr);
+					glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), static_cast<GLsizei>(MeshRendererComp.mesh->GetIndices()->size()), GL_UNSIGNED_INT, nullptr);
 				}
 				else
 				{
-					glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, MeshRendererComp.mesh->GetVertices()->size());
+					glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(MeshRendererComp.mesh->GetVertices()->size()));
 				}
 
 			}
@@ -196,11 +210,11 @@ private:
 				if (MeshRendererComp.mesh->GetUseIndex())
 				{
 					vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
-					glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), MeshRendererComp.mesh->GetIndices()->size(), GL_UNSIGNED_INT, nullptr);
+					glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), static_cast<GLsizei>(MeshRendererComp.mesh->GetIndices()->size()), GL_UNSIGNED_INT, nullptr);
 				}
 				else
 				{
-					glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, MeshRendererComp.mesh->GetVertices()->size());
+					glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(MeshRendererComp.mesh->GetVertices()->size()));
 				}
 
 			}
@@ -212,7 +226,7 @@ private:
 		ImGui::Begin("Control");
 		const char* items[] = 
 		{
-			"4Sphere", "bunny", "cube", "sphere", "sphere_modified", "triangle"
+			"4Sphere", "bunny", "cube", "sphere", "sphere_modified", "triangle","GeneratedSphere"
 		};
 		ImGui::Text("Mesh");
 		if(ImGui::BeginCombo("##combo",current_mesh.c_str()))
@@ -227,7 +241,7 @@ private:
 			}
 			ImGui::EndCombo();
 		}
-		ImGui::Checkbox("CullBackFace", &cullBackFace);
+		ImGui::Checkbox("CullBackFace", &cullBackFace); ImGui::SameLine();
 		ImGui::Checkbox("DrawNormal", &drawNormal);
 		ImGui::RadioButton("DrawVertexNormal", &radio, static_cast<int>(select::DrawVertexNormal)); ImGui::SameLine();
 		ImGui::RadioButton("DrawFaceNormal", &radio, static_cast<int>(select::DrawFaceNormal));

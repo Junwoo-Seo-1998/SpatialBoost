@@ -47,7 +47,7 @@ project "GLFW"
     filter "system:windows"
         systemversion "latest"
         staticruntime "On"
-        
+        disablewarnings { "4819", "4002", "4005" }
         
         files
         {

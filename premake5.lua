@@ -41,6 +41,9 @@ project "RenderingEngine"
         "opengl32.lib",
         "ImGui"
     }
+
+    disablewarnings { "4819", "4002", "4005","6031", "4267", "26498" }
+    linkoptions { "-IGNORE:4075","-IGNORE:4098"}
     includedirs
     {
         "RenderingEngine",
@@ -56,6 +59,7 @@ project "RenderingEngine"
     }
     defines{
         "GLFW_INCLUDE_NONE",
+        "_CRT_SECURE_NO_WARNINGS"
     }
 
     postbuildcommands {

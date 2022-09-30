@@ -43,5 +43,3 @@ protected:
 	std::shared_ptr<SceneManager> m_SceneManager;
 	std::shared_ptr<ImGuiRenderer> m_ImGuiRenderer;
 };
-
-static std::shared_ptr<Application> GetCurrentApplication();

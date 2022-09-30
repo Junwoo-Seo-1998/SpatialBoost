@@ -1,8 +1,18 @@
+/* Start Header -------------------------------------------------------
+Copyright (C) 2022 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the prior written
+consent of DigiPen Institute of Technology is prohibited.
+File Name: MeshGenerator.cpp
+Purpose: helper class for generating meshes.
+Language: C++ MSVC(2022)
+Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
+Project: junwoo.seo_cs300_1
+Author: Junwoo Seo, junwoo.seo, 0055213
+Creation date: Sep 05 2022
+End Header --------------------------------------------------------*/
 #include "MeshGenerator.h"
-
 #include <unordered_map>
 #include <glm/ext/scalar_constants.hpp>
-
 #include "Math.h"
 
 std::tuple<MeshGenerator::PointsPtr, MeshGenerator::IndicesPtr>
@@ -11,7 +21,7 @@ MeshGenerator::GenerateSpherePointsWithIndices(float radius, int segments, int r
 	//clamp
 	segments = std::max(segments, 3);
 	rings = std::max(rings, 3);
-	const float pi = glm::pi<float>();
+	constexpr float pi = glm::pi<float>();
 	PointsPtr points = std::make_shared<std::vector<glm::vec3>>();
 	float theta_step = pi / static_cast<float>(rings);
 	float p_step = 2.f * pi / static_cast<float>(segments);
@@ -55,7 +65,7 @@ MeshGenerator::GenerateSpherePointsWithIndices(float radius, int segments, int r
 	
 	//top
 	points->push_back({ 0,radius,0 });
-	int	top_index = points->size() - 1;
+	int	top_index = static_cast<int>(points->size() - 1);
 	for (int segment = 0; segment < segments; ++segment)
 	{
 		//triangle 1
@@ -68,7 +78,7 @@ MeshGenerator::GenerateSpherePointsWithIndices(float radius, int segments, int r
 	//bottom
 	int last_circle = sides * segments;
 	points->push_back({ 0,-radius,0 });
-	int	bottom_index = points->size() - 1;
+	int	bottom_index = static_cast<int>(points->size() - 1);
 	for (int segment = 0; segment < segments; ++segment)
 	{
 		//triangle
@@ -90,7 +100,7 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateOrbit(float radius, int numDivi
 	std::shared_ptr<LineMesh> mesh = std::make_shared<LineMesh>();
 	mesh->SetUseIndex(false);
 
-	const float pi = glm::pi<float>();
+	constexpr float pi = glm::pi<float>();
 	float d_theta = 2.f * pi / static_cast<float>(numDivisions);
 	float theta = 0.f;
 	std::shared_ptr<std::vector<glm::vec3>> new_vertex = std::make_shared<std::vector<glm::vec3>>();
@@ -108,7 +118,7 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateOrbit(float radius, int numDivi
 
 	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(glm::vec3));
+	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)));
 
 	vertex_buffer->DescribeData({ {0,Float3} });
 	mesh->AttachBuffer(vertex_buffer);
@@ -124,9 +134,9 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalMesh(const std::vector<gl
 	std::shared_ptr<Mesh> mesh=std::make_shared<Mesh>();
 	mesh->SetUseIndex(false);
 	
- 	const unsigned int faces = loaded_index.size() / 3;
+ 	const unsigned int faces = static_cast<unsigned int>(loaded_index.size() / 3);
 	std::shared_ptr<std::vector<Vertex>> new_vertex = std::make_shared<std::vector<Vertex>>();
-	for (int i=0; i<faces; ++i)
+	for (unsigned int i=0; i<faces; ++i)
 	{
 		const unsigned int offset = i * 3;
 		new_vertex->push_back({ loaded_points[loaded_index[offset]],face_normals[i] });
@@ -134,7 +144,7 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalMesh(const std::vector<gl
 		new_vertex->push_back({ loaded_points[loaded_index[offset + 2]],face_normals[i] });
 	}
 	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(Vertex));
-	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(Vertex)));
 	vertex_buffer->DescribeData({ {0,Float3},{1,Float3} });
 
 	mesh->AttachBuffer(vertex_buffer);
@@ -149,8 +159,8 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateFaceNormalLineMesh(const std::v
 {
 	std::shared_ptr<LineMesh> mesh = std::make_shared<LineMesh>();
 	std::shared_ptr<std::vector<glm::vec3>> new_vertex = std::make_shared<std::vector<glm::vec3>>();
-	const unsigned int faces = loaded_index.size() / 3;
-	for (int i = 0; i < faces; ++i)
+	const unsigned int faces = static_cast<unsigned int>(loaded_index.size() / 3);
+	for (unsigned int i = 0; i < faces; ++i)
 	{
 		const unsigned int offset = i * 3;
 		const glm::vec3& v0 = loaded_points[loaded_index[offset]];
@@ -162,7 +172,7 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateFaceNormalLineMesh(const std::v
 	}
 	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(glm::vec3));
+	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)));
 
 	vertex_buffer->DescribeData({ {0,Float3} });
 	mesh->AttachBuffer(vertex_buffer);
@@ -177,17 +187,17 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateVertexNormalMesh(const std::vector<
 {
 	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
 	mesh->SetUseIndex(true);
-	const unsigned int vertices = loaded_points.size();
+	const unsigned int vertices = static_cast<unsigned int>(loaded_points.size());
 	std::shared_ptr<std::vector<Vertex>> new_vertex = std::make_shared<std::vector<Vertex>>();
 	new_vertex->reserve(vertices);
-	for (int i = 0; i < vertices; ++i)
+	for (unsigned int i = 0; i < vertices; ++i)
 	{
 		new_vertex->push_back({ loaded_points[i], vertex_normals[i] });
 	}
 
 
 	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(Vertex));
-	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(Vertex)));
 	vertex_buffer->DescribeData({ {0,Float3},{1,Float3} });
 
 	std::shared_ptr<ElementBuffer> index_buffer = std::make_shared<ElementBuffer>(loaded_index);
@@ -214,7 +224,7 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateVertexNormalLineMesh(const std:
 	}
 	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex->data(), new_vertex->size() * sizeof(glm::vec3));
+	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)));
 
 	vertex_buffer->DescribeData({ {0,Float3} });
 	mesh->AttachBuffer(vertex_buffer);

@@ -128,7 +128,7 @@ void VertexBuffer::CreateBuffer(const void* data, unsigned size)
 
 ElementBuffer::ElementBuffer(const std::vector<unsigned int>& indices)
 {
-	CreateBuffer(indices.data(), indices.size() * sizeof(unsigned int));
+	CreateBuffer(indices.data(), static_cast<unsigned>(indices.size() * sizeof(unsigned int)));
 }
 
 ElementBuffer::~ElementBuffer()

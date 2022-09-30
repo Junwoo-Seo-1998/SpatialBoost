@@ -15,7 +15,7 @@ End Header --------------------------------------------------------*/
 #include<memory>
 #include<iostream>
 extern std::shared_ptr<Application> CoreMain();
-int main(int /*argc*/, char** /*argv*/) 
+int main(int /*argc*/, char** /*argv*/)
 {
 	std::shared_ptr<Application> application = CoreMain();
 	if (!application->Init())

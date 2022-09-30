@@ -13,6 +13,9 @@
     <Filter Include="Core\Event">
       <UniqueIdentifier>{FF1F37CD-EBD7-781A-54DF-517640B6130B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Event\ApplicationEvents">
+      <UniqueIdentifier>{37008333-23BB-72DF-CC72-EB29B80CBD6F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Event\InputEvents">
       <UniqueIdentifier>{330EA025-1F08-C977-0875-5F88F40D2FE4}</UniqueIdentifier>
     </Filter>
@@ -51,9 +54,6 @@
     <ClInclude Include="Core\Component\TransformComponent.h">
       <Filter>Core\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Data\Face.h">
-      <Filter>Core\Data</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Data\Mesh.h">
       <Filter>Core\Data</Filter>
     </ClInclude>
@@ -62,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="Core\EntryPoint.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Event\ApplicationEvents\ApplicationEvents.h">
+      <Filter>Core\Event\ApplicationEvents</Filter>
     </ClInclude>
     <ClInclude Include="Core\Event\Event.h">
       <Filter>Core\Event</Filter>
@@ -80,9 +83,6 @@
     </ClInclude>
     <ClInclude Include="Core\ImGui\ImGuiRenderer.h">
       <Filter>Core\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Layer\DefaultLayer.h">
-      <Filter>Core\Layer</Filter>
     </ClInclude>
     <ClInclude Include="Core\Layer\Layer.h">
       <Filter>Core\Layer</Filter>
@@ -120,7 +120,6 @@
     <ClInclude Include="Core\Window\Window.h">
       <Filter>Core\Window</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Event\ApplicationEvents\ApplicationEvents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -137,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="Core\Data\Mesh.cpp">
       <Filter>Core\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Event\ApplicationEvents\ApplicationEvents.cpp">
+      <Filter>Core\Event\ApplicationEvents</Filter>
     </ClCompile>
     <ClCompile Include="Core\Event\Event.cpp">
       <Filter>Core\Event</Filter>
@@ -158,9 +160,6 @@
     </ClCompile>
     <ClCompile Include="Core\ImGui\ImGuiRenderer.cpp">
       <Filter>Core\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Layer\DefaultLayer.cpp">
-      <Filter>Core\Layer</Filter>
     </ClCompile>
     <ClCompile Include="Core\Layer\LayerManager.cpp">
       <Filter>Core\Layer</Filter>
@@ -190,6 +189,5 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Event\ApplicationEvents\ApplicationEvents.cpp" />
   </ItemGroup>
 </Project>

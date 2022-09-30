@@ -11,20 +11,10 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Application.h"
-
-#include <iostream>
-
 #include "glad.h"
 #include "Core/Scene/SceneManager.h"
-#include "Core/Layer/Layer.h"
 #include "Event/ApplicationEvents/ApplicationEvents.h"
 #include "ImGui/ImGuiRenderer.h"
-#include "Layer/LayerManager.h"
-
-namespace inner
-{
-	static std::shared_ptr<Application>app=nullptr;
-}
 
 
 Application::Application()
@@ -52,9 +42,6 @@ bool Application::OnWindowResize(WindowResizeEvent& event)
 	{
 		return false;
 	}
-
-	std::cout << event.GetEventNameString() << std::endl;
-
 	glViewport(0, 0, width, height);
 	return false;
 }
@@ -69,8 +56,6 @@ bool Application::Init()
 
 void Application::Update()
 {
-	//TODO: remove this after testing.
-
 	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
 	m_SceneManager->GetCurrentScene()->Awake();
 	m_SceneManager->GetCurrentScene()->Start();
@@ -100,8 +85,3 @@ void Application::SetCurrentScene(std::shared_ptr<Scene> scene)
 	m_SceneManager->SetCurrentScene(scene);
 }
 
-
-std::shared_ptr<Application> GetCurrentApplication()
-{
-	return inner::app;
-}

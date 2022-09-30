@@ -1,16 +1,25 @@
+/* Start Header -------------------------------------------------------
+Copyright (C) 2022 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the prior written
+consent of DigiPen Institute of Technology is prohibited.
+File Name: Math.cpp
+Purpose: for maths.
+Language: C++ MSVC(2022)
+Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
+Project: junwoo.seo_cs300_1
+Author: Junwoo Seo, junwoo.seo, 0055213
+Creation date: Sep 05 2022
+End Header --------------------------------------------------------*/
 #include "Math.h"
-#ifdef DEBUG
-#include<iostream>
 #include<glm/gtc/matrix_transform.hpp>
-#else
-#include<iostream>
-#include<glm/gtc/matrix_transform.hpp>
-#endif 
-// DEBUG
+
+
+
 glm::mat4 Math::BuildCameraMatrix(glm::vec3 cam_position, glm::vec3 target, glm::vec3 world_up)
 {
+	//just studying purpose.. it uses my own matrix instead glm matrix on debug
 #ifdef DEBUG
-	//just studying purpose..
+	
 	glm::vec3 cam_foward = -glm::normalize(target-cam_position);
 	glm::vec3 cam_right = glm::normalize(glm::cross(-cam_foward, world_up));
 	glm::vec3 cam_up = glm::normalize(glm::cross(cam_right, -cam_foward));
@@ -34,22 +43,6 @@ glm::mat4 Math::BuildCameraMatrix(glm::vec3 cam_position, glm::vec3 target, glm:
 	auto toret=inverse_scale_rotation* inverse_transform;
 	auto glm = glm::lookAt(cam_position, target, world_up);
 
-	for (int row = 0; row < 4; row++)
-	{
-		for (int col = 0; col < 4; col++)
-		{
-			std::cout << toret[col][row] << ", ";
-		}
-		std::cout << std::endl;
-	}
-	for (int row = 0; row < 4; row++)
-	{
-		for (int col = 0; col < 4; col++)
-		{
-			std::cout << glm[col][row] << ", ";
-		}
-		std::cout << std::endl;
-	}
 	return toret;
 #else
 	return glm::lookAt(cam_position, target, world_up);
@@ -84,7 +77,8 @@ glm::mat4 Math::BuildPerspectiveProjectionMatrixFovx(float fov_x, float aspect_r
 
 glm::mat4 Math::BuildPerspectiveProjectionMatrixFovy(float fov_y, float aspect_ratio, float near, float far)
 {
-#ifdef DEBUG
+	//just studying purpose.. it uses my own matrix instead glm matrix on debug
+#ifdef DEBUG 
 	float cot = 1.f / glm::tan(fov_y / 2.f);
 	glm::mat4 perspective =
 	{
@@ -94,24 +88,6 @@ glm::mat4 Math::BuildPerspectiveProjectionMatrixFovy(float fov_y, float aspect_r
 		{0,0,2 * far * near / (near - far),0},
 	};
 
-	std::cout << "perspective:" << std::endl;
-	for (int row = 0; row < 4; row++)
-	{
-		for (int col = 0; col < 4; col++)
-		{
-			std::cout << perspective[col][row] << ", ";
-		}
-		std::cout << std::endl;
-	}
-	glm::mat4 glm = glm::perspective(fov_y, aspect_ratio, near, far);
-	for (int row = 0; row < 4; row++)
-	{
-		for (int col = 0; col < 4; col++)
-		{
-			std::cout << glm[col][row] << ", ";
-		}
-		std::cout << std::endl;
-	}
 	return perspective;
 #else
 	return glm::perspective(fov_y, aspect_ratio, near, far);
