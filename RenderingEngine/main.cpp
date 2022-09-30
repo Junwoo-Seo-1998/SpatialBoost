@@ -13,10 +13,8 @@ End Header --------------------------------------------------------*/
 #include"Core/Application.h"
 #include"Core/EntryPoint.h"
 #include"Core/Scene/Scene.h"
-#include"Core/Utils/ObjParser.h"
 #include"glad.h"
 #include"Core/Utils/Math.h"
-#include"Core/Data/Vertex.h"
 #include"Core/Graphics/Shader.h"
 #include<memory>
 
@@ -45,14 +43,25 @@ private:
 	std::shared_ptr<Shader> line_shader;
 	std::shared_ptr<VertexBuffer> buffer;
 	glm::mat4 perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
-
+	glm::mat4 world_to_cam = Math::BuildCameraMatrix({ 0,2,5 }, { 0,0,0 }, { 0,1,0 });
+	bool cullBackFace = true;
 	bool drawNormal = false;
 	int radio = static_cast<int>(select::DrawVertexNormal);
-	Entity bunny;
-	Entity sphere;
+	Entity demo_mesh;
+	std::string current_mesh = "bunny";
+	virtual void Awake()
+	{
+		AssetManager::LoadMeshFromFile("Assets/4Sphere.obj", "4Sphere");
+		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
+		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "cube");
+		AssetManager::LoadMeshFromFile("Assets/sphere.obj", "sphere");
+		AssetManager::LoadMeshFromFile("Assets/sphere_modified.obj", "sphere_modified");
+		AssetManager::LoadMeshFromFile("Assets/triangle.obj", "triangle");
+		//generated sphere
+		AssetManager::GenerateSphere("Sphere", 0.1f);
+	}
 
-	virtual void Awake() {};
-	virtual void OnEnable() {};
+	virtual void OnEnable() {}
 	virtual void Start() 
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -66,35 +75,43 @@ private:
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
 
-		AssetManager::LoadMeshFromFile("Assets/triangle.obj", "bunny");
-		bunny = CreateEntity();
-		bunny.GetComponent<TransformComponent>().Scale = { 2,2,2 };
-		bunny.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
-		bunny.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
-		bunny.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
-		bunny.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
-		//
-		AssetManager::GenerateSphere("Sphere", 0.1f);
-		sphere = CreateEntity();
-		//bunny = sphere;
-		//sphere.GetComponent<TransformComponent>().Scale = { 1,1,1 };
-		//sphere.GetComponent<TransformComponent>().Rotation = { 0,0,45 };
-		//sphere.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("Sphere"));
-		//sphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Sphere"));
-		//sphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("Sphere"));
-		//sphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("Sphere"));
-		//auto orbit = CreateEntity();
-		//orbit.GetComponent<TransformComponent>().Scale = { 2,1, 1 };
-		//orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(1.f));
+		demo_mesh = CreateEntity();
+		demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
+		demo_mesh.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
+		demo_mesh.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
+		demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
+		demo_mesh.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
+		
+
+		auto orbit = CreateEntity();
+		orbit.GetComponent<TransformComponent>().Scale = { 1,1, 1 };
+		orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(2.f));
 
 	};
 	float ie = 0;
 	virtual void Update() 
 	{
+		//for gui control
+		if(cullBackFace)
+		{
+			glEnable(GL_CULL_FACE);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
+		//for gui control
+		demo_mesh.GetComponent<FaceNormalLineRendererComponent>().mesh = AssetManager::GetFaceNormalLineMesh(current_mesh);
+		demo_mesh.GetComponent<FaceNormalMeshRendererComponent>().mesh = AssetManager::GetFaceNormalMesh(current_mesh);
+		demo_mesh.GetComponent<VertexNormalLineRendererComponent>().mesh = AssetManager::GetVertexNormalLineMesh(current_mesh);
+		demo_mesh.GetComponent<VertexNormalMeshRendererComponent>().mesh = AssetManager::GetVertexNormalMesh(current_mesh);
+
+
 		vertex_array->Bind();
-		auto world_to_cam = Math::BuildCameraMatrix({ 0,0,10 }, { 0,0,0 }, { 0,1,0 });
-		//bunny.GetComponent<TransformComponent>().Rotation = { 0,ie+=0.01f,0 };
-		//sphere.GetComponent<TransformComponent>().Rotation = { 0,ie += 0.01f,ie += 0.01f };
+		
+		demo_mesh.GetComponent<TransformComponent>().Rotation = { 0,ie += 0.01f,0 };
+
+		
 
 		line_shader->Use();
 		line_shader->SetMat4("view", world_to_cam);
@@ -193,6 +210,24 @@ private:
 	virtual void LateUpdate()
 	{
 		ImGui::Begin("Control");
+		const char* items[] = 
+		{
+			"4Sphere", "bunny", "cube", "sphere", "sphere_modified", "triangle"
+		};
+		ImGui::Text("Mesh");
+		if(ImGui::BeginCombo("##combo",current_mesh.c_str()))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+			{
+				bool is_selected = (current_mesh == items[n]);
+				if (ImGui::Selectable(items[n], is_selected))
+					current_mesh = items[n];
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::Checkbox("CullBackFace", &cullBackFace);
 		ImGui::Checkbox("DrawNormal", &drawNormal);
 		ImGui::RadioButton("DrawVertexNormal", &radio, static_cast<int>(select::DrawVertexNormal)); ImGui::SameLine();
 		ImGui::RadioButton("DrawFaceNormal", &radio, static_cast<int>(select::DrawFaceNormal));

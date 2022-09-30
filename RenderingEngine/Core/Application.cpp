@@ -72,6 +72,7 @@ void Application::Update()
 	//TODO: remove this after testing.
 
 	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
+	m_SceneManager->GetCurrentScene()->Awake();
 	m_SceneManager->GetCurrentScene()->Start();
 	while (!m_Window->ShouldClose())
 	{

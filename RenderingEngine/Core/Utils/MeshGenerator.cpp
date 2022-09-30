@@ -94,12 +94,12 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateOrbit(float radius, int numDivi
 	float d_theta = 2.f * pi / static_cast<float>(numDivisions);
 	float theta = 0.f;
 	std::shared_ptr<std::vector<glm::vec3>> new_vertex = std::make_shared<std::vector<glm::vec3>>();
-	glm::vec3 prev{ radius * glm::cos(theta), radius * glm::sin(theta), 0 };
+	glm::vec3 prev{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
 	theta += d_theta;
 	for (int step=1; step<numDivisions; ++step)
 	{
 		new_vertex->push_back(prev);
-		prev = glm::vec3{ radius * glm::cos(theta), radius * glm::sin(theta), 0 };
+		prev = glm::vec3{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
 		new_vertex->push_back(prev);
 		theta += d_theta;
 	}
