@@ -42,7 +42,7 @@ project "RenderingEngine"
         "ImGui"
     }
 
-    disablewarnings { "4819", "4002", "4005","6031", "4267", "26498" }
+    disablewarnings { "4819", "4002", "4005","6031", "4267", "26498", "26819", "28020", "26439" }
     linkoptions { "-IGNORE:4075","-IGNORE:4098"}
     includedirs
     {

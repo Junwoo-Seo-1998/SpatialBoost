@@ -28,7 +28,7 @@ class Shader
 {
 public:
 	Shader() :m_ShaderProgram(0) {};
-	Shader(const std::string& vertex_src, const std::string& shader_src);
+	Shader(const std::string& vertex_src, const std::string& fragment_src);
 	~Shader();
 	void Use() const;
 	void SetFloat3(const std::string& name, const glm::vec3& value) const;

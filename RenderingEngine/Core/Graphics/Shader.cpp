@@ -13,10 +13,10 @@ End Header --------------------------------------------------------*/
 #include"Shader.h"
 #include<iostream>
 #include "glm/gtc/type_ptr.hpp"
-Shader::Shader(const std::string& vertex_src, const std::string& shader_src)
+Shader::Shader(const std::string& vertex_src, const std::string& fragment_src)
 {
 	GLuint vert = CompileShader(vertex_src, ShaderFlag::VertexShader);
-	GLuint frag = CompileShader(shader_src, ShaderFlag::FragmentShader);
+	GLuint frag = CompileShader(fragment_src, ShaderFlag::FragmentShader);
 	
 	m_ShaderProgram = glCreateProgram();
 	glAttachShader(m_ShaderProgram, vert);

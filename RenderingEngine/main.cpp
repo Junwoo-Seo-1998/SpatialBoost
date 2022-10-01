@@ -18,7 +18,6 @@ End Header --------------------------------------------------------*/
 #include"Core/Graphics/Shader.h"
 #include<memory>
 #include <glm/ext/scalar_constants.hpp>
-
 #include "Core/AssetManager.h"
 #include "Core/Component/RendererComponent.h"
 #include "Core/Component/TransformComponent.h"
@@ -43,14 +42,22 @@ private:
 	std::shared_ptr<Shader> light_shader;
 	std::shared_ptr<Shader> line_shader;
 	std::shared_ptr<VertexBuffer> buffer;
-	glm::mat4 perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 100.f);
+	glm::mat4 perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 1000.f);
 	glm::mat4 world_to_cam = Math::BuildCameraMatrix({ 0,2,5 }, { 0,0,0 }, { 0,1,0 });
+	glm::vec3 light_pos = { 0,0,10 };
 	bool cullBackFace = true;
 	bool drawNormal = false;
 	int radio = static_cast<int>(select::DrawVertexNormal);
 	Entity demo_mesh;
 	Entity orbit;
 	std::string current_mesh = "bunny";
+	glm::vec4 color = { 0.5f,0.5f,0.5f,1.f };
+	glm::vec4 line_color = { 1.f,1.f, 0.f,1.f };
+	float m_LastTime = 0.f;
+	float m_center_speed = 1.f;
+	float m_orbit_speed = 0.5f;
+	
+	
 	virtual void Awake()
 	{
 		AssetManager::LoadMeshFromFile("Assets/4Sphere.obj", "4Sphere");
@@ -61,7 +68,7 @@ private:
 		AssetManager::LoadMeshFromFile("Assets/triangle.obj", "triangle");
 		//generated sphere
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f,10,10);
-		AssetManager::GenerateSphere("GeneratedSphere", 0.5f);
+		AssetManager::GenerateSphere("GeneratedSphere", 1.f);
 	}
 
 	virtual void OnEnable() {}
@@ -103,10 +110,13 @@ private:
 			GeneratedSphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
 			theta += d_theta;
 		}
-	};
-	float ie = 0;
+	}
 	virtual void Update() 
 	{
+		float time = (float)glfwGetTime();
+		float dt = time - m_LastTime;
+		m_LastTime = time;
+
 		//for gui control
 		if(cullBackFace)
 		{
@@ -122,14 +132,17 @@ private:
 		demo_mesh.GetComponent<VertexNormalLineRendererComponent>().mesh = AssetManager::GetVertexNormalLineMesh(current_mesh);
 		demo_mesh.GetComponent<VertexNormalMeshRendererComponent>().mesh = AssetManager::GetVertexNormalMesh(current_mesh);
 
-		demo_mesh.GetComponent<TransformComponent>().Rotation = { 0,ie += 0.01f,0 };
-		orbit.GetComponent<TransformComponent>().Rotation = { 0,ie += 0.01f,0 };
+		auto& demo_trans = demo_mesh.GetComponent<TransformComponent>();
+		demo_trans.Rotation.y += demo_trans.Rotation.y >= 360.f ? -360.f + m_center_speed * dt : m_center_speed * dt;
+		auto& orbit_trans = orbit.GetComponent<TransformComponent>();
+		orbit_trans.Rotation.y += orbit_trans.Rotation.y >= 360.f ? -360.f + m_orbit_speed * dt : m_orbit_speed * dt;
 
 		vertex_array->Bind();
 
 		line_shader->Use();
 		line_shader->SetMat4("view", world_to_cam);
 		line_shader->SetMat4("projection", perspective);
+		line_shader->SetFloat4("BaseColor", line_color);
 		auto LineMeshes = GetRegistry().view<TransformComponent, LineRendererComponent>();
 		for (auto& entity : LineMeshes)
 		{
@@ -174,15 +187,18 @@ private:
 		light_shader->Use();
 		light_shader->SetMat4("view", world_to_cam);
 		light_shader->SetMat4("projection", perspective);
-		light_shader->SetFloat3("LightPos", { 0,0,10 });
+		light_shader->SetFloat3("LightPos", light_pos);
+		light_shader->SetFloat4("BaseColor", color);
 		if (radio == static_cast<int>(select::DrawFaceNormal))
 		{
 			auto Meshes = GetRegistry().view<TransformComponent, FaceNormalMeshRendererComponent>();
 			for (auto& entity : Meshes)
 			{
 				auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, FaceNormalMeshRendererComponent>(entity);
-				light_shader->SetMat4("model", TransformComp.GetTransform());
-
+				glm::mat4 model = TransformComp.GetTransform();
+				light_shader->SetMat4("model", model);
+				glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
+				light_shader->SetMat4("normalMat", normal_matrix);
 				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
 
 				if (MeshRendererComp.mesh->GetUseIndex())
@@ -203,7 +219,10 @@ private:
 			for (auto& entity : Meshes)
 			{
 				auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, VertexNormalMeshRendererComponent>(entity);
-				light_shader->SetMat4("model", TransformComp.GetTransform());
+				glm::mat4 model = TransformComp.GetTransform();
+				light_shader->SetMat4("model", model);
+				glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
+				light_shader->SetMat4("normalMat", normal_matrix);
 
 				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
 
@@ -245,6 +264,9 @@ private:
 		ImGui::Checkbox("DrawNormal", &drawNormal);
 		ImGui::RadioButton("DrawVertexNormal", &radio, static_cast<int>(select::DrawVertexNormal)); ImGui::SameLine();
 		ImGui::RadioButton("DrawFaceNormal", &radio, static_cast<int>(select::DrawFaceNormal));
+
+		ImGui::ColorEdit4("Mesh Color", &color[0]);
+		ImGui::ColorEdit4("Line Color", &line_color[0]);
 		ImGui::End();
 	}
 	virtual void OnEvent(Event& event)
@@ -255,7 +277,7 @@ private:
 		{
 			auto [width, height] = event.GetWidthAndHeight();
 			float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
-			perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), AspectRatio, 0.1f, 100.f);
+			perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), AspectRatio, 0.1f, 1000.f);
 			return true;
 		});
 	}
