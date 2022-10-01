@@ -65,7 +65,6 @@ private:
 		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "cube");
 		AssetManager::LoadMeshFromFile("Assets/sphere.obj", "sphere");
 		AssetManager::LoadMeshFromFile("Assets/sphere_modified.obj", "sphere_modified");
-		AssetManager::LoadMeshFromFile("Assets/triangle.obj", "triangle");
 		//generated sphere
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f,10,10);
 		AssetManager::GenerateSphere("GeneratedSphere", 1.f);
@@ -245,7 +244,7 @@ private:
 		ImGui::Begin("Control");
 		const char* items[] = 
 		{
-			"4Sphere", "bunny", "cube", "sphere", "sphere_modified", "triangle","GeneratedSphere"
+			"4Sphere", "bunny", "cube", "sphere", "sphere_modified","GeneratedSphere"
 		};
 		ImGui::Text("Mesh");
 		if(ImGui::BeginCombo("##combo",current_mesh.c_str()))
