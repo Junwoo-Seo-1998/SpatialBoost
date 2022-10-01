@@ -1,3 +1,3 @@
-premake5.exe vs2022
+Vendor\premake5.exe vs2022
 
 PAUSE

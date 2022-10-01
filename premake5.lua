@@ -15,7 +15,7 @@ End Header --------------------------------------------------------
 workspace "RenderingEngine"
     platforms {"Win64"}
     configurations  { "Debug", "Release" }    
-
+    startproject "RenderingEngine"
 include "Libs/glfw"
 include "Libs/glad"
 include "Libs/imgui"
