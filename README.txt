@@ -14,6 +14,7 @@ triangle - Assets/triangle.obj
 GeneratedSphere - Procedurally created sphere.
 and there are options for culling back face and drawing normal lines.
 also, there are options for drawing with vertex normal and drawing with face normal.
+change color options that can change the color of mesh and lines.
 
 #Any assumption that you make on how to use the application that, if violated, might cause
 the application to fail.
