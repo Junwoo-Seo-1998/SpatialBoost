@@ -10,16 +10,12 @@ Project: junwoo.seo_cs300_1, junwoo.seo_cs300_2
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
-
-uniform LightData Light;
-
 in vec3 Normal;
 in vec3 FragPos;
 uniform vec4 BaseColor;
 out vec4 FragColor;
 
-
-
+uniform LightData Light;
 
 void main()
 {

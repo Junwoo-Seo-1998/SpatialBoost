@@ -19,9 +19,9 @@ class MeshGenerator
 	typedef std::shared_ptr<std::vector<glm::vec3>> PointsPtr;
 	typedef std::shared_ptr<std::vector<unsigned int>> IndicesPtr;
 public:
+	static std::tuple<PointsPtr, IndicesPtr> GeneratePlanePointsWithIndices(float size = 1.f);
 	static std::tuple<PointsPtr, IndicesPtr> GenerateSpherePointsWithIndices(float radius = 1.f, int segments = 30, int rings = 30);
 	static std::shared_ptr<LineMesh> GenerateOrbit(float radius = 1.f, int numDivisions = 30);
-
 
 	static std::shared_ptr<Mesh> GenerateFaceNormalMesh(const std::vector<glm::vec3>& loaded_points, const std::vector<unsigned int>& loaded_index,
 		const std::vector<glm::vec3>& face_normals);

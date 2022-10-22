@@ -15,6 +15,25 @@ End Header --------------------------------------------------------*/
 #include <glm/ext/scalar_constants.hpp>
 #include "Math.h"
 
+std::tuple<MeshGenerator::PointsPtr, MeshGenerator::IndicesPtr> MeshGenerator::
+GeneratePlanePointsWithIndices(float size)
+{
+	PointsPtr points = std::make_shared<std::vector<glm::vec3>>();
+	IndicesPtr indices = std::make_shared<std::vector<unsigned int>>();
+	points->push_back({ -size, -size,0 });
+	points->push_back({ size, -size,0 });
+	points->push_back({ size, size,0 });
+	points->push_back({ -size, size,0 });
+	indices->push_back(0);
+	indices->push_back(1);
+	indices->push_back(2);
+	indices->push_back(0);
+	indices->push_back(2);
+	indices->push_back(3);
+
+	return { points,indices };
+}
+
 std::tuple<MeshGenerator::PointsPtr, MeshGenerator::IndicesPtr>
 MeshGenerator::GenerateSpherePointsWithIndices(float radius, int segments, int rings)
 {

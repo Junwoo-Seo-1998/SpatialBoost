@@ -24,6 +24,7 @@ End Header --------------------------------------------------------*/
 #include"Core/Graphics/Buffer.h"
 #include"Core/Graphics/VertexArray.h"
 #include "imgui.h"
+#include "Core/Component/LightComponent.h"
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
 #include "Core/Utils/MeshGenerator.h"
 
@@ -65,7 +66,8 @@ private:
 		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "cube");
 		AssetManager::LoadMeshFromFile("Assets/sphere.obj", "sphere");
 		AssetManager::LoadMeshFromFile("Assets/sphere_modified.obj", "sphere_modified");
-		//generated sphere
+		//generated
+		AssetManager::GeneratePlane("Plane");
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f,10,10);
 		AssetManager::GenerateSphere("GeneratedSphere", 1.f);
 	}
@@ -90,7 +92,14 @@ private:
 		demo_mesh.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
 		demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
 		demo_mesh.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
-		
+
+
+		Entity plane = CreateEntity();
+		plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
+		plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
+		plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
+		plane.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Plane"));
+
 		float radius = 2.f;
 		orbit = CreateEntity();
 		auto& parent_transform = orbit.GetComponent<TransformComponent>();
@@ -107,6 +116,7 @@ private:
 			GeneratedSphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("GeneratedOrbitSphere"));
 			GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("GeneratedOrbitSphere"));
 			GeneratedSphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
+			GeneratedSphere.AddComponent<LightComponent>();
 			theta += d_theta;
 		}
 	}
@@ -184,21 +194,21 @@ private:
 		}
 
 		light_shader->Use();
-		light_shader->SetMat4("view", world_to_cam);
-		light_shader->SetMat4("projection", perspective);
+		light_shader->SetMat4("Matrix.View", world_to_cam);
+		light_shader->SetMat4("Matrix.Projection", perspective);
 		light_shader->SetFloat3("Light.PosOrDir", light_pos);
 		light_shader->SetFloat4("BaseColor", color);
 
+		//Vert normal 
 		{
 			auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>();
 			for (auto& entity : Meshes)
 			{
 				auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, VertexNormalMeshRendererComponent>(entity);
 				glm::mat4 model = TransformComp.GetTransform();
-				light_shader->SetMat4("model", model);
+				light_shader->SetMat4("Matrix.Model", model);
 				glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
-				light_shader->SetMat4("normalMat", normal_matrix);
-
+				light_shader->SetMat4("Matrix.Normal", normal_matrix);
 				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
 
 				if (MeshRendererComp.mesh->GetUseIndex())

@@ -11,8 +11,27 @@ Project: junwoo.seo_cs300_1, junwoo.seo_cs300_2
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
-
+#define MAX_LIGHTS 16
 struct LightData
 {
+    int LightType;
     vec3 PosOrDir;
 };
+
+struct MatrixData
+{
+    mat4 Model;
+    mat4 View;
+    mat4 Projection;
+    mat4 Normal;
+};
+
+struct MaterialData
+{
+    vec3 Emissive;
+};
+
+mat4 ComputeNormalMatrix(mat4 model)
+{
+    return transpose(inverse(model));
+}

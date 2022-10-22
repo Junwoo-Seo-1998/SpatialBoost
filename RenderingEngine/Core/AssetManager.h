@@ -27,7 +27,7 @@ public:
 	static std::shared_ptr<Mesh> GetFaceNormalMesh(const std::string& name);
 	static std::shared_ptr<LineMesh> GetFaceNormalLineMesh(const std::string& name);
 
-
+	static void GeneratePlane(const std::string& key_name, float size = 1.f);
 	static void GenerateSphere(const std::string& key_name, float radius = 1.f, int segments = 30, int rings = 30);
 
 	static std::shared_ptr<Shader> LoadShaderFromFile(const std::string& vert_file, const std::string& frag_file);
