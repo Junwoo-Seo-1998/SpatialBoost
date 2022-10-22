@@ -12,14 +12,20 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 
+struct LightData
+{
+    vec3 PosOrDir;
+};
+
+uniform LightData light;
+
 in vec3 Normal;
-uniform vec3 LightPos;
 in vec3 FragPos;
 uniform vec4 BaseColor;
 out vec4 FragColor;
 void main()
 {
-	vec3 LightDir=normalize(LightPos-FragPos);
+	vec3 LightDir=normalize(light.PosOrDir-FragPos);
 	float diff=max(dot(Normal,LightDir),0.f);
 	vec4 diffuse=diff*vec4(1.f, 1.f, 1.f, 1.f);
 			

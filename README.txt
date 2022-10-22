@@ -10,7 +10,6 @@ bunny - Assets/bunny_high_poly.obj
 cube - Assets/cube2.obj
 sphere - Assets/sphere.obj
 sphere_modified - Assets/sphere_modified.obj
-triangle - Assets/triangle.obj
 GeneratedSphere - Procedurally created sphere.
 and there are options for culling back face and drawing normal lines.
 also, there are options for drawing with vertex normal and drawing with face normal.

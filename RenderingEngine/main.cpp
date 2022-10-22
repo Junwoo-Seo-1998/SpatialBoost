@@ -186,33 +186,9 @@ private:
 		light_shader->Use();
 		light_shader->SetMat4("view", world_to_cam);
 		light_shader->SetMat4("projection", perspective);
-		light_shader->SetFloat3("LightPos", light_pos);
+		light_shader->SetFloat3("light.PosOrDir", light_pos);
 		light_shader->SetFloat4("BaseColor", color);
-		if (radio == static_cast<int>(select::DrawFaceNormal))
-		{
-			auto Meshes = GetRegistry().view<TransformComponent, FaceNormalMeshRendererComponent>();
-			for (auto& entity : Meshes)
-			{
-				auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, FaceNormalMeshRendererComponent>(entity);
-				glm::mat4 model = TransformComp.GetTransform();
-				light_shader->SetMat4("model", model);
-				glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
-				light_shader->SetMat4("normalMat", normal_matrix);
-				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
 
-				if (MeshRendererComp.mesh->GetUseIndex())
-				{
-					vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
-					glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), static_cast<GLsizei>(MeshRendererComp.mesh->GetIndices()->size()), GL_UNSIGNED_INT, nullptr);
-				}
-				else
-				{
-					glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(MeshRendererComp.mesh->GetVertices()->size()));
-				}
-
-			}
-		}
-		else
 		{
 			auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>();
 			for (auto& entity : Meshes)
@@ -261,8 +237,8 @@ private:
 		}
 		ImGui::Checkbox("CullBackFace", &cullBackFace); ImGui::SameLine();
 		ImGui::Checkbox("DrawNormal", &drawNormal);
-		ImGui::RadioButton("DrawVertexNormal", &radio, static_cast<int>(select::DrawVertexNormal)); ImGui::SameLine();
-		ImGui::RadioButton("DrawFaceNormal", &radio, static_cast<int>(select::DrawFaceNormal));
+		ImGui::RadioButton("VertexNormals", &radio, static_cast<int>(select::DrawVertexNormal)); ImGui::SameLine();
+		ImGui::RadioButton("FaceNormals", &radio, static_cast<int>(select::DrawFaceNormal));
 
 		ImGui::ColorEdit4("Mesh Color", &color[0]);
 		ImGui::ColorEdit4("Line Color", &line_color[0]);
