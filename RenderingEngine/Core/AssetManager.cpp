@@ -1,6 +1,3 @@
-#include "AssetManager.h"
-#include "Utils/MeshGenerator.h"
-#include "Utils/ObjParser.h"
 /* Start Header -------------------------------------------------------
 Copyright (C) 2022 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the prior written
@@ -13,10 +10,13 @@ Project: junwoo.seo_cs300_1
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
+#include "AssetManager.h"
+#include "Utils/MeshGenerator.h"
+#include "Utils/ObjParser.h"
 #include "Core/Graphics/Shader.h"
-#include <fstream>
 #include <iostream>
-#include <sstream>
+#include "Utils/File.h"
+
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
@@ -75,12 +75,12 @@ void AssetManager::GenerateSphere(const std::string& key_name, float radius, int
 
 std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& vert_file, const std::string& frag_file)
 {
-	
-	std::ifstream vert_src_file(vert_file);
-	std::ifstream frag_src_file(frag_file);
-	std::stringstream ss_vert, ss_frag;
-	ss_vert << vert_src_file.rdbuf();
-	ss_frag << frag_src_file.rdbuf();
-
-	return std::make_shared<Shader>(ss_vert.str(), ss_frag.str());
+	return std::make_shared<Shader>(File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
 }
+
+std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& common_file, const std::string& vert_file,
+	const std::string& frag_file)
+{
+	return std::make_shared<Shader>(File::ReadFileToString(common_file), File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+}
+

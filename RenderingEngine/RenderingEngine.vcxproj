@@ -123,6 +123,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Scene\Entity.h" />
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
+    <ClInclude Include="Core\Utils\File.h" />
     <ClInclude Include="Core\Utils\KeyCodes.h" />
     <ClInclude Include="Core\Utils\Math.h" />
     <ClInclude Include="Core\Utils\MeshGenerator.h" />
@@ -149,6 +150,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Scene\Entity.cpp" />
     <ClCompile Include="Core\Scene\Scene.cpp" />
     <ClCompile Include="Core\Scene\SceneManager.cpp" />
+    <ClCompile Include="Core\Utils\File.cpp" />
     <ClCompile Include="Core\Utils\Math.cpp" />
     <ClCompile Include="Core\Utils\MeshGenerator.cpp" />
     <ClCompile Include="Core\Utils\ObjParser.cpp" />

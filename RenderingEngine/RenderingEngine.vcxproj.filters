@@ -122,6 +122,7 @@
     </ClInclude>
     <ClInclude Include="Core\Data\Light.h" />
     <ClInclude Include="Core\Component\LightComponent.h" />
+    <ClInclude Include="Core\Utils\File.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -191,5 +192,6 @@
       <Filter>Core\Window</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Utils\File.cpp" />
   </ItemGroup>
 </Project>

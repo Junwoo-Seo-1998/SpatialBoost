@@ -37,6 +37,31 @@ Shader::Shader(const std::string& vertex_src, const std::string& fragment_src)
 	glDeleteShader(frag);
 }
 
+Shader::Shader(const std::string& common, const std::string& vertex_src,
+	const std::string& fragment_src)
+{
+	GLuint vert = CompileShader(common, vertex_src, ShaderFlag::VertexShader);
+	GLuint frag = CompileShader(common, fragment_src, ShaderFlag::FragmentShader);
+
+	m_ShaderProgram = glCreateProgram();
+	glAttachShader(m_ShaderProgram, vert);
+	glAttachShader(m_ShaderProgram, frag);
+	glLinkProgram(m_ShaderProgram);
+
+	int  success;
+	char infoLog[512];
+	glGetProgramiv(m_ShaderProgram, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(m_ShaderProgram, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
+		assert(true, "ERROR::SHADER::PROGRAM::LINK_FAILED\n");
+	}
+
+
+	glDeleteShader(vert);
+	glDeleteShader(frag);
+}
+
 Shader::~Shader()
 {
 	glUseProgram(0);
@@ -114,3 +139,34 @@ GLuint Shader::CompileShader(const std::string& src, ShaderFlag flags)
 	return shader;
 }
 
+GLuint Shader::CompileShader(const std::string& common, const std::string& src, ShaderFlag flags)
+{
+	GLenum type = GL_NONE;
+	switch (flags)
+	{
+	case ShaderFlag::VertexShader:
+		type = GL_VERTEX_SHADER;
+		break;
+	case ShaderFlag::FragmentShader:
+		type = GL_FRAGMENT_SHADER;
+		break;
+	}
+
+	GLuint shader = glCreateShader(type);
+	const char* src_array[] = { common.c_str(), src.c_str() };
+	int lengths[] = { static_cast<int>(common.size()),  static_cast<int>(src.size()) };
+	glShaderSource(shader, 2, src_array, lengths);
+	glCompileShader(shader);
+
+	int  success;
+	char infoLog[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+	if (!success)
+	{
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		assert(true, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n");
+	}
+	return shader;
+}

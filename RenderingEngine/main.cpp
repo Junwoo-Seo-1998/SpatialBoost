@@ -79,7 +79,7 @@ private:
 
 		line_shader = AssetManager::LoadShaderFromFile("Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
 
-		light_shader = AssetManager::LoadShaderFromFile("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+		light_shader = AssetManager::LoadShaderFromFile("Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
 
 		vertex_array = std::make_shared<VertexArray>();
 		vertex_array->Bind();
@@ -186,7 +186,7 @@ private:
 		light_shader->Use();
 		light_shader->SetMat4("view", world_to_cam);
 		light_shader->SetMat4("projection", perspective);
-		light_shader->SetFloat3("light.PosOrDir", light_pos);
+		light_shader->SetFloat3("Light.PosOrDir", light_pos);
 		light_shader->SetFloat4("BaseColor", color);
 
 		{
