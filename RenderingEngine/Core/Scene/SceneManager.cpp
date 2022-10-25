@@ -14,7 +14,15 @@ End Header --------------------------------------------------------*/
 
 void SceneManager::SetCurrentScene(std::shared_ptr<Scene> scene)
 {
+	if(m_Current.get()!=nullptr)
+	{
+		m_Current->OnDisable();
+		m_Current->OnDestroy();
+	}
 	m_Current = scene;
+	m_Current->Awake();
+	m_Current->OnEnable();
+	m_Current->Start();
 }
 
 std::shared_ptr<Scene> SceneManager::GetCurrentScene()

@@ -15,7 +15,8 @@ End Header --------------------------------------------------------*/
 #include "Core/Data/Mesh.h"
 #include <memory>
 #include <unordered_map>
-
+class Application;
+class Scene;
 class Shader;
 
 class AssetManager
@@ -32,9 +33,17 @@ public:
 
 	static std::shared_ptr<Shader> LoadShaderFromFile(const std::string& vert_file, const std::string& frag_file);
 	static std::shared_ptr<Shader> LoadShaderFromFile(const std::string& common_file, const std::string& vert_file, const std::string& frag_file);
+
+	static void RegisterScene(const std::string& scene_name, std::shared_ptr<Scene> scene);
+	static std::shared_ptr<Scene> GetScene(const std::string& scene_name);
 private:
 	static std::unordered_map<std::string, std::shared_ptr<Mesh>>m_VertexNormalMesh;
 	static std::unordered_map<std::string, std::shared_ptr<LineMesh>>m_VertexNormalLineMesh;
 	static std::unordered_map<std::string, std::shared_ptr<Mesh>>m_FaceNormalMesh;
 	static std::unordered_map<std::string, std::shared_ptr<LineMesh>>m_FaceNormalLineMesh;
+
+
+	static std::unordered_map<std::string, std::shared_ptr<Scene>>m_Scenes;
 };
+
+

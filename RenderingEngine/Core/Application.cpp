@@ -57,8 +57,6 @@ bool Application::Init()
 void Application::Update()
 {
 	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
-	m_SceneManager->GetCurrentScene()->Awake();
-	m_SceneManager->GetCurrentScene()->Start();
 	while (!m_Window->ShouldClose())
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

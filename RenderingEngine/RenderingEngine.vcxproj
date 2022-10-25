@@ -105,9 +105,11 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Core\AssetManager.h" />
     <ClInclude Include="Core\Component\LightComponent.h" />
+    <ClInclude Include="Core\Component\MaterialComponent.h" />
     <ClInclude Include="Core\Component\RendererComponent.h" />
     <ClInclude Include="Core\Component\TransformComponent.h" />
     <ClInclude Include="Core\Data\Light.h" />
+    <ClInclude Include="Core\Data\Material.h" />
     <ClInclude Include="Core\Data\Mesh.h" />
     <ClInclude Include="Core\Data\Vertex.h" />
     <ClInclude Include="Core\EntryPoint.h" />
@@ -131,6 +133,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Utils\ObjParser.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
+    <ClInclude Include="Scene\Scenario_1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp" />
@@ -157,6 +160,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\Scenario_1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libs\glfw\GLFW.vcxproj">

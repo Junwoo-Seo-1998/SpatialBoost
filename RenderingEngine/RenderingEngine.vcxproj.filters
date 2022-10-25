@@ -123,6 +123,9 @@
     <ClInclude Include="Core\Data\Light.h" />
     <ClInclude Include="Core\Component\LightComponent.h" />
     <ClInclude Include="Core\Utils\File.h" />
+    <ClInclude Include="Core\Data\Material.h" />
+    <ClInclude Include="Core\Component\MaterialComponent.h" />
+    <ClInclude Include="Scene\Scenario_1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -193,5 +196,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Utils\File.cpp" />
+    <ClCompile Include="Scene\Scenario_1.cpp" />
   </ItemGroup>
 </Project>

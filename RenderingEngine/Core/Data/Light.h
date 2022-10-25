@@ -22,4 +22,12 @@ struct Light
 		float inner;
 		float outer;
 	} m_Angle;
+
+	float constant;
+	float linear;
+	float quadratic;
+
+	glm::vec3 Ambient;
+	glm::vec3 Diffuse;
+	glm::vec3 Specular;
 };

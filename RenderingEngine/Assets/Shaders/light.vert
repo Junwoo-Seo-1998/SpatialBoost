@@ -16,6 +16,10 @@ layout (location = 1) in vec3 aNormal;
 uniform MatrixData Matrix;
 out vec3 Normal;
 out vec3 FragPos;
+out VS_OUT{ 
+    vec3 outColor; 
+} vs_out; 
+
 void main()
 {
 	Normal=mat3(Matrix.Normal) * aNormal;

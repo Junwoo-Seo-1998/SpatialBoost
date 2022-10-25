@@ -21,6 +21,8 @@ std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNorm
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
+
+std::unordered_map<std::string, std::shared_ptr<Scene>>AssetManager::m_Scenes;
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
 	std::cout << "Load - " << file_name << std::endl;
@@ -96,5 +98,15 @@ std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& comm
 	const std::string& frag_file)
 {
 	return std::make_shared<Shader>(File::ReadFileToString(common_file), File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+}
+
+void AssetManager::RegisterScene(const std::string& scene_name, std::shared_ptr<Scene> scene)
+{
+	m_Scenes[scene_name] = scene;
+}
+
+std::shared_ptr<Scene> AssetManager::GetScene(const std::string& scene_name)
+{
+	return m_Scenes[scene_name];
 }
 

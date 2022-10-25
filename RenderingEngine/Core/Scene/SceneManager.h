@@ -21,5 +21,5 @@ public:
 
 
 private:
-	std::shared_ptr<Scene> m_Current;
+	std::shared_ptr<Scene> m_Current = nullptr;
 };

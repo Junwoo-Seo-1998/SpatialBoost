@@ -16,6 +16,9 @@ uniform vec4 BaseColor;
 out vec4 FragColor;
 
 uniform LightData Light;
+in VS_OUT{ 
+    vec3 outColor; 
+} fs_in; 
 
 void main()
 {

@@ -28,6 +28,9 @@ struct MatrixData
 
 struct MaterialData
 {
+    vec3 Ambient;
+    vec3 Diffuse;
+    vec3 Specular;
     vec3 Emissive;
 };
 
