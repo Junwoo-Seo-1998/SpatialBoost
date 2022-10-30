@@ -2,25 +2,22 @@
 Copyright (C) 2022 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the prior written
 consent of DigiPen Institute of Technology is prohibited.
-File Name: light.vert
+File Name: phong_shading.frag
 Purpose: shader source for the engine.
 Language: C++ MSVC(2022)
 Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
-Project: junwoo.seo_cs300_1
+Project: junwoo.seo_cs300_1, junwoo.seo_cs300_2
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
+in VS_OUT{ 
+	vec3 FragPos;
+	vec3 NormalVector;
+} fs_in; 
 
-
-out VS_OUT{ 
-    vec3 outColor; 
-} vs_out; 
-
-uniform MatrixData Matrix;
 uniform LightData Light[MAX_LIGHTS];
+uniform int LightNumbers;
 
 uniform AttenuationData Attenuation;
 
@@ -29,19 +26,17 @@ uniform MaterialData Material;
 
 uniform FogData Fog;
 
+out vec4 FragColor;
 void main()
 {
-	gl_Position = Matrix.Projection*Matrix.View*Matrix.Model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
-
-	//
-	vec3 WorldPos = vec3(Matrix.Model*vec4(aPos,1.0));
-	vec3 NormalVector=normalize(mat3(Matrix.Normal) * aNormal);
-	vec3 ViewVector=CameraPosition-WorldPos;
+    vec3 NormalVector=normalize(fs_in.NormalVector);
+    vec3 ViewVector=CameraPosition-fs_in.FragPos;
     float ViewDistance=length(ViewVector);
     ViewVector=ViewVector/ViewDistance;
-
-	vec3 TotalColor=CalcPointLight(Light[0], Attenuation, Material, WorldPos, NormalVector, ViewVector);
-	TotalColor=CalcFog(Fog, TotalColor, ViewDistance);
-
-	vs_out.outColor=TotalColor;
-}
+	
+    vec3 TotalColor=vec3(0.f,0.f,0.f);
+    for(int i=0; i<LightNumbers; ++i)
+        TotalColor+=CalcPointLight(Light[i], Attenuation, Material, fs_in.FragPos, NormalVector, ViewVector);
+    TotalColor=CalcFog(Fog, TotalColor, ViewDistance);
+	FragColor = vec4(TotalColor, 1.0);
+} 

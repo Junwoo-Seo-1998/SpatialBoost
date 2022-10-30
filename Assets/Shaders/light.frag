@@ -10,23 +10,14 @@ Project: junwoo.seo_cs300_1, junwoo.seo_cs300_2
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
-in vec3 Normal;
-in vec3 FragPos;
-uniform vec4 BaseColor;
-out vec4 FragColor;
 
-uniform LightData Light;
 in VS_OUT{ 
     vec3 outColor; 
 } fs_in; 
 
+out vec4 FragColor;
+
 void main()
 {
-	vec3 LightDir=normalize(Light.PosOrDir-FragPos);
-	float diff=max(dot(Normal,LightDir),0.f);
-	vec4 diffuse=diff*vec4(1.f, 1.f, 1.f, 1.f);
-			
-	float ambientStrength=0.1;
-	vec4 ambient = ambientStrength * vec4(1.f, 1.f, 1.f, 1.f);
-	FragColor = (ambient+diffuse)*BaseColor;
+	FragColor = vec4(fs_in.outColor,1.0);
 } 

@@ -25,6 +25,10 @@ class MyApp : public Application
 {
 	virtual void UserDefinedInit() override
 	{
+		AssetManager::LoadShaderFromFile("line_shader", "Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
+		AssetManager::LoadShaderFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+		AssetManager::LoadShaderFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
+
 		AssetManager::LoadMeshFromFile("Assets/4Sphere.obj", "4Sphere");
 		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
 		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "cube");
@@ -34,7 +38,8 @@ class MyApp : public Application
 		AssetManager::GeneratePlane("Plane");
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f, 10, 10);
 		AssetManager::GenerateSphere("GeneratedSphere", 1.f);
-		AssetManager::RegisterScene("MyScene", std::make_shared<Scenario_1>(*this));
+
+		AssetManager::RegisterScene("MyScene", std::make_shared<Scenario_1>(Application::Get()));
 		SetCurrentScene(AssetManager::GetScene("MyScene"));
 	}
 };

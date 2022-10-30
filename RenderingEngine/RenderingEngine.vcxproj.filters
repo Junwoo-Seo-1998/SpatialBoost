@@ -126,6 +126,7 @@
     <ClInclude Include="Core\Data\Material.h" />
     <ClInclude Include="Core\Component\MaterialComponent.h" />
     <ClInclude Include="Scene\Scenario_1.h" />
+    <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -197,5 +198,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Utils\File.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />
+    <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
   </ItemGroup>
 </Project>

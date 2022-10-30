@@ -22,6 +22,8 @@ std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_Vertex
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
 
+std::unordered_map<std::string, std::shared_ptr<Shader>>AssetManager::m_Shaders;
+
 std::unordered_map<std::string, std::shared_ptr<Scene>>AssetManager::m_Scenes;
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
@@ -89,15 +91,24 @@ void AssetManager::GenerateSphere(const std::string& key_name, float radius, int
 	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
 }
 
-std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& vert_file, const std::string& frag_file)
+std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_name, const std::string& vert_file, const std::string& frag_file)
 {
-	return std::make_shared<Shader>(File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+	std::shared_ptr<Shader> shader = std::make_shared<Shader>(File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+	m_Shaders[key_name] = shader;
+	return shader;
 }
 
-std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& common_file, const std::string& vert_file,
+std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_name, const std::string& common_file, const std::string& vert_file,
 	const std::string& frag_file)
 {
-	return std::make_shared<Shader>(File::ReadFileToString(common_file), File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+	std::shared_ptr<Shader> shader = std::make_shared<Shader>(File::ReadFileToString(common_file), File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+	m_Shaders[key_name] = shader;
+	return shader;
+}
+
+std::shared_ptr<Shader> AssetManager::GetShader(const std::string& key_name)
+{
+	return m_Shaders[key_name];
 }
 
 void AssetManager::RegisterScene(const std::string& scene_name, std::shared_ptr<Scene> scene)

@@ -72,6 +72,31 @@ void Shader::Use() const
 {
 	glUseProgram(m_ShaderProgram);
 }
+
+void Shader::SetInt(const std::string& name, const int value) const
+{
+	Use();
+	GLint location = glGetUniformLocation(m_ShaderProgram, name.c_str());
+	if (location == -1)
+	{
+		std::cout << "error on shader location! - " << name << std::endl;
+		return;
+	}
+	glUniform1i(location, value);
+}
+
+void Shader::SetFloat(const std::string& name, const float value) const
+{
+	Use();
+	GLint location = glGetUniformLocation(m_ShaderProgram, name.c_str());
+	if (location == -1)
+	{
+		std::cout << "error on shader location! - " << name << std::endl;
+		return;
+	}
+	glUniform1f(location, value);
+}
+
 void Shader::SetFloat3(const std::string& name, const glm::vec3& value) const
 {
 	Use();

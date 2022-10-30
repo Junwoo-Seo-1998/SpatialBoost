@@ -13,16 +13,35 @@ End Header --------------------------------------------------------*/
 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
-uniform MatrixData Matrix;
-out vec3 Normal;
-out vec3 FragPos;
+
+
 out VS_OUT{ 
     vec3 outColor; 
 } vs_out; 
 
+uniform MatrixData Matrix;
+uniform LightData Light[MAX_LIGHTS];
+
+uniform AttenuationData Attenuation;
+
+uniform vec3 CameraPosition;
+uniform MaterialData Material;
+
+uniform FogData Fog;
+
 void main()
 {
-	Normal=mat3(Matrix.Normal) * aNormal;
-	FragPos=vec3(Matrix.Model*vec4(aPos,1.0));
 	gl_Position = Matrix.Projection*Matrix.View*Matrix.Model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
+
+	//
+	vec3 WorldPos = vec3(Matrix.Model*vec4(aPos,1.0));
+	vec3 NormalVector=normalize(mat3(Matrix.Normal) * aNormal);
+	vec3 ViewVector=CameraPosition-WorldPos;
+    float ViewDistance=length(ViewVector);
+    ViewVector=ViewVector/ViewDistance;
+
+	vec3 TotalColor=CalcPointLight(Light[0], Attenuation, Material, WorldPos, NormalVector, ViewVector);
+	TotalColor=CalcFog(Fog, TotalColor, ViewDistance);
+
+	vs_out.outColor=TotalColor;
 }

@@ -33,9 +33,9 @@ void Scenario_1::Start()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	line_shader = AssetManager::LoadShaderFromFile("Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
+	line_shader = AssetManager::GetShader("line_shader");
 
-	light_shader = AssetManager::LoadShaderFromFile("Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+	light_shader = AssetManager::GetShader("Phong_Shading");
 
 	vertex_array = std::make_shared<VertexArray>();
 	vertex_array->Bind();
@@ -72,7 +72,8 @@ void Scenario_1::Start()
 		GeneratedSphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("GeneratedOrbitSphere"));
 		GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("GeneratedOrbitSphere"));
 		GeneratedSphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
-		GeneratedSphere.AddComponent<LightComponent>();
+		auto Light = GeneratedSphere.AddComponent<LightComponent>();
+		Light.light.m_LightType = LightType::PointLight;
 		theta += d_theta;
 	}
 }
@@ -103,8 +104,16 @@ void Scenario_1::Update()
 	auto& orbit_trans = orbit.GetComponent<TransformComponent>();
 	orbit_trans.Rotation.y += orbit_trans.Rotation.y >= 360.f ? -360.f + m_orbit_speed * dt : m_orbit_speed * dt;
 
-	vertex_array->Bind();
 
+	auto Lights = GetRegistry().view<TransformComponent, LightComponent>();
+	for (auto& entity : Lights)
+	{
+		auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
+		Light.light.m_LightData.position = TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f);
+	}
+
+
+	vertex_array->Bind();
 	line_shader->Use();
 	line_shader->SetMat4("view", world_to_cam);
 	line_shader->SetMat4("projection", perspective);
@@ -153,9 +162,36 @@ void Scenario_1::Update()
 	light_shader->Use();
 	light_shader->SetMat4("Matrix.View", world_to_cam);
 	light_shader->SetMat4("Matrix.Projection", perspective);
-	light_shader->SetFloat3("Light.PosOrDir", light_pos);
-	light_shader->SetFloat4("BaseColor", color);
+	
+	//light_shader->SetFloat4("BaseColor", color);
+	int i = 0;
+	for (auto& entity : Lights)
+	{
+		auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
+		std::string key = "Light[";
+		key += std::to_string(i);
+		key += "].PosOrDir";
+		light_shader->SetFloat3(key, Light.light.m_LightData.data);
+		i++;
+	}
 
+	//testing
+	//light_shader->SetFloat3("Light.PosOrDir", light_pos);
+	//light_shader->SetInt("Light.LightType", 0);//point light
+	light_shader->SetInt("LightNumbers", 1);//point light
+	light_shader->SetFloat3("CameraPosition", { 0,2,5 });
+	light_shader->SetFloat3("Material.Ambient", { 0.1f,0.1f,0.1f });
+	light_shader->SetFloat3("Material.Diffuse", { 1.f,1.f,1.f });
+	light_shader->SetFloat3("Material.Specular", { 1.f,1.f,1.f });
+	light_shader->SetFloat("Material.Shininess", 32.f);
+	light_shader->SetFloat("Attenuation.c1", 1.f);
+	light_shader->SetFloat("Attenuation.c2", 0.35f);
+	light_shader->SetFloat("Attenuation.c3", 0.44f);
+
+	light_shader->SetFloat("Fog.Near", 0.1f);
+	light_shader->SetFloat("Fog.Far", 1000.f);
+	light_shader->SetFloat3("Fog.Color", { 0.5f,0.5f,0.5f });
+	
 	//Vert normal 
 	{
 		auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>(entt::exclude<MaterialComponent>);

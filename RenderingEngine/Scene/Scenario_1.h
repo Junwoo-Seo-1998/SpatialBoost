@@ -31,7 +31,7 @@ private:
 	std::shared_ptr<VertexBuffer> buffer;
 	glm::mat4 perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 1000.f);
 	glm::mat4 world_to_cam = Math::BuildCameraMatrix({ 0,2,5 }, { 0,0,0 }, { 0,1,0 });
-	glm::vec3 light_pos = { 0,0,10 };
+	glm::vec3 light_pos = { 0,0,2 };
 	bool cullBackFace = true;
 	bool drawNormal = false;
 	int radio = static_cast<int>(select::DrawVertexNormal);

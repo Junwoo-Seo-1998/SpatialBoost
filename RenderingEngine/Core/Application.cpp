@@ -15,12 +15,14 @@ End Header --------------------------------------------------------*/
 #include "Core/Scene/SceneManager.h"
 #include "Event/ApplicationEvents/ApplicationEvents.h"
 #include "ImGui/ImGuiRenderer.h"
-
-
+#include "Core/Layer/LayerManager.h"
+#include "Core/Layer/Layer.h"
+Application* Application::s_Instance;
 Application::Application()
 	:m_Window(std::make_shared<Window>()),m_SceneManager(std::make_shared<SceneManager>()), m_ImGuiRenderer(std::make_shared<ImGuiRenderer>())
+,m_LayerManager(std::make_shared<LayerManager>())
 {
-
+	s_Instance = this;
 }
 
 Application::~Application()
@@ -32,6 +34,21 @@ void Application::OnEvent(Event& event)
 	EventDispatcher  dispatcher(event);
 	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(OnWindowResize));
 	m_SceneManager->GetCurrentScene()->OnEvent(event);
+	auto& overlay = m_LayerManager->GetOverLays();
+	for (auto it = overlay.rbegin(); it != overlay.rend(); ++it)
+	{
+		if (event.m_Handled)
+			break;
+		(*it)->OnEvent(event);
+	}
+
+	auto& layers = m_LayerManager->GetLayers();
+	for (auto it = layers.rbegin(); it != layers.rend(); ++it)
+	{
+		if (event.m_Handled)
+			break;
+		(*it)->OnEvent(event);
+	}
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& event)
@@ -64,8 +81,8 @@ void Application::Update()
 		m_SceneManager->GetCurrentScene()->Update();
 		m_SceneManager->GetCurrentScene()->LateUpdate();
 		m_ImGuiRenderer->GuiEnd();
+		m_LayerManager->ClearDeleteQueue();
 		m_Window->Update();
-
 	}
 	
 }

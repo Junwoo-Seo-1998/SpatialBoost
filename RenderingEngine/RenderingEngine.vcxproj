@@ -133,6 +133,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Utils\ObjParser.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
+    <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h" />
     <ClInclude Include="Scene\Scenario_1.h" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +161,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />
   </ItemGroup>
   <ItemGroup>
