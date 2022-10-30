@@ -15,7 +15,11 @@ End Header --------------------------------------------------------*/
 struct LightData
 {
     int LightType;
-    vec3 PosOrDir;
+    vec3 Position;
+    vec3 Direction;
+    float InnerAngle;
+    float OuterAngle;
+    float FallOff;
 };
 
 struct AttenuationData
@@ -59,15 +63,31 @@ float ComputeAttenuation(in AttenuationData attenuation, float lightDistance)
     return min(1.f/(attenuation.c1+attenuation.c2*lightDistance+attenuation.c3*pow(lightDistance,2)),1.f);
 }
 
-vec3 CalcFog(in FogData fog,vec3 color, float viewDistance)
+float ComputeSpotLightEffect(in LightData light, vec3 lightVector)
+{
+    vec3 spotLightVector=normalize(light.Direction);
+    vec3 fromLightToVertex=-lightVector;
+
+    float cos_Angle=dot(spotLightVector,fromLightToVertex);
+    float cos_Outer=cos(light.OuterAngle);
+    float cos_Inner=cos(light.InnerAngle);
+    if(cos_Angle<cos_Outer)
+        return 0.f;//no effect
+    if(cos_Angle>cos_Inner)
+        return 1.f;//max effect
+    
+    return pow((cos_Angle-cos_Outer)/(cos_Inner-cos_Outer), light.FallOff);
+}
+
+vec3 ComputeFog(in FogData fog,vec3 color, float viewDistance)
 {
     float s=max(fog.Far-viewDistance,0.0001f)/max(fog.Far-fog.Near,0.0000001f);
     return s*color+(1-s)*fog.Color;
 }
 
-vec3 CalcPointLight(in LightData light, in AttenuationData attenuation, in MaterialData material, vec3 fragPos, vec3 normalVector, vec3 viewVector)
+vec3 ComputePointLight(in LightData light, in AttenuationData attenuation, in MaterialData material, vec3 fragPos, vec3 normalVector, vec3 viewVector)
 {
-    vec3 lightVector=light.PosOrDir-fragPos;
+    vec3 lightVector=light.Position-fragPos;
     float lightDistance=length(lightVector);
 	lightVector=lightVector/lightDistance;//normalize(lightVector)
 
@@ -79,4 +99,33 @@ vec3 CalcPointLight(in LightData light, in AttenuationData attenuation, in Mater
 
     float att=ComputeAttenuation(attenuation,lightDistance);
     return att*(ambient+diffuse+specular);
+}
+
+vec3 ComputeDirectionLight(in LightData light, in AttenuationData attenuation, in MaterialData material, vec3 fragPos, vec3 normalVector, vec3 viewVector)
+{
+    vec3 lightVector=normalize(-light.Direction);
+
+	vec3 reflection=ComputeReflection(normalVector,lightVector);
+	//
+    vec3 ambient = material.Ambient*vec3(1.f, 1.f, 1.f);
+	vec3 diffuse = material.Diffuse*vec3(1.f, 1.f, 1.f)*max(dot(normalVector,lightVector),0.f);
+	vec3 specular = material.Specular*vec3(1.f, 1.f, 1.f)*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+    return ambient+diffuse+specular;
+}
+
+vec3 ComputeSpotLight(in LightData light, in AttenuationData attenuation, in MaterialData material, vec3 fragPos, vec3 normalVector, vec3 viewVector)
+{
+    vec3 lightVector=light.Position-fragPos;
+    float lightDistance=length(lightVector);
+	lightVector=lightVector/lightDistance;//normalize(lightVector)
+
+	vec3 reflection=ComputeReflection(normalVector,lightVector);
+	//
+    vec3 ambient = material.Ambient*vec3(1.f, 1.f, 1.f);
+	vec3 diffuse = material.Diffuse*vec3(1.f, 1.f, 1.f)*max(dot(normalVector,lightVector),0.f);
+	vec3 specular = material.Specular*vec3(1.f, 1.f, 1.f)*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+
+    float att=ComputeAttenuation(attenuation,lightDistance);
+    float spotLightEffect=ComputeSpotLightEffect(light, lightVector);
+    return att*(ambient+spotLightEffect*(diffuse+specular));
 }

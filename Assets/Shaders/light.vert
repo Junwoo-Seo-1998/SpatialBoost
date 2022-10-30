@@ -40,8 +40,8 @@ void main()
     float ViewDistance=length(ViewVector);
     ViewVector=ViewVector/ViewDistance;
 
-	vec3 TotalColor=CalcPointLight(Light[0], Attenuation, Material, WorldPos, NormalVector, ViewVector);
-	TotalColor=CalcFog(Fog, TotalColor, ViewDistance);
+	vec3 TotalColor=ComputePointLight(Light[0], Attenuation, Material, WorldPos, NormalVector, ViewVector);
+	TotalColor=ComputeFog(Fog, TotalColor, ViewDistance);
 
 	vs_out.outColor=TotalColor;
 }

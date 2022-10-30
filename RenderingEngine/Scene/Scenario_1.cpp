@@ -56,7 +56,7 @@ void Scenario_1::Start()
 	plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
 	plane.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Plane"));
 
-	float radius = 2.f;
+	float radius = 3.f;
 	orbit = CreateEntity();
 	auto& parent_transform = orbit.GetComponent<TransformComponent>();
 	orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(radius));
@@ -73,7 +73,7 @@ void Scenario_1::Start()
 		GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("GeneratedOrbitSphere"));
 		GeneratedSphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
 		auto Light = GeneratedSphere.AddComponent<LightComponent>();
-		Light.light.m_LightType = LightType::PointLight;
+		Light.light.m_LightType = LightType::SpotLight;
 		theta += d_theta;
 	}
 }
@@ -109,9 +109,18 @@ void Scenario_1::Update()
 	for (auto& entity : Lights)
 	{
 		auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
-		Light.light.m_LightData.position = TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f);
-	}
+		glm::vec3 lightPos = glm::vec3(TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f));
+		if (Light.light.m_LightType == LightType::SpotLight)
+		{
+			Light.light.m_LightData.direction = glm::vec3{ 0, -100, 0 } - lightPos;
+			Light.light.m_LightData.direction = glm::vec3{ 0, -100, 0 };
+		}
+		else
+		{
+			Light.light.m_LightData.position = lightPos;
+		}
 
+	}
 
 	vertex_array->Bind();
 	line_shader->Use();
@@ -168,21 +177,26 @@ void Scenario_1::Update()
 	for (auto& entity : Lights)
 	{
 		auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
-		std::string key = "Light[";
-		key += std::to_string(i);
-		key += "].PosOrDir";
-		light_shader->SetFloat3(key, Light.light.m_LightData.data);
+		int lightType = static_cast<int>(2);
+		light_shader->SetInt("Light[" + std::to_string(i) + "].LightType", lightType);
+		glm::vec3 lightPos = glm::vec3(TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f));
+		light_shader->SetFloat3("Light[" + std::to_string(i) + "].Position", lightPos);
+		light_shader->SetFloat3("Light[" + std::to_string(i) + "].Direction", glm::vec3{ 0, -1, 0 }- lightPos);
+		light_shader->SetFloat("Light[" + std::to_string(i) + "].InnerAngle", glm::radians(30.f));
+		light_shader->SetFloat("Light[" + std::to_string(i) + "].OuterAngle", glm::radians(45.f));
+		light_shader->SetFloat("Light[" + std::to_string(i) + "].FallOff", 32.f);
 		i++;
 	}
 
 	//testing
 	//light_shader->SetFloat3("Light.PosOrDir", light_pos);
-	//light_shader->SetInt("Light.LightType", 0);//point light
-	light_shader->SetInt("LightNumbers", 1);//point light
+	
+	light_shader->SetInt("LightNumbers", 2);
 	light_shader->SetFloat3("CameraPosition", { 0,2,5 });
 	light_shader->SetFloat3("Material.Ambient", { 0.1f,0.1f,0.1f });
 	light_shader->SetFloat3("Material.Diffuse", { 1.f,1.f,1.f });
 	light_shader->SetFloat3("Material.Specular", { 1.f,1.f,1.f });
+	light_shader->SetFloat3("Material.Emissive", { 0.f,0.f,0.f });
 	light_shader->SetFloat("Material.Shininess", 32.f);
 	light_shader->SetFloat("Attenuation.c1", 1.f);
 	light_shader->SetFloat("Attenuation.c2", 0.35f);
@@ -215,6 +229,7 @@ void Scenario_1::Update()
 			}
 
 		}
+
 
 		auto MeshesWithMaterial = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent, MaterialComponent>();
 		for (auto& entity : MeshesWithMaterial)

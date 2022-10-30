@@ -34,9 +34,22 @@ void main()
     float ViewDistance=length(ViewVector);
     ViewVector=ViewVector/ViewDistance;
 	
-    vec3 TotalColor=vec3(0.f,0.f,0.f);
+    vec3 TotalColor=Material.Emissive;
     for(int i=0; i<LightNumbers; ++i)
-        TotalColor+=CalcPointLight(Light[i], Attenuation, Material, fs_in.FragPos, NormalVector, ViewVector);
-    TotalColor=CalcFog(Fog, TotalColor, ViewDistance);
+    {
+        switch (Light[i].LightType)
+        {
+            case 0:
+                TotalColor+=ComputePointLight(Light[i], Attenuation, Material, fs_in.FragPos, NormalVector, ViewVector);
+                break;
+            case 1:
+                TotalColor+=ComputeDirectionLight(Light[i], Attenuation, Material, fs_in.FragPos, NormalVector, ViewVector);
+                break;
+            case 2:
+                TotalColor+=ComputeSpotLight(Light[i], Attenuation, Material, fs_in.FragPos, NormalVector, ViewVector);
+                break;
+        }
+    }
+    TotalColor=ComputeFog(Fog, TotalColor, ViewDistance);
 	FragColor = vec4(TotalColor, 1.0);
 } 
