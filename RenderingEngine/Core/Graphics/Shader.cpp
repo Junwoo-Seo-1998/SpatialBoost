@@ -13,6 +13,7 @@ End Header --------------------------------------------------------*/
 #include"Shader.h"
 #include<iostream>
 #include "glm/gtc/type_ptr.hpp"
+#include "Core/Data/Texture.h"
 Shader::Shader(const std::string& vertex_src, const std::string& fragment_src)
 {
 	GLuint vert = CompileShader(vertex_src, ShaderFlag::VertexShader);
@@ -131,6 +132,19 @@ void Shader::SetMat4(const std::string& name, const glm::mat4& value) const
 		return;
 	}
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned unit)
+{
+	Use();
+	GLint location = glGetUniformLocation(m_ShaderProgram, name.c_str());
+	if (location == -1)
+	{
+		std::cout << "error on shader location! - " << name << std::endl;
+		return;
+	}
+	texture->Bind(unit);
+	glUniform1i(location, unit);
 }
 
 GLuint Shader::CompileShader(const std::string& src, ShaderFlag flags)

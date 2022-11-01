@@ -14,6 +14,9 @@ End Header --------------------------------------------------------*/
 #include<glm/glm.hpp>
 #include<string>
 #include<glad.h>
+#include <memory>
+class Texture;
+
 enum class ShaderFlag
 {
 	None = 0 ,
@@ -38,6 +41,7 @@ public:
 	void SetFloat4(const std::string& name, const glm::vec4& value) const;
 	void SetMat4(const std::string& name, const glm::mat4& value) const;
 
+	void SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned int unit = 0);
 private:
 	GLuint CompileShader(const std::string& src, ShaderFlag flags);
 	GLuint CompileShader(const std::string& common, const std::string& src, ShaderFlag flags);

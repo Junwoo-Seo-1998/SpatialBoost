@@ -25,6 +25,7 @@ IncludeDir["GLAD"]="Libs/glad/"
 IncludeDir["GLM"]="Libs/glm/"
 IncludeDir["ENTT"]="Libs/entt/"
 IncludeDir["IMGUI"]="Libs/imgui/"
+IncludeDir["STB_IMAGE"]="Libs/stb_image/"
 
 
 project "RenderingEngine"
@@ -51,7 +52,8 @@ project "RenderingEngine"
         "%{IncludeDir.GLAD}",
         "%{IncludeDir.GLM}",
         "%{IncludeDir.ENTT}",
-        "%{IncludeDir.IMGUI}"
+        "%{IncludeDir.IMGUI}",
+        "%{IncludeDir.STB_IMAGE}"
     }
     files {
         "RenderingEngine/**.h",

@@ -16,6 +16,7 @@ End Header --------------------------------------------------------*/
 #include<memory>
 
 #include "Core/AssetManager.h"
+#include "Core/Utils/File.h"
 
 #include "Scene/Scenario_1.h"
 
@@ -34,6 +35,10 @@ class MyApp : public Application
 		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "cube");
 		AssetManager::LoadMeshFromFile("Assets/sphere.obj", "sphere");
 		AssetManager::LoadMeshFromFile("Assets/sphere_modified.obj", "sphere_modified");
+
+		AssetManager::LoadTextureFromFile("diff", "metal_roof_diff_512x512.ppm");
+		AssetManager::LoadTextureFromFile("spec", "metal_roof_spec_512x512.ppm");
+
 		//generated
 		AssetManager::GeneratePlane("Plane");
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f, 10, 10);

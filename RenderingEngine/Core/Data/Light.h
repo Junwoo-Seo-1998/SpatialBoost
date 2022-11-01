@@ -11,12 +11,9 @@ enum class LightType
 struct Light
 {
 	LightType m_LightType;
-	union
-	{
-		glm::vec3 position;
-		glm::vec3 direction;
-		glm::vec3 data;
-	}m_LightData;
+	glm::vec3 position;
+	glm::vec3 direction;
+	glm::vec3 data;
 
 	struct 
 	{
@@ -24,11 +21,14 @@ struct Light
 		float outer;
 	} m_Angle;
 
-	float constant;
-	float linear;
-	float quadratic;
-
 	glm::vec3 Ambient;
 	glm::vec3 Diffuse;
 	glm::vec3 Specular;
+};
+
+struct Att
+{
+	float constant;
+	float linear;
+	float quadratic;
 };

@@ -112,16 +112,12 @@ void Scenario_1::Update()
 		glm::vec3 lightPos = glm::vec3(TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f));
 		if (Light.light.m_LightType == LightType::SpotLight)
 		{
-			Light.light.m_LightData.direction = glm::vec3{ 0, -100, 0 } - lightPos;
-			Light.light.m_LightData.direction = glm::vec3{ 0, -100, 0 };
+			Light.light.direction = glm::vec3{ 0, -100, 0 } - lightPos;
 		}
-		else
-		{
-			Light.light.m_LightData.position = lightPos;
-		}
+		Light.light.position = lightPos;
 
 	}
-
+	
 	vertex_array->Bind();
 	line_shader->Use();
 	line_shader->SetMat4("view", world_to_cam);
@@ -177,7 +173,7 @@ void Scenario_1::Update()
 	for (auto& entity : Lights)
 	{
 		auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
-		int lightType = static_cast<int>(2);
+		int lightType = static_cast<int>(1);
 		light_shader->SetInt("Light[" + std::to_string(i) + "].LightType", lightType);
 		glm::vec3 lightPos = glm::vec3(TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f));
 		light_shader->SetFloat3("Light[" + std::to_string(i) + "].Position", lightPos);
@@ -191,7 +187,7 @@ void Scenario_1::Update()
 	//testing
 	//light_shader->SetFloat3("Light.PosOrDir", light_pos);
 	
-	light_shader->SetInt("LightNumbers", 2);
+	light_shader->SetInt("LightNumbers", 1);
 	light_shader->SetFloat3("CameraPosition", { 0,2,5 });
 	light_shader->SetFloat3("Material.Ambient", { 0.1f,0.1f,0.1f });
 	light_shader->SetFloat3("Material.Diffuse", { 1.f,1.f,1.f });

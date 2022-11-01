@@ -16,13 +16,15 @@ End Header --------------------------------------------------------*/
 #include "Core/Graphics/Shader.h"
 #include <iostream>
 #include "Utils/File.h"
-
+#include "Core/Data/Texture.h"
+#include "Core/Data/TextureData.h"
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
 
 std::unordered_map<std::string, std::shared_ptr<Shader>>AssetManager::m_Shaders;
+std::unordered_map<std::string, std::shared_ptr<Texture>>AssetManager::m_Textures;
 
 std::unordered_map<std::string, std::shared_ptr<Scene>>AssetManager::m_Scenes;
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
@@ -109,6 +111,18 @@ std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_
 std::shared_ptr<Shader> AssetManager::GetShader(const std::string& key_name)
 {
 	return m_Shaders[key_name];
+}
+
+std::shared_ptr<Texture> AssetManager::LoadTextureFromFile(const std::string& key_name, const std::string& file_name)
+{
+	std::shared_ptr<Texture> texture = std::make_shared<Texture>(File::ReadImageToTexture(file_name));
+	m_Textures[key_name] = texture;
+	return texture;
+}
+
+std::shared_ptr<Texture> AssetManager::GetTexture(const std::string& key_name)
+{
+	return m_Textures[key_name];
 }
 
 void AssetManager::RegisterScene(const std::string& scene_name, std::shared_ptr<Scene> scene)
