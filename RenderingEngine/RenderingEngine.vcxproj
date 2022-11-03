@@ -108,6 +108,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Component\MaterialComponent.h" />
     <ClInclude Include="Core\Component\RendererComponent.h" />
     <ClInclude Include="Core\Component\TransformComponent.h" />
+    <ClInclude Include="Core\Data\BoundingBox.h" />
     <ClInclude Include="Core\Data\Light.h" />
     <ClInclude Include="Core\Data\Material.h" />
     <ClInclude Include="Core\Data\Mesh.h" />

@@ -14,7 +14,13 @@ Texture::Texture(std::shared_ptr<TextureData> texture_data)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data->data.get());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_data->data.get());
+	glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+Texture::~Texture()
+{
+	glDeleteTextures(1, &m_TextureID);
 }
 
 std::tuple<int, int> Texture::GetWidthHeight() const

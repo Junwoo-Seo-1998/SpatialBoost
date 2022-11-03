@@ -53,6 +53,13 @@ struct FogData
     vec3 Color;
 };
 
+struct BoundingBoxData
+{
+    vec3 Min;
+    vec3 Max;
+    vec3 Center;
+};
+
 vec3 ComputeReflection(vec3 normalVector, vec3 lightVector)
 {
     return 2*(dot(normalVector,lightVector))*normalVector-lightVector;
@@ -128,4 +135,66 @@ vec3 ComputeSpotLight(in LightData light, in AttenuationData attenuation, in Mat
     float att=ComputeAttenuation(attenuation,lightDistance);
     float spotLightEffect=ComputeSpotLightEffect(light, lightVector);
     return att*(ambient+spotLightEffect*(diffuse+specular));
+}
+
+
+vec2 ComputeCylindricalUV(vec3 TextureEntity, float min_y, float max_y)
+{
+    float theta = degrees(atan(TextureEntity.x, TextureEntity.z)); 
+    //since atan will return [-180, 180] and i want to map this to [0,360]
+    theta += 180.f; 
+    float y = TextureEntity.y; 
+    return vec2(theta / 360.f, (y - min_y) / (max_y - min_y));
+}
+
+vec2 ComputeSphericalUV(vec3 TextureEntity)
+{
+    float theta = degrees(atan(TextureEntity.x, TextureEntity.z)); 
+    //since atan will return [-180, 180] and i want to map this to [0,360]
+    theta += 180.f; 
+
+    float pi = 180.f - degrees(acos(TextureEntity.y / length(TextureEntity)));
+
+    return vec2(theta / 360.f, pi / 180.f);
+}
+
+vec2 ComputeCubeMapUV(vec3 TextureEntity)
+{
+    float u=0.f;
+    float v=0.f;
+
+    vec3 Abs=abs(TextureEntity);
+
+    //-+x
+    if(Abs.x >= Abs.y && Abs.x >= Abs.z)
+    {
+        //left or right
+        u=(TextureEntity.x < 0.f) ? TextureEntity.z : -TextureEntity.z;
+        u=u/Abs.x;
+        v=TextureEntity.y/Abs.x;
+    }
+
+    //-+z
+    if(Abs.z >= Abs.x && Abs.z >= Abs.y)
+    {
+        //back or front
+        u=(TextureEntity.z < 0.f) ? -TextureEntity.x : TextureEntity.x;
+        u=u/Abs.z;
+        v=TextureEntity.y/Abs.z;
+    }
+
+    //-+y
+    if(Abs.y >= Abs.x && Abs.y >= Abs.z)
+    {
+        u=TextureEntity.x/Abs.y;
+
+        //bottom or top
+        v=(TextureEntity.y < 0.f) ? TextureEntity.z : -TextureEntity.z;
+        v=v/Abs.y;
+    }
+
+    //-1 to 1 to 0 to 1
+    u = 0.5f * (u + 1.0f);
+    v = 0.5f * (v + 1.0f);
+    return vec2(u,v);
 }

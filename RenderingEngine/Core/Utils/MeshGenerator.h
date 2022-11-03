@@ -37,4 +37,6 @@ public:
 	static std::vector<glm::vec3> GenerateFaceNormals(std::vector<glm::vec3>& loaded_points, std::vector<unsigned int>& loaded_index);
 	static std::vector<glm::vec3> GenerateVertexNormals(std::vector<glm::vec3>& loaded_points, std::vector<glm::vec3>& face_normals, 
 		std::vector<unsigned int>& loaded_index);
+
+	static std::shared_ptr<BoundingBox> GenerateBoundingBox(std::vector<glm::vec3>& loaded_points);
 };

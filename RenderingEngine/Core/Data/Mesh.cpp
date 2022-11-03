@@ -94,6 +94,11 @@ void Mesh::SetIndices(std::shared_ptr<std::vector<unsigned>> indices)
 	m_Indices = indices;
 }
 
+void Mesh::SetBoundingBox(std::shared_ptr<BoundingBox> bounding_box)
+{
+	m_BoundingBox = bounding_box;
+}
+
 void Mesh::AttachBuffer(std::shared_ptr<VertexBuffer> buffer)
 {
 	m_Buffer = buffer;
@@ -107,6 +112,11 @@ std::shared_ptr<VertexBuffer> Mesh::GetBuffer() const
 std::shared_ptr<ElementBuffer> Mesh::GetIndexBuffer() const
 {
 	return m_IndexBuffer;
+}
+
+std::shared_ptr<BoundingBox> Mesh::GetBoundingBox() const
+{
+	return m_BoundingBox;
 }
 
 void Mesh::AttachBuffer(std::shared_ptr<ElementBuffer> buffer)

@@ -1,5 +1,6 @@
 #include "Scenario_1.h"
 
+#include <iostream>
 #include <glm/ext/scalar_constants.hpp>
 
 #include "imgui.h"
@@ -184,9 +185,10 @@ void Scenario_1::Update()
 		i++;
 	}
 
+
 	//testing
 	//light_shader->SetFloat3("Light.PosOrDir", light_pos);
-	
+
 	light_shader->SetInt("LightNumbers", 1);
 	light_shader->SetFloat3("CameraPosition", { 0,2,5 });
 	light_shader->SetFloat3("Material.Ambient", { 0.1f,0.1f,0.1f });
@@ -194,6 +196,14 @@ void Scenario_1::Update()
 	light_shader->SetFloat3("Material.Specular", { 1.f,1.f,1.f });
 	light_shader->SetFloat3("Material.Emissive", { 0.f,0.f,0.f });
 	light_shader->SetFloat("Material.Shininess", 32.f);
+
+
+	light_shader->SetInt("useTexture", 1);
+	light_shader->SetInt("UVType", 2);
+
+	light_shader->SetTexture("DiffuseTexture", AssetManager::GetTexture("diff"), 0);
+	light_shader->SetTexture("SpecularTexture", AssetManager::GetTexture("spec"), 1);
+
 	light_shader->SetFloat("Attenuation.c1", 1.f);
 	light_shader->SetFloat("Attenuation.c2", 0.35f);
 	light_shader->SetFloat("Attenuation.c3", 0.44f);
@@ -201,9 +211,10 @@ void Scenario_1::Update()
 	light_shader->SetFloat("Fog.Near", 0.1f);
 	light_shader->SetFloat("Fog.Far", 1000.f);
 	light_shader->SetFloat3("Fog.Color", { 0.5f,0.5f,0.5f });
-	
+
 	//Vert normal 
 	{
+		light_shader->SetInt("useTexture", 0);
 		auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>(entt::exclude<MaterialComponent>);
 		for (auto& entity : Meshes)
 		{
@@ -226,7 +237,7 @@ void Scenario_1::Update()
 
 		}
 
-
+		light_shader->SetInt("useTexture", 1);
 		auto MeshesWithMaterial = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent, MaterialComponent>();
 		for (auto& entity : MeshesWithMaterial)
 		{
@@ -236,6 +247,11 @@ void Scenario_1::Update()
 			glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
 			light_shader->SetMat4("Matrix.Normal", normal_matrix);
 			vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
+
+			std::shared_ptr<BoundingBox> box = MeshRendererComp.mesh->GetBoundingBox();
+			light_shader->SetFloat3("BoundingBox.Min", box->min);
+			light_shader->SetFloat3("BoundingBox.Max", box->max);
+			light_shader->SetFloat3("BoundingBox.Center", box->center);
 
 			if (MeshRendererComp.mesh->GetUseIndex())
 			{

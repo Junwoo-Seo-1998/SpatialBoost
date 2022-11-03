@@ -149,6 +149,7 @@
     </ClInclude>
     <ClInclude Include="Core\Data\TextureData.h" />
     <ClInclude Include="Core\Data\Texture.h" />
+    <ClInclude Include="Core\Data\BoundingBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">

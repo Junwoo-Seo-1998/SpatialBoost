@@ -6,6 +6,7 @@ class Texture
 {
 public:
 	Texture(std::shared_ptr<TextureData> texture_data);
+	virtual ~Texture();
 	std::tuple<int, int> GetWidthHeight() const;
 	unsigned int GetTextureID() const;
 	void Bind(unsigned int unit = 0);

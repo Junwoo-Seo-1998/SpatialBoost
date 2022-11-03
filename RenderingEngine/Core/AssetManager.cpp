@@ -38,10 +38,17 @@ void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::str
 	
 	std::vector<glm::vec3> generated_vertex_normal{ MeshGenerator::GenerateVertexNormals(loaded_points, generated_face_normal,loaded_indices) };
 
+	std::shared_ptr<BoundingBox> box = MeshGenerator::GenerateBoundingBox(loaded_points);
+
 	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(loaded_points, loaded_indices, generated_face_normal);
+	m_FaceNormalMesh[key_name]->SetBoundingBox(box);
+
 	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(loaded_points, loaded_indices, generated_face_normal);
+	
 
 	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(loaded_points, loaded_indices, generated_vertex_normal);
+	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
+
 	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(loaded_points, loaded_indices, generated_vertex_normal);
 }
 
@@ -72,10 +79,14 @@ void AssetManager::GeneratePlane(const std::string& key_name, float size)
 
 	std::vector<glm::vec3> generated_vertex_normal{ MeshGenerator::GenerateVertexNormals(*gen_points, generated_face_normal,*gen_indices) };
 
+	std::shared_ptr<BoundingBox> box = MeshGenerator::GenerateBoundingBox(*gen_points);
+
 	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(*gen_points, *gen_indices, generated_face_normal);
+	m_FaceNormalMesh[key_name]->SetBoundingBox(box);
 	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(*gen_points, *gen_indices, generated_face_normal);
 
 	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
 	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
 }
 
@@ -86,10 +97,14 @@ void AssetManager::GenerateSphere(const std::string& key_name, float radius, int
 
 	std::vector<glm::vec3> generated_vertex_normal{ MeshGenerator::GenerateVertexNormals(*gen_points, generated_face_normal,*gen_indices) };
 
+	std::shared_ptr<BoundingBox> box = MeshGenerator::GenerateBoundingBox(*gen_points);
+
 	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(*gen_points, *gen_indices, generated_face_normal);
+	m_FaceNormalMesh[key_name]->SetBoundingBox(box);
 	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(*gen_points, *gen_indices, generated_face_normal);
 
 	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
 	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
 }
 

@@ -58,7 +58,6 @@ Shader::Shader(const std::string& common, const std::string& vertex_src,
 		assert(true, "ERROR::SHADER::PROGRAM::LINK_FAILED\n");
 	}
 
-
 	glDeleteShader(vert);
 	glDeleteShader(frag);
 }

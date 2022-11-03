@@ -306,4 +306,23 @@ std::vector<glm::vec3> MeshGenerator::GenerateVertexNormals(std::vector<glm::vec
 	return generated_normals;
 }
 
+std::shared_ptr<BoundingBox> MeshGenerator::GenerateBoundingBox(std::vector<glm::vec3>& loaded_points)
+{
+	std::shared_ptr<BoundingBox> box = std::make_shared<BoundingBox>();
+	box->min = glm::vec3{ std::numeric_limits<float>().max() };
+	box->max = glm::vec3{ std::numeric_limits<float>().min() };
+	for (const glm::vec3& point : loaded_points)
+	{
+		box->min.x = std::min(box->min.x, point.x);
+		box->min.y = std::min(box->min.y, point.y);
+		box->min.z = std::min(box->min.z, point.z);
+
+		box->max.x = std::max(box->max.x, point.x);
+		box->max.y = std::max(box->max.y, point.y);
+		box->max.z = std::max(box->max.z, point.z);
+	}
+	box->center = (box->max + box->min) * 0.5f;
+	return box;
+}
+
 

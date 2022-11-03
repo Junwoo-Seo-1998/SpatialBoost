@@ -36,8 +36,8 @@ class MyApp : public Application
 		AssetManager::LoadMeshFromFile("Assets/sphere.obj", "sphere");
 		AssetManager::LoadMeshFromFile("Assets/sphere_modified.obj", "sphere_modified");
 
-		AssetManager::LoadTextureFromFile("diff", "metal_roof_diff_512x512.ppm");
-		AssetManager::LoadTextureFromFile("spec", "metal_roof_spec_512x512.ppm");
+		AssetManager::LoadTextureFromFile("diff", "Assets/metal_roof_diff_512x512.png");
+		AssetManager::LoadTextureFromFile("spec", "Assets/metal_roof_spec_512x512.png");
 
 		//generated
 		AssetManager::GeneratePlane("Plane");

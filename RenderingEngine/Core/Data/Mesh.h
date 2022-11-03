@@ -17,6 +17,9 @@ End Header --------------------------------------------------------*/
 #include<glad.h>
 #include <Core/Graphics/Buffer.h>
 #include <memory>
+
+#include "BoundingBox.h"
+
 enum class DrawType
 {
 	None,
@@ -60,16 +63,18 @@ public:
 
 	void SetVertices(std::shared_ptr<std::vector<Vertex>> vertices);
 	void SetIndices(std::shared_ptr<std::vector<unsigned int>> indices);
+	void SetBoundingBox(std::shared_ptr<BoundingBox> bounding_box);
 
 	void AttachBuffer(std::shared_ptr<VertexBuffer> buffer);
 	void AttachBuffer(std::shared_ptr<ElementBuffer> buffer);
 
 	std::shared_ptr<VertexBuffer> GetBuffer() const;
 	std::shared_ptr<ElementBuffer> GetIndexBuffer() const;
+	std::shared_ptr<BoundingBox> GetBoundingBox() const;
 private:
 	std::shared_ptr<std::vector<Vertex>> m_Vertices;
 	std::shared_ptr <std::vector<unsigned int>> m_Indices;
-
+	std::shared_ptr<BoundingBox> m_BoundingBox;
 	std::shared_ptr<VertexBuffer> m_Buffer;
 	std::shared_ptr<ElementBuffer> m_IndexBuffer;
 };
