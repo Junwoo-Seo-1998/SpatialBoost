@@ -18,6 +18,7 @@ End Header --------------------------------------------------------*/
 #include "Utils/File.h"
 #include "Core/Data/Texture.h"
 #include "Core/Data/TextureData.h"
+#include "Data/UV.h"
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
@@ -48,6 +49,7 @@ void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::str
 
 	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(loaded_points, loaded_indices, generated_vertex_normal);
 	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
+	m_VertexNormalMesh[key_name]->SetUV(std::make_shared<UV>(*m_VertexNormalMesh[key_name]->GetVertices(), *box));
 
 	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(loaded_points, loaded_indices, generated_vertex_normal);
 }

@@ -237,7 +237,9 @@ void Scenario_1::Update()
 
 		}
 
+
 		light_shader->SetInt("useTexture", 1);
+		light_shader->SetInt("UseCPU", 1);
 		auto MeshesWithMaterial = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent, MaterialComponent>();
 		for (auto& entity : MeshesWithMaterial)
 		{
@@ -252,7 +254,8 @@ void Scenario_1::Update()
 			light_shader->SetFloat3("BoundingBox.Min", box->min);
 			light_shader->SetFloat3("BoundingBox.Max", box->max);
 			light_shader->SetFloat3("BoundingBox.Center", box->center);
-
+			if(MeshRendererComp.mesh->HasUV())
+				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetUV()->GetPointUVBuffer(UVTypes::Cylindrical));
 			if (MeshRendererComp.mesh->GetUseIndex())
 			{
 				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());

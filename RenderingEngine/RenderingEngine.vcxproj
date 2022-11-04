@@ -114,6 +114,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Data\Mesh.h" />
     <ClInclude Include="Core\Data\Texture.h" />
     <ClInclude Include="Core\Data\TextureData.h" />
+    <ClInclude Include="Core\Data\UV.h" />
     <ClInclude Include="Core\Data\Vertex.h" />
     <ClInclude Include="Core\EntryPoint.h" />
     <ClInclude Include="Core\Event\ApplicationEvents\ApplicationEvents.h" />
@@ -146,6 +147,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Component\TransformComponent.cpp" />
     <ClCompile Include="Core\Data\Mesh.cpp" />
     <ClCompile Include="Core\Data\Texture.cpp" />
+    <ClCompile Include="Core\Data\UV.cpp" />
     <ClCompile Include="Core\Event\ApplicationEvents\ApplicationEvents.cpp" />
     <ClCompile Include="Core\Event\Event.cpp" />
     <ClCompile Include="Core\Event\InputEvents\KeyBoardEvent.cpp" />

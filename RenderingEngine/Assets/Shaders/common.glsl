@@ -137,6 +137,15 @@ vec3 ComputeSpotLight(in LightData light, in AttenuationData attenuation, in Mat
     return att*(ambient+spotLightEffect*(diffuse+specular));
 }
 
+vec2 ComputePlanarUV(vec3 TextureEntity, float min_x, float max_x, float min_y, float max_y)
+{
+    float u=(TextureEntity.x-min_x)/(max_x-min_x);
+    float v=(TextureEntity.y-min_y)/(max_y-min_y);
+
+    return vec2(u,v);
+}
+
+
 
 vec2 ComputeCylindricalUV(vec3 TextureEntity, float min_y, float max_y)
 {

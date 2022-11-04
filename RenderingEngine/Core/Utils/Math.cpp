@@ -100,3 +100,120 @@ glm::vec3 Math::ComputeFaceNormal(const glm::vec3& v0, const glm::vec3& v1, cons
 	return glm::normalize(glm::cross(v1 - v0, v2 - v0));
 }
 
+glm::vec2 Math::ComputePlanarUV(const glm::vec3 TextureEntity, float min_x, float max_x, float min_y, float max_y)
+{
+	float u = (TextureEntity.x - min_x) / (max_x - min_x);
+	float v = (TextureEntity.y - min_y) / (max_y - min_y);
+
+	return { u, v };
+}
+
+glm::vec2 Math::ComputeCylindricalUV(const glm::vec3& TextureEntity, float min_y, float max_y)
+{
+	float theta = glm::degrees(glm::atan(TextureEntity.x, TextureEntity.z));
+	//since atan will return [-180, 180] and i want to map this to [0,360]
+	theta += 180.f;
+	float y = TextureEntity.y;
+	return { theta / 360.f, (y - min_y) / (max_y - min_y) };
+}
+
+glm::vec2 Math::ComputeSphericalUV(const glm::vec3& TextureEntity)
+{
+	float theta = glm::degrees(glm::atan(TextureEntity.x, TextureEntity.z));
+	//since atan will return [-180, 180] and i want to map this to [0,360]
+	theta += 180.f;
+
+	float pi = 180.f - glm::degrees(glm::acos(TextureEntity.y / length(TextureEntity)));
+
+	return { theta / 360.f, pi / 180.f };
+}
+
+glm::vec2 Math::ComputeCubeMapUV(const glm::vec3& TextureEntity)
+{
+	float u = 0.f;
+	float v = 0.f;
+
+	glm::vec3 Abs = glm::abs(TextureEntity);
+
+	//-+x
+	if (Abs.x >= Abs.y && Abs.x >= Abs.z)
+	{
+		//left or right
+		u = (TextureEntity.x < 0.f) ? TextureEntity.z : -TextureEntity.z;
+		u = u / Abs.x;
+		v = TextureEntity.y / Abs.x;
+	}
+
+	//-+z
+	if (Abs.z >= Abs.x && Abs.z >= Abs.y)
+	{
+		//back or front
+		u = (TextureEntity.z < 0.f) ? -TextureEntity.x : TextureEntity.x;
+		u = u / Abs.z;
+		v = TextureEntity.y / Abs.z;
+	}
+
+	//-+y
+	if (Abs.y >= Abs.x && Abs.y >= Abs.z)
+	{
+		u = TextureEntity.x / Abs.y;
+
+		//bottom or top
+		v = (TextureEntity.y < 0.f) ? TextureEntity.z : -TextureEntity.z;
+		v = v / Abs.y;
+	}
+
+	//-1 to 1 to 0 to 1
+	u = 0.5f * (u + 1.0f);
+	v = 0.5f * (v + 1.0f);
+	return { u, v };
+}
+
+std::shared_ptr<std::vector<glm::vec2>> Math::ComputePlanarUVs(const std::vector<glm::vec3> TextureEntities, const BoundingBox& box)
+{
+	std::shared_ptr<std::vector<glm::vec2>> UVs = std::make_shared<std::vector<glm::vec2>>();
+	UVs->reserve(TextureEntities.size());
+	glm::vec3 min = box.min - box.center;
+	glm::vec3 max = box.max - box.center;
+	for (const auto & entt : TextureEntities)
+	{
+		UVs->push_back(ComputePlanarUV(entt, min.x, max.x, min.y, max.y));
+	}
+	return UVs;
+}
+
+std::shared_ptr<std::vector<glm::vec2>> Math::ComputeCylindricalUVs(const std::vector<glm::vec3> TextureEntities, const BoundingBox& box)
+{
+	std::shared_ptr<std::vector<glm::vec2>> UVs = std::make_shared<std::vector<glm::vec2>>();
+	UVs->reserve(TextureEntities.size());
+	glm::vec3 min = box.min - box.center;
+	glm::vec3 max = box.max - box.center;
+	for (const auto& entt : TextureEntities)
+	{
+		UVs->push_back(ComputeCylindricalUV(entt, min.y, max.y));
+	}
+	return UVs;
+}
+
+std::shared_ptr<std::vector<glm::vec2>> Math::ComputeSphericalUVs(const std::vector<glm::vec3> TextureEntities)
+{
+	std::shared_ptr<std::vector<glm::vec2>> UVs = std::make_shared<std::vector<glm::vec2>>();
+	UVs->reserve(TextureEntities.size());
+	for (const auto& entt : TextureEntities)
+	{
+		UVs->push_back(ComputeSphericalUV(entt));
+	}
+	return UVs;
+}
+
+std::shared_ptr<std::vector<glm::vec2>> Math::ComputeCubeMapUVs(const std::vector<glm::vec3> TextureEntities)
+{
+	std::shared_ptr<std::vector<glm::vec2>> UVs = std::make_shared<std::vector<glm::vec2>>();
+	UVs->reserve(TextureEntities.size());
+	for (const auto& entt : TextureEntities)
+	{
+		UVs->push_back(ComputeCubeMapUV(entt));
+	}
+	return UVs;
+}
+

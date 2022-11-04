@@ -150,6 +150,7 @@
     <ClInclude Include="Core\Data\TextureData.h" />
     <ClInclude Include="Core\Data\Texture.h" />
     <ClInclude Include="Core\Data\BoundingBox.h" />
+    <ClInclude Include="Core\Data\UV.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -232,5 +233,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Data\Texture.cpp" />
+    <ClCompile Include="Core\Data\UV.cpp" />
   </ItemGroup>
 </Project>

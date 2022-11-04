@@ -69,7 +69,7 @@ std::shared_ptr<std::vector<glm::vec3>> LineMesh::GetVertices() const
 
 
 Mesh::Mesh()
-	:BaseMesh(DrawType::Triangles, true)
+	:BaseMesh(DrawType::Triangles, true), m_UseUV(false)
 {
 }
 
@@ -99,10 +99,22 @@ void Mesh::SetBoundingBox(std::shared_ptr<BoundingBox> bounding_box)
 	m_BoundingBox = bounding_box;
 }
 
+void Mesh::SetUV(std::shared_ptr<UV> uv)
+{
+	m_UseUV = true;
+	m_UV = uv;
+}
+
+bool Mesh::HasUV() const
+{
+	return m_UseUV;
+}
+
 void Mesh::AttachBuffer(std::shared_ptr<VertexBuffer> buffer)
 {
 	m_Buffer = buffer;
 }
+
 
 std::shared_ptr<VertexBuffer> Mesh::GetBuffer() const
 {
@@ -117,6 +129,11 @@ std::shared_ptr<ElementBuffer> Mesh::GetIndexBuffer() const
 std::shared_ptr<BoundingBox> Mesh::GetBoundingBox() const
 {
 	return m_BoundingBox;
+}
+
+std::shared_ptr<UV> Mesh::GetUV() const
+{
+	return m_UV;
 }
 
 void Mesh::AttachBuffer(std::shared_ptr<ElementBuffer> buffer)
