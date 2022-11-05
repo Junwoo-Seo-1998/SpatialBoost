@@ -21,6 +21,7 @@ in VS_OUT{
 uniform LightData Light[MAX_LIGHTS];
 uniform int LightNumbers;
 
+uniform vec3 globalAmbient;
 uniform AttenuationData Attenuation;
 
 uniform vec3 CameraPosition;
@@ -87,7 +88,7 @@ void main()
     {
         mat.Diffuse=vec3(texture(DiffuseTexture,UV));
         mat.Specular=vec3(texture(SpecularTexture,UV));
-        mat.Shininess=mat.Specular.r;
+        mat.Shininess=mat.Specular.r*mat.Specular.r;
     }
     vec3 TotalColor=Material.Emissive;
     for(int i=0; i<LightNumbers; ++i)
@@ -106,5 +107,5 @@ void main()
         }
     }
     TotalColor=ComputeFog(Fog, TotalColor, ViewDistance);
-	FragColor = vec4(TotalColor, 1.0);
+	FragColor = vec4(globalAmbient+TotalColor, 1.0);
 } 

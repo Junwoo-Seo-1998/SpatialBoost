@@ -254,6 +254,7 @@ void Scenario_1::Update()
 			i++;
 		}
 	}
+
 	current_shader->SetInt("LightNumbers", light_number);
 	current_shader->SetFloat3("CameraPosition", { 0,2,5 });
 	current_shader->SetFloat3("Material.Ambient", Mat_Ambient);
@@ -267,9 +268,10 @@ void Scenario_1::Update()
 	current_shader->SetTexture("DiffuseTexture", AssetManager::GetTexture("diff"), 0);
 	current_shader->SetTexture("SpecularTexture", AssetManager::GetTexture("spec"), 1);
 
-	current_shader->SetFloat("Attenuation.c1", 1.f);
-	current_shader->SetFloat("Attenuation.c2", 0.4f);
-	current_shader->SetFloat("Attenuation.c3", 0.03f);
+	current_shader->SetFloat3("globalAmbient", Global_Ambient_Color);
+	current_shader->SetFloat("Attenuation.c1", c1);
+	current_shader->SetFloat("Attenuation.c2", c2);
+	current_shader->SetFloat("Attenuation.c3", c3);
 
 	current_shader->SetFloat("Fog.Near", fog_near);
 	current_shader->SetFloat("Fog.Far", fog_far);
@@ -371,6 +373,12 @@ void Scenario_1::LateUpdate()
 	ImGui::RadioButton("FaceNormals", &radio, static_cast<int>(select::DrawFaceNormal));
 	ImGui::Checkbox("Pause Rotation", &StopRotation);
 	ImGui::DragInt("Light Numbers", &light_number, 1, 1, 16);
+
+	ImGui::ColorEdit3("Global Ambient", &Global_Ambient_Color[0]);
+	ImGui::DragFloat("Attenuation.c1", &c1,0.1f,0.f,1.f);
+	ImGui::DragFloat("Attenuation.c2", &c2,0.1f,0.f,1.f);
+	ImGui::DragFloat("Attenuation.c3", &c3,0.1f,0.f,1.f);
+
 
 	ImGui::Text("Material");
 	ImGui::DragFloat3("Material Ambient", &Mat_Ambient[0], 0.1f, 0.001f, 1.f);

@@ -44,6 +44,10 @@ private:
 
 	std::string current_mesh = "bunny";
 
+	glm::vec3 Global_Ambient_Color = { 0.01f,0.0f,0.01f };
+	float c1 = 1.f;
+	float c2 = 0.4f;
+	float c3 = 0.03f;
 
 	glm::vec4 Mat_Ambient = { 0.001f,0.001f,0.001f,1.f };
 	glm::vec4 Mat_Emissive{ 0.0f };

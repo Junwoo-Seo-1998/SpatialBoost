@@ -276,9 +276,10 @@ void Scenario_2::Update()
 	current_shader->SetTexture("DiffuseTexture", AssetManager::GetTexture("diff"), 0);
 	current_shader->SetTexture("SpecularTexture", AssetManager::GetTexture("spec"), 1);
 
-	current_shader->SetFloat("Attenuation.c1", 1.f);
-	current_shader->SetFloat("Attenuation.c2", 0.4f);
-	current_shader->SetFloat("Attenuation.c3", 0.03f);
+	current_shader->SetFloat3("globalAmbient", Global_Ambient_Color);
+	current_shader->SetFloat("Attenuation.c1", c1);
+	current_shader->SetFloat("Attenuation.c2", c2);
+	current_shader->SetFloat("Attenuation.c3", c3);
 
 	current_shader->SetFloat("Fog.Near", fog_near);
 	current_shader->SetFloat("Fog.Far", fog_far);
@@ -308,7 +309,6 @@ void Scenario_2::Update()
 			}
 
 		}
-
 
 		current_shader->SetInt("useTexture", 1);
 		if (useCpu)
@@ -381,6 +381,12 @@ void Scenario_2::LateUpdate()
 	ImGui::Checkbox("Pause Rotation", &StopRotation);
 	ImGui::DragInt("Light Numbers", &light_number, 1, 1, 16);
 
+	ImGui::ColorEdit3("Global Ambient", &Global_Ambient_Color[0]);
+	ImGui::DragFloat("Attenuation.c1", &c1, 0.1f, 0.f, 1.f);
+	ImGui::DragFloat("Attenuation.c2", &c2, 0.1f, 0.f, 1.f);
+	ImGui::DragFloat("Attenuation.c3", &c3, 0.1f, 0.f, 1.f);
+
+
 	ImGui::Text("Material");
 	ImGui::DragFloat3("Material Ambient", &Mat_Ambient[0], 0.1f, 0.001f, 1.f);
 	ImGui::DragFloat3("Material Emissive", &Mat_Emissive[0], 0.1f, 0.001f, 1.f);
@@ -394,8 +400,6 @@ void Scenario_2::LateUpdate()
 	{
 		ImGui::DragInt("Select Light", &current_light, 1, 1, 16);
 		auto& light_comp = Lights[current_light - 1].GetComponent<LightComponent>();
-		//int light_type = static_cast<int>(light_comp.light.m_LightType);
-		//light_comp.light.m_LightType = static_cast<LightType>(light_type);
 
 		ImGui::ColorEdit4("Ambient Color", &light_comp.light.Ambient[0]);
 		ImGui::ColorEdit4("Diffuse Color", &light_comp.light.Diffuse[0]);

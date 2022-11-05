@@ -174,6 +174,11 @@ void Shader::Reload()
 	glDeleteShader(frag);
 }
 
+GLuint Shader::GetProgramID()
+{
+	return m_ShaderProgram;
+}
+
 GLuint Shader::CompileShader(const std::string& src, ShaderFlag flags)
 {
 	GLenum type = GL_NONE;
