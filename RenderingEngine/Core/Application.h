@@ -37,7 +37,9 @@ public:
 
 	void SetCurrentScene(std::shared_ptr<Scene> scene);
 
+	std::shared_ptr<LayerManager> GetLayerManager();
 
+	std::tuple<int, int> GetWindowSize();
 	//for user to access it 
 protected:
 	static Application* s_Instance;

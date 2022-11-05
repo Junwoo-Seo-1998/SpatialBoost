@@ -34,7 +34,7 @@ bool WindowGLFW::Init()
 	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 	std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
-	glClearColor(0.529f, 0.808f, 0.98f, 1.f);
+	glClearColor(0.f,0.f,0.f, 1.f);
 
 	//set glfw callback
 		//so that we can use data of window in glfw call backs.

@@ -10,20 +10,19 @@ enum class LightType
 
 struct Light
 {
-	LightType m_LightType;
-	glm::vec3 position;
-	glm::vec3 direction;
-	glm::vec3 data;
-
+	LightType m_LightType{ LightType::PointLight };
+	glm::vec3 position{};
+	glm::vec3 direction{};
 	struct 
 	{
-		float inner;
-		float outer;
+		float inner = 30.f;
+		float outer = 45.f;
 	} m_Angle;
 
-	glm::vec3 Ambient;
-	glm::vec3 Diffuse;
-	glm::vec3 Specular;
+	glm::vec3 Ambient{1.f};
+	glm::vec3 Diffuse{1.f};
+	glm::vec3 Specular{1.f};
+	float falloff{ 32.f };
 };
 
 struct Att

@@ -10,10 +10,10 @@ struct BoundingBox;
 
 enum class UVTypes
 {
-	Planar=0,
-	CubeMap,
+	Cylindrical=0,
 	Spherical,
-	Cylindrical,
+	CubeMap,
+	Planar,
 	Types,
 };
 

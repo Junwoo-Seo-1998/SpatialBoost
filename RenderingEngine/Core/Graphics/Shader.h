@@ -42,10 +42,15 @@ public:
 	void SetMat4(const std::string& name, const glm::mat4& value) const;
 
 	void SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned int unit = 0);
+
+	void Reload();
 private:
 	GLuint CompileShader(const std::string& src, ShaderFlag flags);
 	GLuint CompileShader(const std::string& common, const std::string& src, ShaderFlag flags);
 	GLuint m_ShaderProgram;
+	const std::string common;
+	const std::string vertex_src;
+	const std::string fragment_src;
 };
 
 

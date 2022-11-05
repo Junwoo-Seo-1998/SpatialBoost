@@ -15,6 +15,7 @@ End Header --------------------------------------------------------*/
 #include "glm/gtc/type_ptr.hpp"
 #include "Core/Data/Texture.h"
 Shader::Shader(const std::string& vertex_src, const std::string& fragment_src)
+	:common(""), vertex_src(vertex_src), fragment_src(fragment_src)
 {
 	GLuint vert = CompileShader(vertex_src, ShaderFlag::VertexShader);
 	GLuint frag = CompileShader(fragment_src, ShaderFlag::FragmentShader);
@@ -40,6 +41,7 @@ Shader::Shader(const std::string& vertex_src, const std::string& fragment_src)
 
 Shader::Shader(const std::string& common, const std::string& vertex_src,
 	const std::string& fragment_src)
+	:common(common), vertex_src(vertex_src), fragment_src(fragment_src)
 {
 	GLuint vert = CompileShader(common, vertex_src, ShaderFlag::VertexShader);
 	GLuint frag = CompileShader(common, fragment_src, ShaderFlag::FragmentShader);
@@ -144,6 +146,32 @@ void Shader::SetTexture(const std::string& name, std::shared_ptr<Texture> textur
 	}
 	texture->Bind(unit);
 	glUniform1i(location, unit);
+}
+
+void Shader::Reload()
+{
+	glUseProgram(0);
+	glDeleteProgram(m_ShaderProgram);
+
+	GLuint vert = CompileShader(common, vertex_src, ShaderFlag::VertexShader);
+	GLuint frag = CompileShader(common, fragment_src, ShaderFlag::FragmentShader);
+
+	m_ShaderProgram = glCreateProgram();
+	glAttachShader(m_ShaderProgram, vert);
+	glAttachShader(m_ShaderProgram, frag);
+	glLinkProgram(m_ShaderProgram);
+
+	int  success;
+	char infoLog[512];
+	glGetProgramiv(m_ShaderProgram, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(m_ShaderProgram, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
+		assert(true, "ERROR::SHADER::PROGRAM::LINK_FAILED\n");
+	}
+
+	glDeleteShader(vert);
+	glDeleteShader(frag);
 }
 
 GLuint Shader::CompileShader(const std::string& src, ShaderFlag flags)

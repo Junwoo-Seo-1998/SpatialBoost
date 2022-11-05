@@ -19,7 +19,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Utils/File.h"
 
 #include "Scene/Scenario_1.h"
-
+#include "Scene/Scenario_2.h"
 
 
 class MyApp : public Application
@@ -27,8 +27,10 @@ class MyApp : public Application
 	virtual void UserDefinedInit() override
 	{
 		AssetManager::LoadShaderFromFile("line_shader", "Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
-		AssetManager::LoadShaderFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+		AssetManager::LoadShaderFromFile("light_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+		AssetManager::LoadShaderFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_light.vert", "Assets/Shaders/phong_light.frag");
 		AssetManager::LoadShaderFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
+		AssetManager::LoadShaderFromFile("Blinn_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/blinn_shading.vert", "Assets/Shaders/blinn_shading.frag");
 
 		AssetManager::LoadMeshFromFile("Assets/4Sphere.obj", "4Sphere");
 		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
@@ -44,8 +46,7 @@ class MyApp : public Application
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f, 10, 10);
 		AssetManager::GenerateSphere("GeneratedSphere", 1.f);
 
-		AssetManager::RegisterScene("MyScene", std::make_shared<Scenario_1>(Application::Get()));
-		SetCurrentScene(AssetManager::GetScene("MyScene"));
+		SetCurrentScene(std::make_shared<Scenario_1>(Application::Get()));
 	}
 };
 std::shared_ptr<Application> CoreMain()

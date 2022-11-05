@@ -33,7 +33,7 @@ void Application::OnEvent(Event& event)
 {
 	EventDispatcher  dispatcher(event);
 	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(OnWindowResize));
-	m_SceneManager->GetCurrentScene()->OnEvent(event);
+
 	auto& overlay = m_LayerManager->GetOverLays();
 	for (auto it = overlay.rbegin(); it != overlay.rend(); ++it)
 	{
@@ -49,6 +49,8 @@ void Application::OnEvent(Event& event)
 			break;
 		(*it)->OnEvent(event);
 	}
+
+	m_SceneManager->GetCurrentScene()->OnEvent(event);
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& event)
@@ -80,6 +82,14 @@ void Application::Update()
 		m_ImGuiRenderer->GuiBegin();
 		m_SceneManager->GetCurrentScene()->Update();
 		m_SceneManager->GetCurrentScene()->LateUpdate();
+		for (auto layer : m_LayerManager->GetLayers())
+		{
+			layer->OnUpdate();
+		}
+		for (auto layer:m_LayerManager->GetOverLays())
+		{
+			layer->OnUpdate();
+		}
 		m_ImGuiRenderer->GuiEnd();
 		m_LayerManager->ClearDeleteQueue();
 		m_Window->Update();
@@ -98,5 +108,17 @@ void Application::Close()
 void Application::SetCurrentScene(std::shared_ptr<Scene> scene)
 {
 	m_SceneManager->SetCurrentScene(scene);
+}
+
+std::shared_ptr<LayerManager> Application::GetLayerManager()
+{
+	return m_LayerManager;
+}
+
+std::tuple<int, int> Application::GetWindowSize()
+{
+	int width, height;
+	glfwGetWindowSize(static_cast<GLFWwindow*>(m_Window->GetWindowHandle()), &width, &height);
+	return { width, height };
 }
 

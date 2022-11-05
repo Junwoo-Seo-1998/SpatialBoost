@@ -36,14 +36,24 @@ uniform BoundingBoxData BoundingBox;
 
 uniform int UVType;
 uniform bool UseCPU;
+uniform bool NormalEntity;
 void main()
 {
     vec3 NormalVector=normalize(fs_in.NormalVector);
     vec3 ViewVector=CameraPosition-fs_in.FragPos;
     float ViewDistance=length(ViewVector);
     ViewVector=ViewVector/ViewDistance;
-	
-    vec3 Entity=fs_in.Entity-BoundingBox.Center;
+
+	vec3 Entity;
+    if(NormalEntity)
+    {
+        Entity=NormalVector;
+    }
+    else
+    {
+        Entity=fs_in.Entity-BoundingBox.Center;
+    }
+
     float Min_x=BoundingBox.Min.x-BoundingBox.Center.x;
     float Max_x=BoundingBox.Max.x-BoundingBox.Center.x;
     float Min_y=BoundingBox.Min.y-BoundingBox.Center.y;

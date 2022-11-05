@@ -1,4 +1,4 @@
-#include "Scenario_1.h"
+#include "Scenario_3.h"
 
 #include <iostream>
 #include <glm/ext/scalar_constants.hpp>
@@ -18,22 +18,22 @@
 #include "Core/Graphics/VertexArray.h"
 #include "Core/Layer/LayerManager.h"
 
-Scenario_1::Scenario_1(Application& app)
+Scenario_3::Scenario_3(Application& app)
 	: Scene(app)
 {
 }
 
-void Scenario_1::Awake()
+void Scenario_3::Awake()
 {
 	overlay = std::make_shared<CommonOverlay>();
 	Application::Get().GetLayerManager()->PushOverlay(overlay);
 }
 
-void Scenario_1::OnEnable()
+void Scenario_3::OnEnable()
 {
 }
 
-void Scenario_1::Start()
+void Scenario_3::Start()
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -71,20 +71,31 @@ void Scenario_1::Start()
 	for (int step = 0; step < 16; ++step)
 	{
 		glm::vec3 position{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
-		auto GeneratedSphere = CreateEntity();
-		GeneratedSphere.GetComponent<TransformComponent>().Position = position;
-		GeneratedSphere.GetComponent<TransformComponent>().Parent = &parent_transform;
-		GeneratedSphere.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("GeneratedOrbitSphere"));
-		GeneratedSphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("GeneratedOrbitSphere"));
-		GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("GeneratedOrbitSphere"));
-		GeneratedSphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
-		auto Light = GeneratedSphere.AddComponent<LightComponent>();
-		Light.light.m_LightType = LightType::SpotLight;
+		Lights[step] = CreateEntity();
+		Lights[step].GetComponent<TransformComponent>().Position = position;
+		Lights[step].GetComponent<TransformComponent>().Parent = &parent_transform;
+		Lights[step].AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("GeneratedOrbitSphere"));
+		Lights[step].AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("GeneratedOrbitSphere"));
+		Lights[step].AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("GeneratedOrbitSphere"));
+		Lights[step].AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
+
+		auto& Light = Lights[step].AddComponent<LightComponent>();
+		if(step%6==1)
+			Light.light.m_LightType = LightType::DirectionLight;
+		else if(step%2==1)
+			Light.light.m_LightType = LightType::PointLight;
+		else
+			Light.light.m_LightType = LightType::SpotLight;
+		glm::vec3 random{ (glm::cos(step) + 1.f) / 2.f,(glm::sin(step) + 1.f) / 2.f, (1.f) / 2.f };
+		Light.light.Diffuse = random;
+		Light.light.Ambient = random;
+		Light.light.Specular = random;
+
 		theta += d_theta;
 	}
 }
 
-void Scenario_1::Update()
+void Scenario_3::Update()
 {
 	auto [width, height] = Application::Get().GetWindowSize();
 	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
@@ -120,7 +131,7 @@ void Scenario_1::Update()
 		orbit_trans.Rotation.y += orbit_trans.Rotation.y >= 360.f ? -360.f + m_orbit_speed * dt : m_orbit_speed * dt;
 	}
 
-	
+
 
 	vertex_array->Bind();
 	line_shader->Use();
@@ -208,13 +219,13 @@ void Scenario_1::Update()
 		int i = 0;
 		for (auto& entity : Meshes)
 		{
-			if(i==light_number)
+			if (i == light_number)
 				break;
 			auto [TransformComp, MeshRendererComp, LightComp] = Meshes.get<TransformComponent, VertexNormalMeshRendererComponent, LightComponent>(entity);
 			glm::mat4 model = TransformComp.GetTransform();
 			light_shader->SetMat4("Matrix.Model", model);
 			vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
-			light_shader->SetFloat4("BaseColor", Light_Diffuse_Color);
+			light_shader->SetFloat4("BaseColor", glm::vec4(LightComp.light.Diffuse, 1.f));
 			if (MeshRendererComp.mesh->GetUseIndex())
 			{
 				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
@@ -228,6 +239,9 @@ void Scenario_1::Update()
 		}
 	}
 
+
+
+
 	current_shader->Use();
 	current_shader->SetMat4("Matrix.View", world_to_cam);
 	current_shader->SetMat4("Matrix.Projection", perspective);
@@ -240,24 +254,24 @@ void Scenario_1::Update()
 				break;
 			auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
 			std::string to_string = std::to_string(i);
-			current_shader->SetInt("Light[" + to_string + "].LightType", light_type);
+			current_shader->SetInt("Light[" + to_string + "].LightType", static_cast<int>(Light.light.m_LightType));
 			glm::vec3 lightPos = glm::vec3(TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f));
 			current_shader->SetFloat3("Light[" + to_string + "].Position", lightPos);
 			current_shader->SetFloat3("Light[" + to_string + "].Direction", glm::vec3{ 0, -1, 0 } - lightPos);
-			current_shader->SetFloat("Light[" + to_string + "].InnerAngle", glm::radians(inner));
-			current_shader->SetFloat("Light[" + to_string + "].OuterAngle", glm::radians(outer));
-			current_shader->SetFloat("Light[" + to_string + "].FallOff", falloff);
+			current_shader->SetFloat("Light[" + to_string + "].InnerAngle", glm::radians(Light.light.m_Angle.inner));
+			current_shader->SetFloat("Light[" + to_string + "].OuterAngle", glm::radians(Light.light.m_Angle.outer));
+			current_shader->SetFloat("Light[" + to_string + "].FallOff", Light.light.falloff);
 
-			current_shader->SetFloat3("Light[" + to_string + "].Ambient", Light_Ambient_Color);
-			current_shader->SetFloat3("Light[" + to_string + "].Diffuse", Light_Diffuse_Color);
-			current_shader->SetFloat3("Light[" + to_string + "].Specular", Light_Specular_Color);
+			current_shader->SetFloat3("Light[" + to_string + "].Ambient", Light.light.Ambient);
+			current_shader->SetFloat3("Light[" + to_string + "].Diffuse", Light.light.Diffuse);
+			current_shader->SetFloat3("Light[" + to_string + "].Specular", Light.light.Specular);
 			i++;
 		}
 	}
 	current_shader->SetInt("LightNumbers", light_number);
 	current_shader->SetFloat3("CameraPosition", { 0,2,5 });
 	current_shader->SetFloat3("Material.Ambient", Mat_Ambient);
-	current_shader->SetFloat3("Material.Diffuse", { 1.0f/16.f,1.0f / 16.f,1.0f / 16.f });
+	current_shader->SetFloat3("Material.Diffuse", { 1.0f / 16.f,1.0f / 16.f,1.0f / 16.f });
 	current_shader->SetFloat3("Material.Specular", { 0.5f,0.5f,0.5f });
 	current_shader->SetFloat3("Material.Emissive", Mat_Emissive);
 	current_shader->SetFloat("Material.Shininess", 32.f);
@@ -302,7 +316,7 @@ void Scenario_1::Update()
 
 
 		current_shader->SetInt("useTexture", 1);
-		if(useCpu)
+		if (useCpu)
 			current_shader->SetInt("UseCPU", 1);
 		else
 			current_shader->SetInt("UseCPU", 0);
@@ -325,7 +339,7 @@ void Scenario_1::Update()
 			current_shader->SetFloat3("BoundingBox.Center", box->center);
 			if (MeshRendererComp.mesh->HasUV())
 			{
-				if(TextureEntity==0)
+				if (TextureEntity == 0)
 					vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetUV()->GetPointUVBuffer(static_cast<UVTypes>(current_uv_method)));
 				else
 					vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetUV()->GetNormalUVBuffer(static_cast<UVTypes>(current_uv_method)));
@@ -344,7 +358,7 @@ void Scenario_1::Update()
 	}
 }
 
-void Scenario_1::LateUpdate()
+void Scenario_3::LateUpdate()
 {
 
 	ImGui::Begin("Control");
@@ -376,33 +390,41 @@ void Scenario_1::LateUpdate()
 	ImGui::DragFloat3("Material Ambient", &Mat_Ambient[0], 0.1f, 0.001f, 1.f);
 	ImGui::DragFloat3("Material Emissive", &Mat_Emissive[0], 0.1f, 0.001f, 1.f);
 
-	ImGui::Text("Light Type");
 
-	
-	ImGui::RadioButton("PointLight", &light_type, static_cast<int>(LightType::PointLight)); ImGui::SameLine();
-	ImGui::RadioButton("DirectionLight", &light_type, static_cast<int>(LightType::DirectionLight)); ImGui::SameLine();
-	ImGui::RadioButton("SpotLight", &light_type, static_cast<int>(LightType::SpotLight));
+	ImGui::Text("Light Settings");
 
-	ImGui::ColorEdit4("Ambient Color", &Light_Ambient_Color[0]);
-	ImGui::ColorEdit4("Diffuse Color", &Light_Diffuse_Color[0]);
-	ImGui::ColorEdit4("Specular Color", &Light_Specular_Color[0]);
-
-	switch (light_type)
 	{
-	case 0:
-		
-		break;
-	case 1:
+		ImGui::DragInt("Select Light", &current_light, 1, 1, 16);
+		auto& light_comp = Lights[current_light - 1].GetComponent<LightComponent>();
+		int light_type = static_cast<int>(light_comp.light.m_LightType);
+		ImGui::RadioButton("PointLight", &light_type, static_cast<int>(LightType::PointLight)); ImGui::SameLine();
+		ImGui::RadioButton("DirectionLight", &light_type, static_cast<int>(LightType::DirectionLight)); ImGui::SameLine();
+		ImGui::RadioButton("SpotLight", &light_type, static_cast<int>(LightType::SpotLight));
+		light_comp.light.m_LightType = static_cast<LightType>(light_type);
+		ImGui::ColorEdit4("Ambient Color", &light_comp.light.Ambient[0]);
+		ImGui::ColorEdit4("Diffuse Color", &light_comp.light.Diffuse[0]);
+		ImGui::ColorEdit4("Specular Color", &light_comp.light.Specular[0]);
 
-		break;
-	case 2:
-		ImGui::DragFloat("InnerAngle", &inner, 1.f, 0.f, outer - 1.f);
-		ImGui::DragFloat("OuterAngle", &outer, 1.f, inner + 1.f, 360.f);
-		ImGui::DragFloat("FallOff", &falloff, 1.f, 1.f, 100.f);
-		break;
+		switch (light_type)
+		{
+		case 0:
+
+			break;
+		case 1:
+
+			break;
+		case 2:
+			ImGui::DragFloat("InnerAngle", &light_comp.light.m_Angle.inner, 1.f, 0.f, light_comp.light.m_Angle.outer - 1.f);
+			ImGui::DragFloat("OuterAngle", &light_comp.light.m_Angle.outer, 1.f, light_comp.light.m_Angle.inner + 1.f, 360.f);
+			ImGui::DragFloat("FallOff", &light_comp.light.falloff, 1.f, 1.f, 100.f);
+			break;
+		}
 	}
-
 	ImGui::ColorEdit4("Line Color", &line_color[0]);
+	ImGui::ColorEdit3("Fog Color", &fog_color[0]);
+	ImGui::DragFloat("Fog Near", &fog_near, 0.5f, 1.f, fog_far - 1.f);
+	ImGui::DragFloat("Fog Far", &fog_far, 0.5f, fog_near + 1.f, 200.f);
+
 	const char* shaders[] =
 	{
 		"Phong_Shading","Phong_Lighting","Blinn_Shading"
@@ -421,13 +443,9 @@ void Scenario_1::LateUpdate()
 		ImGui::EndCombo();
 	}
 
-	ImGui::ColorEdit3("Fog Color", &fog_color[0]);
-	ImGui::DragFloat("Fog Near", &fog_near, 0.5f, 1.f, fog_far - 1.f);
-	ImGui::DragFloat("Fog Far", &fog_far, 0.5f, fog_near + 1.f, 200.f);
-
-	if(ImGui::Button("Reload"))
+	if (ImGui::Button("Reload"))
 	{
-		if(selected_shader== "Phong_Shading")
+		if (selected_shader == "Phong_Shading")
 		{
 			current_shader = AssetManager::ReloadSherFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
 		}
@@ -435,11 +453,11 @@ void Scenario_1::LateUpdate()
 		{
 			current_shader = AssetManager::ReloadSherFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_light.vert", "Assets/Shaders/phong_light.frag");
 		}
-		if(selected_shader == "Blinn_Shading")
+		if (selected_shader == "Blinn_Shading")
 		{
 			current_shader = AssetManager::ReloadSherFromFile("Blinn_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/blinn_shading.vert", "Assets/Shaders/blinn_shading.frag");
 		}
-		
+
 	}
 	ImGui::Text("UV Control");
 	ImGui::Checkbox("Use CPU", &useCpu);
@@ -455,11 +473,11 @@ void Scenario_1::LateUpdate()
 	ImGui::End();
 }
 
-void Scenario_1::OnDisable()
+void Scenario_3::OnDisable()
 {
 }
 
-void Scenario_1::OnDestroy()
+void Scenario_3::OnDestroy()
 {
 	Application::Get().GetLayerManager()->PopOverlay(overlay);
 	glBindBuffer(GL_VERTEX_ARRAY, 0);
@@ -467,7 +485,7 @@ void Scenario_1::OnDestroy()
 
 }
 
-void Scenario_1::OnEvent(Event& event)
+void Scenario_3::OnEvent(Event& event)
 {
 	EventDispatcher dispatcher(event);
 

@@ -4,17 +4,16 @@
 #include "Core/Scene/Scene.h"
 #include "Core/Utils/Math.h"
 #include "DemoEnums/DemoEnums.h"
-#include "Core/Data/UV.h"
-#include "Core/Data/Light.h"
+
 class Layer;
 class VertexBuffer;
 class Shader;
 class VertexArray;
 
-class Scenario_1 : public Scene
+class Scenario_2 : public Scene
 {
 public:
-	Scenario_1(Application& app);
+	Scenario_2(Application& app);
 	void Awake() override;
 	void OnEnable() override;
 	void Start() override;
@@ -33,7 +32,7 @@ private:
 	glm::mat4 world_to_cam = Math::BuildCameraMatrix({ 0,2,8 }, { 0,0,0 }, { 0,1,0 });
 	glm::vec3 light_pos = { 0,0,2 };
 
-	bool StopRotation=false;
+	bool StopRotation = false;
 
 	bool cullBackFace = true;
 	bool drawNormal = false;
@@ -41,26 +40,22 @@ private:
 
 	Entity demo_mesh;
 	Entity orbit;
+	Entity Lights[16];
 
 	std::string current_mesh = "bunny";
 
-	
+
 	glm::vec4 Mat_Ambient = { 0.001f,0.001f,0.001f,1.f };
 	glm::vec4 Mat_Emissive{ 0.0f };
 
 	int light_number = 8;
 	int light_type = 0;
-	glm::vec4 Light_Ambient_Color = { 0.5f,0.5f,0.5f,1.f };
-	glm::vec4 Light_Diffuse_Color = { 0.8f,0.8f,0.8f,1.f };
-	glm::vec4 Light_Specular_Color = { 0.5f,0.5f,0.5f,1.f };
+	int current_light = 1;
+
 	glm::vec4 line_color = { 1.f,1.f, 0.f,1.f };
 	glm::vec4 fog_color{ 0.5f };
 	float fog_near = 0.1f;
 	float fog_far = 20.f;
-
-	float inner = 30.f;
-	float outer = 45.f;
-	float falloff = 32.f;
 
 
 	float m_LastTime = 0.f;

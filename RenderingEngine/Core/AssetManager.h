@@ -34,7 +34,7 @@ public:
 
 	static std::shared_ptr<Shader> LoadShaderFromFile(const std::string& key_name, const std::string& vert_file, const std::string& frag_file);
 	static std::shared_ptr<Shader> LoadShaderFromFile(const std::string& key_name, const std::string& common_file, const std::string& vert_file, const std::string& frag_file);
-
+	static std::shared_ptr<Shader> ReloadSherFromFile(const std::string& key_name, const std::string& common_file, const std::string& vert_file, const std::string& frag_file);
 	static std::shared_ptr<Shader> GetShader(const std::string& key_name);
 
 	static std::shared_ptr<Texture> LoadTextureFromFile(const std::string& key_name, const std::string& file_name);

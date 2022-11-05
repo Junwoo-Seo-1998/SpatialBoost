@@ -2,22 +2,24 @@
 Copyright (C) 2022 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the prior written
 consent of DigiPen Institute of Technology is prohibited.
-File Name: phong_shading.frag
+File Name: light.vert
 Purpose: shader source for the engine.
 Language: C++ MSVC(2022)
 Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
-Project: junwoo.seo_cs300_1, junwoo.seo_cs300_2
+Project: junwoo.seo_cs300_1
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 
-in VS_OUT{ 
-    vec3 Entity;
-	vec3 FragPos;
-	vec3 NormalVector;
-    vec2 UV;
-} fs_in; 
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aUV;
 
+out VS_OUT{ 
+    vec3 outColor; 
+} vs_out; 
+
+uniform MatrixData Matrix;
 uniform LightData Light[MAX_LIGHTS];
 uniform int LightNumbers;
 
@@ -39,19 +41,24 @@ uniform bool UseCPU;
 uniform bool NormalEntity;
 void main()
 {
-    vec3 NormalVector=normalize(fs_in.NormalVector);
-    vec3 ViewVector=CameraPosition-fs_in.FragPos;
+	gl_Position = Matrix.Projection*Matrix.View*Matrix.Model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
+
+	//
+	vec3 WorldPos = vec3(Matrix.Model*vec4(aPos,1.0));
+	vec3 NormalVector=normalize(mat3(Matrix.Normal) * aNormal);
+	vec3 ViewVector=CameraPosition-WorldPos;
     float ViewDistance=length(ViewVector);
     ViewVector=ViewVector/ViewDistance;
 
-	vec3 Entity;
+
+ 	vec3 Entity;
     if(NormalEntity)
     {
-        Entity=NormalVector;
+        Entity=aNormal;
     }
     else
     {
-        Entity=fs_in.Entity-BoundingBox.Center;
+        Entity=aPos-BoundingBox.Center;
     }
 
     float Min_x=BoundingBox.Min.x-BoundingBox.Center.x;
@@ -61,7 +68,7 @@ void main()
     vec2 UV;
     if(UseCPU)
     {
-        UV=fs_in.UV;
+        UV=aUV;
     }
     else
     {
@@ -82,7 +89,7 @@ void main()
         }
     }
 
-    MaterialData mat=Material;
+	MaterialData mat=Material;
     if(useTexture)
     {
         mat.Diffuse=vec3(texture(DiffuseTexture,UV));
@@ -95,16 +102,17 @@ void main()
         switch (Light[i].LightType)
         {
             case 0:
-                TotalColor+=ComputePointLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
+                TotalColor+=ComputePointLight(Light[i], Attenuation, mat, WorldPos, NormalVector, ViewVector);
                 break;
             case 1:
-                TotalColor+=ComputeDirectionLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
+                TotalColor+=ComputeDirectionLight(Light[i], Attenuation, mat, WorldPos, NormalVector, ViewVector);
                 break;
             case 2:
-                TotalColor+=ComputeSpotLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
+                TotalColor+=ComputeSpotLight(Light[i], Attenuation, mat, WorldPos, NormalVector, ViewVector);
                 break;
         }
     }
     TotalColor=ComputeFog(Fog, TotalColor, ViewDistance);
-	FragColor = vec4(TotalColor, 1.0);
-} 
+
+	vs_out.outColor=TotalColor;
+}

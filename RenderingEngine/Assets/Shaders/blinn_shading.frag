@@ -2,7 +2,7 @@
 Copyright (C) 2022 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the prior written
 consent of DigiPen Institute of Technology is prohibited.
-File Name: phong_shading.frag
+File Name: blinn_shading.frag
 Purpose: shader source for the engine.
 Language: C++ MSVC(2022)
 Platform: MSVC(2022), GPU needs to support OpenGL 4.6.0, Windows11(x64)
@@ -43,8 +43,8 @@ void main()
     vec3 ViewVector=CameraPosition-fs_in.FragPos;
     float ViewDistance=length(ViewVector);
     ViewVector=ViewVector/ViewDistance;
-
-	vec3 Entity;
+	
+    vec3 Entity;
     if(NormalEntity)
     {
         Entity=NormalVector;
@@ -95,13 +95,13 @@ void main()
         switch (Light[i].LightType)
         {
             case 0:
-                TotalColor+=ComputePointLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
+                TotalColor+=ComputeBlinnPointLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
                 break;
             case 1:
-                TotalColor+=ComputeDirectionLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
+                TotalColor+=ComputeBlinnDirectionLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
                 break;
             case 2:
-                TotalColor+=ComputeSpotLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
+                TotalColor+=ComputeBlinnSpotLight(Light[i], Attenuation, mat, fs_in.FragPos, NormalVector, ViewVector);
                 break;
         }
     }

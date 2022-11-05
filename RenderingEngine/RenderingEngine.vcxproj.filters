@@ -151,6 +151,9 @@
     <ClInclude Include="Core\Data\Texture.h" />
     <ClInclude Include="Core\Data\BoundingBox.h" />
     <ClInclude Include="Core\Data\UV.h" />
+    <ClInclude Include="Scene\Scenario_2.h" />
+    <ClInclude Include="Scene\DemoEnums\DemoEnums.h" />
+    <ClInclude Include="Scene\Scenario_3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -234,5 +237,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Data\Texture.cpp" />
     <ClCompile Include="Core\Data\UV.cpp" />
+    <ClCompile Include="Scene\Scenario_2.cpp" />
+    <ClCompile Include="Scene\Scenario3.cpp" />
   </ItemGroup>
 </Project>
