@@ -46,6 +46,9 @@
     <Filter Include="Scene\CommonOverlay">
       <UniqueIdentifier>{6D732F7A-D9D4-0C88-6242-533ACEA24347}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\DemoEnums">
+      <UniqueIdentifier>{2F82571D-9B0D-C5E1-A41E-48D6102921E2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h">
@@ -66,6 +69,9 @@
     <ClInclude Include="Core\Component\TransformComponent.h">
       <Filter>Core\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Data\BoundingBox.h">
+      <Filter>Core\Data</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Data\Light.h">
       <Filter>Core\Data</Filter>
     </ClInclude>
@@ -73,6 +79,15 @@
       <Filter>Core\Data</Filter>
     </ClInclude>
     <ClInclude Include="Core\Data\Mesh.h">
+      <Filter>Core\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Data\Texture.h">
+      <Filter>Core\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Data\TextureData.h">
+      <Filter>Core\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Data\UV.h">
       <Filter>Core\Data</Filter>
     </ClInclude>
     <ClInclude Include="Core\Data\Vertex.h">
@@ -144,16 +159,18 @@
     <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h">
       <Filter>Scene\CommonOverlay</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\DemoEnums\DemoEnums.h">
+      <Filter>Scene\DemoEnums</Filter>
+    </ClInclude>
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Data\TextureData.h" />
-    <ClInclude Include="Core\Data\Texture.h" />
-    <ClInclude Include="Core\Data\BoundingBox.h" />
-    <ClInclude Include="Core\Data\UV.h" />
-    <ClInclude Include="Scene\Scenario_2.h" />
-    <ClInclude Include="Scene\DemoEnums\DemoEnums.h" />
-    <ClInclude Include="Scene\Scenario_3.h" />
+    <ClInclude Include="Scene\Scenario_2.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scenario_3.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -169,6 +186,12 @@
       <Filter>Core\Component</Filter>
     </ClCompile>
     <ClCompile Include="Core\Data\Mesh.cpp">
+      <Filter>Core\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Data\Texture.cpp">
+      <Filter>Core\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Data\UV.cpp">
       <Filter>Core\Data</Filter>
     </ClCompile>
     <ClCompile Include="Core\Event\ApplicationEvents\ApplicationEvents.cpp">
@@ -231,13 +254,15 @@
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp">
       <Filter>Scene\CommonOverlay</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Scenario3.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Scene\Scenario_1.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Scenario_2.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Data\Texture.cpp" />
-    <ClCompile Include="Core\Data\UV.cpp" />
-    <ClCompile Include="Scene\Scenario_2.cpp" />
-    <ClCompile Include="Scene\Scenario3.cpp" />
   </ItemGroup>
 </Project>

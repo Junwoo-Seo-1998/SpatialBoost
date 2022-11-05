@@ -173,8 +173,8 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
     <ClCompile Include="Scene\Scenario3.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\Scenario_2.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libs\glfw\GLFW.vcxproj">
