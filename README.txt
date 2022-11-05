@@ -26,6 +26,7 @@ explanation on why those parts are not completed?
 
 in Assets/Shaders folder there are shader sources for vertex and fragment shaders to draw Phong stuffs and blinn shaders.
 in RenderingEngine/Core/Graphics Folder for graphics stuff.
+in RenderingEngine/Core/Data Folder for graphics data type stuff like light data.
 in Math.h files for uv computing.
 For Shader files (Assets/Shaders/*.*)
 For Scene setups Scene/*.cpp and Scene/*.h
