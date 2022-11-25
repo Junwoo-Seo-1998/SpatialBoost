@@ -96,10 +96,27 @@ void Scenario_1::Start()
 
 void Scenario_1::Update()
 {
+	vertex_array->Bind();
 	auto [width, height] = Application::Get().GetWindowSize();
 	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), AspectRatio, 0.1f, 1000.f);
+	glDepthMask(GL_FALSE);
+	auto skybox = AssetManager::GetShader("skybox_shader");
+	skybox->Use();
+	vertex_array->AttachBuffer(*AssetManager::GetSkybox());
+	skybox->SetMat4("view", glm::mat3{ world_to_cam });
+	skybox->SetMat4("projection", perspective );
+	skybox->SetTexture("skybox[0]", AssetManager::GetTexture("sky_left"), 0);
+	skybox->SetTexture("skybox[1]", AssetManager::GetTexture("sky_right"), 1);
 
+	skybox->SetTexture("skybox[2]", AssetManager::GetTexture("sky_front"), 2);
+	skybox->SetTexture("skybox[3]", AssetManager::GetTexture("sky_back"), 3);
+
+	skybox->SetTexture("skybox[5]", AssetManager::GetTexture("sky_top"), 4);
+	skybox->SetTexture("skybox[4]", AssetManager::GetTexture("sky_bottom"), 5);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDepthMask(GL_TRUE);
 
 	current_shader = AssetManager::GetShader(selected_shader);
 
@@ -132,7 +149,7 @@ void Scenario_1::Update()
 
 	
 
-	vertex_array->Bind();
+	
 	line_shader->Use();
 	line_shader->SetMat4("view", world_to_cam);
 	line_shader->SetMat4("projection", perspective);

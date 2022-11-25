@@ -19,6 +19,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Data/Texture.h"
 #include "Core/Data/TextureData.h"
 #include "Data/UV.h"
+std::shared_ptr<VertexBuffer>AssetManager::m_Skybox;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
 std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
 std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
@@ -108,6 +109,67 @@ void AssetManager::GenerateSphere(const std::string& key_name, float radius, int
 	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
 	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
 	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
+}
+
+void AssetManager::GenerateSkybox()
+{
+	constexpr float skyboxVertices[6][18] = {
+		{//front
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		},
+		{//left
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+		},
+		{//right
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 },
+		{//back
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+		},
+		{//top
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+		},
+		{//bottom
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+		 }
+	};
+	m_Skybox = std::make_shared<VertexBuffer>(skyboxVertices, sizeof(skyboxVertices));
+	m_Skybox->DescribeData({ {0,Float3} });
+}
+
+std::shared_ptr<VertexBuffer> AssetManager::GetSkybox()
+{
+	return m_Skybox;
 }
 
 std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_name, const std::string& vert_file, const std::string& frag_file)

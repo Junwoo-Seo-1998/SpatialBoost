@@ -26,6 +26,7 @@ class MyApp : public Application
 {
 	virtual void UserDefinedInit() override
 	{
+		AssetManager::LoadShaderFromFile("skybox_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/skybox.vert", "Assets/Shaders/skybox.frag");
 		AssetManager::LoadShaderFromFile("line_shader", "Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
 		AssetManager::LoadShaderFromFile("light_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
 		AssetManager::LoadShaderFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_light.vert", "Assets/Shaders/phong_light.frag");
@@ -40,11 +41,17 @@ class MyApp : public Application
 
 		AssetManager::LoadTextureFromFile("diff", "Assets/metal_roof_diff_512x512.png");
 		AssetManager::LoadTextureFromFile("spec", "Assets/metal_roof_spec_512x512.png");
-
+		AssetManager::LoadTextureFromFile("sky_front", "Assets/front.jpg");
+		AssetManager::LoadTextureFromFile("sky_back", "Assets/back.jpg");
+		AssetManager::LoadTextureFromFile("sky_left", "Assets/left.jpg");
+		AssetManager::LoadTextureFromFile("sky_right", "Assets/right.jpg");
+		AssetManager::LoadTextureFromFile("sky_bottom", "Assets/bottom.jpg");
+		AssetManager::LoadTextureFromFile("sky_top", "Assets/top.jpg");
 		//generated
 		AssetManager::GeneratePlane("Plane");
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f, 10, 10);
 		AssetManager::GenerateSphere("GeneratedSphere", 1.f);
+		AssetManager::GenerateSkybox();
 
 		SetCurrentScene(std::make_shared<Scenario_1>(Application::Get()));
 	}
