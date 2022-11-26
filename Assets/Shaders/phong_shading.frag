@@ -32,6 +32,9 @@ out vec4 FragColor;
 
 uniform sampler2D DiffuseTexture;
 uniform sampler2D SpecularTexture;
+//6 sides left right front back bottom top 
+uniform sampler2D skybox[6];
+
 
 uniform bool useTexture;
 uniform BoundingBoxData BoundingBox;
@@ -39,6 +42,11 @@ uniform BoundingBoxData BoundingBox;
 uniform int UVType;
 uniform bool UseCPU;
 uniform bool NormalEntity;
+
+uniform bool showReflect;
+
+
+
 void main()
 {
     vec3 NormalVector=normalize(fs_in.NormalVector);
@@ -107,6 +115,16 @@ void main()
                 break;
         }
     }
+    
+
+    if(showReflect)
+    {
+        vec3 ReflectionVector=ComputeReflection(NormalVector, ViewVector);
+        int textureIndex=0;
+        vec2 uv=ComputeCubeMapUV(ReflectionVector,textureIndex);
+        TotalColor=mix(vec3(texture(skybox[textureIndex], uv)), TotalColor,0.1);
+    }
+    
     TotalColor=ComputeFog(Fog, TotalColor, ViewDistance);
 	FragColor = vec4(globalAmbient+TotalColor, 1.0);
 } 

@@ -96,6 +96,7 @@ void Scenario_1::Start()
 
 void Scenario_1::Update()
 {
+	world_to_cam = Math::BuildCameraMatrix(campos, { 0,0,0 }, { 0,1,0 });
 	vertex_array->Bind();
 	auto [width, height] = Application::Get().GetWindowSize();
 	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
@@ -112,8 +113,9 @@ void Scenario_1::Update()
 	skybox->SetTexture("skybox[2]", AssetManager::GetTexture("sky_front"), 2);
 	skybox->SetTexture("skybox[3]", AssetManager::GetTexture("sky_back"), 3);
 
-	skybox->SetTexture("skybox[5]", AssetManager::GetTexture("sky_top"), 4);
-	skybox->SetTexture("skybox[4]", AssetManager::GetTexture("sky_bottom"), 5);
+	skybox->SetTexture("skybox[4]", AssetManager::GetTexture("sky_bottom"), 4);
+	skybox->SetTexture("skybox[5]", AssetManager::GetTexture("sky_top"), 5);
+	
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
@@ -146,8 +148,6 @@ void Scenario_1::Update()
 		auto& orbit_trans = orbit.GetComponent<TransformComponent>();
 		orbit_trans.Rotation.y += orbit_trans.Rotation.y >= 360.f ? -360.f + m_orbit_speed * dt : m_orbit_speed * dt;
 	}
-
-	
 
 	
 	line_shader->Use();
@@ -283,7 +283,7 @@ void Scenario_1::Update()
 	}
 
 	current_shader->SetInt("LightNumbers", light_number);
-	current_shader->SetFloat3("CameraPosition", { 0,2,5 });
+	current_shader->SetFloat3("CameraPosition", campos);
 	current_shader->SetFloat3("Material.Ambient", Mat_Ambient);
 	current_shader->SetFloat3("Material.Diffuse", { 1.0f/16.f,1.0f / 16.f,1.0f / 16.f });
 	current_shader->SetFloat3("Material.Specular", { 0.5f,0.5f,0.5f });
@@ -307,6 +307,7 @@ void Scenario_1::Update()
 	//Vert normal 
 	{
 		current_shader->SetInt("useTexture", 0);
+		current_shader->SetInt("showReflect", 0);
 		auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>(entt::exclude<MaterialComponent, LightComponent>);
 		for (auto& entity : Meshes)
 		{
@@ -337,6 +338,17 @@ void Scenario_1::Update()
 			current_shader->SetInt("UseCPU", 0);
 
 		current_shader->SetInt("NormalEntity", TextureEntity);
+
+		current_shader->SetInt("showReflect", 1);
+		current_shader->SetTexture("skybox[0]", AssetManager::GetTexture("sky_left"), 0);
+		current_shader->SetTexture("skybox[1]", AssetManager::GetTexture("sky_right"), 1);
+
+		current_shader->SetTexture("skybox[2]", AssetManager::GetTexture("sky_front"), 2);
+		current_shader->SetTexture("skybox[3]", AssetManager::GetTexture("sky_back"), 3);
+
+		current_shader->SetTexture("skybox[4]", AssetManager::GetTexture("sky_bottom"), 4);
+		current_shader->SetTexture("skybox[5]", AssetManager::GetTexture("sky_top"), 5);
+		
 
 		auto MeshesWithMaterial = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent, MaterialComponent>();
 		for (auto& entity : MeshesWithMaterial)
@@ -377,6 +389,7 @@ void Scenario_1::LateUpdate()
 {
 
 	ImGui::Begin("Control");
+	ImGui::SliderFloat3("cam position", &campos[0],-10.f,10.f);
 	const char* items[] =
 	{
 		"4Sphere", "bunny", "cube", "sphere", "sphere_modified","GeneratedSphere"

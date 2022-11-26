@@ -121,6 +121,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Event\Event.h" />
     <ClInclude Include="Core\Event\InputEvents\KeyBoardEvent.h" />
     <ClInclude Include="Core\Graphics\Buffer.h" />
+    <ClInclude Include="Core\Graphics\FrameBuffer.h" />
     <ClInclude Include="Core\Graphics\Shader.h" />
     <ClInclude Include="Core\Graphics\VertexArray.h" />
     <ClInclude Include="Core\ImGui\ImGuiRenderer.h" />
@@ -155,6 +156,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Event\Event.cpp" />
     <ClCompile Include="Core\Event\InputEvents\KeyBoardEvent.cpp" />
     <ClCompile Include="Core\Graphics\Buffer.cpp" />
+    <ClCompile Include="Core\Graphics\FrameBuffer.cpp" />
     <ClCompile Include="Core\Graphics\Shader.cpp" />
     <ClCompile Include="Core\Graphics\VertexArray.cpp" />
     <ClCompile Include="Core\ImGui\BuildImGui.cpp" />

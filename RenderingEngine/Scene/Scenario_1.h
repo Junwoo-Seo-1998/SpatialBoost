@@ -40,9 +40,8 @@ private:
 	std::shared_ptr<Shader> line_shader;
 	std::shared_ptr<VertexBuffer> buffer;
 	glm::mat4 perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 1000.f);
-	glm::mat4 world_to_cam = Math::BuildCameraMatrix({ 0,2,8 }, { 0,0,0 }, { 0,1,0 });
-	glm::vec3 light_pos = { 0,0,2 };
-
+	glm::mat4 world_to_cam;
+	glm::vec3 campos = { 0,2,8 };
 	bool StopRotation=false;
 
 	bool cullBackFace = true;
