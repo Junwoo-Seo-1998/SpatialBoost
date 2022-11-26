@@ -16,6 +16,7 @@ End Header --------------------------------------------------------*/
 #include "DemoEnums/DemoEnums.h"
 #include "Core/Data/UV.h"
 #include "Core/Data/Light.h"
+#include "Core/Graphics/FrameBuffer.h"
 class Layer;
 class VertexBuffer;
 class Shader;
@@ -28,12 +29,17 @@ public:
 	void Awake() override;
 	void OnEnable() override;
 	void Start() override;
+	void DrawEnv(const glm::mat4& worldToCam);
+	void UpdateFrameBuffers(const glm::vec3& object_pos);
 	void Update() override;
 	void LateUpdate() override;
 	void OnDisable() override;
 	void OnDestroy() override;
 	void OnEvent(Event& event) override;
 private:
+	std::shared_ptr<FrameBuffer> FrameBuffers[6];
+	float reDrawTime = 0.025f;
+	float reDrawAcc = 0.f;
 	std::shared_ptr<VertexArray> vertex_array;
 	std::string selected_shader;
 	std::shared_ptr<Shader> current_shader;

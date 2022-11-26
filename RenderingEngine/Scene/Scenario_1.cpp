@@ -27,7 +27,6 @@ End Header --------------------------------------------------------*/
 #include "Core/Graphics/Shader.h"
 #include "Core/Graphics/VertexArray.h"
 #include "Core/Layer/LayerManager.h"
-
 Scenario_1::Scenario_1(Application& app)
 	: Scene(app)
 {
@@ -92,14 +91,294 @@ void Scenario_1::Start()
 		Light.light.m_LightType = LightType::SpotLight;
 		theta += d_theta;
 	}
+
+	FrameBufferSpecification specification{ 1024,1024, {FrameBufferFormat::RGBA, FrameBufferFormat::Depth} };
+	for (int i = 0; i < 6; ++i)
+	{
+		FrameBuffers[i] = std::make_shared<FrameBuffer>(specification);
+	}
+}
+
+void Scenario_1::DrawEnv(const glm::mat4& worldToCam)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	world_to_cam = worldToCam;
+	vertex_array->Bind();
+	auto [width, height] = Application::Get().GetWindowSize();
+	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(90.f), 1.f, 0.1f, 1000.f);
+	glDepthMask(GL_FALSE);
+	auto skybox = AssetManager::GetShader("skybox_shader");
+	skybox->Use();
+	vertex_array->AttachBuffer(*AssetManager::GetSkybox());
+	skybox->SetMat4("view", glm::mat3{ world_to_cam });
+	skybox->SetMat4("projection", perspective);
+	skybox->SetTexture("skybox[0]", AssetManager::GetTexture("sky_left"), 0);
+	skybox->SetTexture("skybox[1]", AssetManager::GetTexture("sky_right"), 1);
+
+	skybox->SetTexture("skybox[2]", AssetManager::GetTexture("sky_front"), 2);
+	skybox->SetTexture("skybox[3]", AssetManager::GetTexture("sky_back"), 3);
+
+	skybox->SetTexture("skybox[4]", AssetManager::GetTexture("sky_bottom"), 4);
+	skybox->SetTexture("skybox[5]", AssetManager::GetTexture("sky_top"), 5);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDepthMask(GL_TRUE);
+
+	current_shader = AssetManager::GetShader(selected_shader);
+
+	float time = (float)glfwGetTime();
+	float dt = time - m_LastTime;
+	m_LastTime = time;
+
+	//for gui control
+	if (cullBackFace)
+	{
+		glEnable(GL_CULL_FACE);
+	}
+	else
+	{
+		glDisable(GL_CULL_FACE);
+	}
+	//for gui control
+	demo_mesh.GetComponent<FaceNormalLineRendererComponent>().mesh = AssetManager::GetFaceNormalLineMesh(current_mesh);
+	demo_mesh.GetComponent<FaceNormalMeshRendererComponent>().mesh = AssetManager::GetFaceNormalMesh(current_mesh);
+	demo_mesh.GetComponent<VertexNormalLineRendererComponent>().mesh = AssetManager::GetVertexNormalLineMesh(current_mesh);
+	demo_mesh.GetComponent<VertexNormalMeshRendererComponent>().mesh = AssetManager::GetVertexNormalMesh(current_mesh);
+
+	if (!StopRotation)
+	{
+		auto& demo_trans = demo_mesh.GetComponent<TransformComponent>();
+		demo_trans.Rotation.y += demo_trans.Rotation.y >= 360.f ? -360.f + m_center_speed * dt : m_center_speed * dt;
+		auto& orbit_trans = orbit.GetComponent<TransformComponent>();
+		orbit_trans.Rotation.y += orbit_trans.Rotation.y >= 360.f ? -360.f + m_orbit_speed * dt : m_orbit_speed * dt;
+	}
+
+	line_shader->Use();
+	line_shader->SetMat4("view", world_to_cam);
+	line_shader->SetMat4("projection", perspective);
+	line_shader->SetFloat4("BaseColor", line_color);
+	auto LineMeshes = GetRegistry().view<TransformComponent, LineRendererComponent>();
+	for (auto& entity : LineMeshes)
+	{
+		auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, LineRendererComponent>(entity);
+		line_shader->SetMat4("model", TransformComp.GetTransform());
+
+		vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
+
+		glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
+	}
+
+	if (drawNormal)
+	{
+		if (radio == static_cast<int>(select::DrawFaceNormal))
+		{
+			auto FaceNormalLineMeshes = GetRegistry().view<TransformComponent, FaceNormalLineRendererComponent>();
+			for (auto& entity : FaceNormalLineMeshes)
+			{
+				auto [TransformComp, LineRendererComp] = FaceNormalLineMeshes.get<TransformComponent, FaceNormalLineRendererComponent>(entity);
+				line_shader->SetMat4("model", TransformComp.GetTransform());
+
+				vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
+
+				glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
+			}
+		}
+		else
+		{
+			auto VertexNormalLineMeshes = GetRegistry().view<TransformComponent, VertexNormalLineRendererComponent>();
+			for (auto& entity : VertexNormalLineMeshes)
+			{
+				auto [TransformComp, LineRendererComp] = VertexNormalLineMeshes.get<TransformComponent, VertexNormalLineRendererComponent>(entity);
+				line_shader->SetMat4("model", TransformComp.GetTransform());
+
+				vertex_array->AttachBuffer(*LineRendererComp.mesh->GetBuffer());
+
+				glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
+			}
+		}
+	}
+
+
+
+	{//light update
+		float radius = 3.f;
+		float d_theta = 2.f * glm::pi<float>() / static_cast<float>(light_number);
+		float theta = 0.f;
+		auto Lights = GetRegistry().view<TransformComponent, LightComponent>();
+		int i = 0;
+		for (auto& entity : Lights)
+		{
+			if (i == light_number)
+				break;
+			glm::vec3 position{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
+			auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
+			TransformComp.Position = position;
+			glm::vec3 lightPos = glm::vec3(TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f));
+			if (Light.light.m_LightType == LightType::SpotLight)
+			{
+				Light.light.direction = glm::vec3{ 0, -100, 0 } - lightPos;
+			}
+			Light.light.position = lightPos;
+			theta += d_theta;
+			i++;
+		}
+	}
+
+
+
+
+	{
+		//draw light
+		auto light_shader = AssetManager::GetShader("light_shader");
+		light_shader->Use();
+		light_shader->SetMat4("Matrix.View", world_to_cam);
+		light_shader->SetMat4("Matrix.Projection", perspective);
+		auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent, LightComponent>();
+		int i = 0;
+		for (auto& entity : Meshes)
+		{
+			if (i == light_number)
+				break;
+			auto [TransformComp, MeshRendererComp, LightComp] = Meshes.get<TransformComponent, VertexNormalMeshRendererComponent, LightComponent>(entity);
+			glm::mat4 model = TransformComp.GetTransform();
+			light_shader->SetMat4("Matrix.Model", model);
+			vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
+			light_shader->SetFloat4("BaseColor", Light_Diffuse_Color);
+			if (MeshRendererComp.mesh->GetUseIndex())
+			{
+				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
+				glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), static_cast<GLsizei>(MeshRendererComp.mesh->GetIndices()->size()), GL_UNSIGNED_INT, nullptr);
+			}
+			else
+			{
+				glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(MeshRendererComp.mesh->GetVertices()->size()));
+			}
+			i++;
+		}
+	}
+
+	current_shader->Use();
+	current_shader->SetMat4("Matrix.View", world_to_cam);
+	current_shader->SetMat4("Matrix.Projection", perspective);
+	{
+		auto Lights = GetRegistry().view<TransformComponent, LightComponent>();
+		int i = 0;
+		for (auto& entity : Lights)
+		{
+			if (i == light_number)
+				break;
+			auto [TransformComp, Light] = Lights.get<TransformComponent, LightComponent>(entity);
+			std::string to_string = std::to_string(i);
+			current_shader->SetInt("Light[" + to_string + "].LightType", light_type);
+			glm::vec3 lightPos = glm::vec3(TransformComp.GetTransform() * glm::vec4(0.f, 0.f, 0.f, 1.f));
+			current_shader->SetFloat3("Light[" + to_string + "].Position", lightPos);
+			current_shader->SetFloat3("Light[" + to_string + "].Direction", glm::vec3{ 0, -1, 0 } - lightPos);
+			current_shader->SetFloat("Light[" + to_string + "].InnerAngle", glm::radians(inner));
+			current_shader->SetFloat("Light[" + to_string + "].OuterAngle", glm::radians(outer));
+			current_shader->SetFloat("Light[" + to_string + "].FallOff", falloff);
+
+			current_shader->SetFloat3("Light[" + to_string + "].Ambient", Light_Ambient_Color);
+			current_shader->SetFloat3("Light[" + to_string + "].Diffuse", Light_Diffuse_Color);
+			current_shader->SetFloat3("Light[" + to_string + "].Specular", Light_Specular_Color);
+			i++;
+		}
+	}
+
+	current_shader->SetInt("LightNumbers", light_number);
+	current_shader->SetFloat3("CameraPosition", campos);
+	current_shader->SetFloat3("Material.Ambient", Mat_Ambient);
+	current_shader->SetFloat3("Material.Diffuse", { 1.0f / 16.f,1.0f / 16.f,1.0f / 16.f });
+	current_shader->SetFloat3("Material.Specular", { 0.5f,0.5f,0.5f });
+	current_shader->SetFloat3("Material.Emissive", Mat_Emissive);
+	current_shader->SetFloat("Material.Shininess", 32.f);
+
+	current_shader->SetInt("UVType", current_uv_method);
+
+	current_shader->SetTexture("DiffuseTexture", AssetManager::GetTexture("diff"), 0);
+	current_shader->SetTexture("SpecularTexture", AssetManager::GetTexture("spec"), 1);
+
+	current_shader->SetFloat3("globalAmbient", Global_Ambient_Color);
+	current_shader->SetFloat("Attenuation.c1", c1);
+	current_shader->SetFloat("Attenuation.c2", c2);
+	current_shader->SetFloat("Attenuation.c3", c3);
+
+	current_shader->SetFloat("Fog.Near", fog_near);
+	current_shader->SetFloat("Fog.Far", fog_far);
+	current_shader->SetFloat3("Fog.Color", fog_color);
+
+	//Vert normal 
+	{
+		current_shader->SetInt("useTexture", 0);
+		current_shader->SetInt("showReflect", 0);
+		auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>(entt::exclude<MaterialComponent, LightComponent>);
+		for (auto& entity : Meshes)
+		{
+			auto [TransformComp, MeshRendererComp] = Meshes.get<TransformComponent, VertexNormalMeshRendererComponent>(entity);
+			glm::mat4 model = TransformComp.GetTransform();
+			current_shader->SetMat4("Matrix.Model", model);
+			glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
+			current_shader->SetMat4("Matrix.Normal", normal_matrix);
+			vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetBuffer());
+
+			if (MeshRendererComp.mesh->GetUseIndex())
+			{
+				vertex_array->AttachBuffer(*MeshRendererComp.mesh->GetIndexBuffer());
+				glDrawElements(MeshRendererComp.mesh->GetGLDrawType(), static_cast<GLsizei>(MeshRendererComp.mesh->GetIndices()->size()), GL_UNSIGNED_INT, nullptr);
+			}
+			else
+			{
+				glDrawArrays(MeshRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(MeshRendererComp.mesh->GetVertices()->size()));
+			}
+
+		}
+	}
+}
+
+void Scenario_1::UpdateFrameBuffers(const glm::vec3& object_pos)
+{
+
+	FrameBuffers[0]->Bind();
+	//left
+	DrawEnv(Math::BuildCameraMatrixWithDirection(object_pos, { -1,0,0 }));
+	FrameBuffers[1]->Bind();
+	//right
+	DrawEnv(Math::BuildCameraMatrixWithDirection(object_pos, { 1,0,0 }));
+
+	FrameBuffers[2]->Bind();
+	//front
+	DrawEnv(Math::BuildCameraMatrixWithDirection(object_pos, { 0,0,-1 }));
+	FrameBuffers[3]->Bind();
+	//back
+	DrawEnv(Math::BuildCameraMatrixWithDirection(object_pos, { 0,0,1 }));
+
+	FrameBuffers[4]->Bind();
+	//bottom
+	DrawEnv(Math::BuildCameraMatrixWithDirection(object_pos, { 0,-1,0 }, { 0,0,-1 }));
+	FrameBuffers[5]->Bind();
+	//top
+	DrawEnv(Math::BuildCameraMatrixWithDirection(object_pos, { 0,1,0 }, { 0,0,1 }));
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Scenario_1::Update()
 {
+	float time = (float)glfwGetTime();
+	float dt = time - m_LastTime;
+	m_LastTime = time;
+	reDrawAcc += dt;
+	if (reDrawTime <= reDrawAcc)
+	{
+		reDrawAcc = 0.f;
+		UpdateFrameBuffers({ 0,0,0 });
+	}
+
 	world_to_cam = Math::BuildCameraMatrix(campos, { 0,0,0 }, { 0,1,0 });
 	vertex_array->Bind();
 	auto [width, height] = Application::Get().GetWindowSize();
 	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	glViewport(0, 0, width,height);
 	perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), AspectRatio, 0.1f, 1000.f);
 	glDepthMask(GL_FALSE);
 	auto skybox = AssetManager::GetShader("skybox_shader");
@@ -122,9 +401,6 @@ void Scenario_1::Update()
 
 	current_shader = AssetManager::GetShader(selected_shader);
 
-	float time = (float)glfwGetTime();
-	float dt = time - m_LastTime;
-	m_LastTime = time;
 
 	//for gui control
 	if (cullBackFace)
@@ -340,14 +616,14 @@ void Scenario_1::Update()
 		current_shader->SetInt("NormalEntity", TextureEntity);
 
 		current_shader->SetInt("showReflect", 1);
-		current_shader->SetTexture("skybox[0]", AssetManager::GetTexture("sky_left"), 0);
-		current_shader->SetTexture("skybox[1]", AssetManager::GetTexture("sky_right"), 1);
+		current_shader->SetFrameBufferColorTexture("skybox[0]", FrameBuffers[0], 0);
+		current_shader->SetFrameBufferColorTexture("skybox[1]", FrameBuffers[1], 1);
 
-		current_shader->SetTexture("skybox[2]", AssetManager::GetTexture("sky_front"), 2);
-		current_shader->SetTexture("skybox[3]", AssetManager::GetTexture("sky_back"), 3);
+		current_shader->SetFrameBufferColorTexture("skybox[2]", FrameBuffers[2], 2);
+		current_shader->SetFrameBufferColorTexture("skybox[3]", FrameBuffers[3], 3);
 
-		current_shader->SetTexture("skybox[4]", AssetManager::GetTexture("sky_bottom"), 4);
-		current_shader->SetTexture("skybox[5]", AssetManager::GetTexture("sky_top"), 5);
+		current_shader->SetFrameBufferColorTexture("skybox[4]", FrameBuffers[4], 4);
+		current_shader->SetFrameBufferColorTexture("skybox[5]", FrameBuffers[5], 5);
 		
 
 		auto MeshesWithMaterial = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent, MaterialComponent>();
@@ -453,7 +729,7 @@ void Scenario_1::LateUpdate()
 	ImGui::ColorEdit4("Line Color", &line_color[0]);
 	const char* shaders[] =
 	{
-		"Phong_Shading","Phong_Lighting","Blinn_Shading"
+		"Phong_Shading","Blinn_Shading"
 	};
 
 	if (ImGui::BeginCombo("Shaders", selected_shader.c_str()))
@@ -501,6 +777,27 @@ void Scenario_1::LateUpdate()
 	ImGui::RadioButton("Normal", &TextureEntity, static_cast<int>(1));
 
 	ImGui::End();
+
+	ImGui::Begin("FrameBuffers");
+	constexpr ImVec2 size{ 100,100 };
+
+	unsigned textureID = FrameBuffers[5]->GetColorTexture(0);
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	textureID = FrameBuffers[0]->GetColorTexture(0);
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	ImGui::SameLine();
+	textureID = FrameBuffers[2]->GetColorTexture(0);
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	ImGui::SameLine();
+	textureID = FrameBuffers[1]->GetColorTexture(0);
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	textureID = FrameBuffers[3]->GetColorTexture(0);
+	ImGui::SameLine();
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	textureID = FrameBuffers[4]->GetColorTexture(0);
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	ImGui::End();
+
 }
 
 void Scenario_1::OnDisable()
@@ -523,7 +820,7 @@ void Scenario_1::OnEvent(Event& event)
 		{
 			auto [width, height] = event.GetWidthAndHeight();
 			float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
-			perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), AspectRatio, 0.1f, 1000.f);
+			perspective = Math::BuildPerspectiveProjectionMatrixFovx(glm::radians(45.f), AspectRatio, 0.1f, 1000.f);
 			return true;
 		});
 }

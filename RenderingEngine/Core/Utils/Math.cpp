@@ -49,6 +49,36 @@ glm::mat4 Math::BuildCameraMatrix(glm::vec3 cam_position, glm::vec3 target, glm:
 #endif
 }
 
+glm::mat4 Math::BuildCameraMatrixWithDirection(const glm::vec3& cam_position, const glm::vec3& lookAt,
+	const glm::vec3& world_up)
+{
+	if (lookAt == world_up)
+		throw "shouldn't be same!";
+	glm::vec3 cam_foward = -lookAt;
+	glm::vec3 cam_right = glm::normalize(glm::cross(-cam_foward, world_up));
+	glm::vec3 cam_up = glm::normalize(glm::cross(cam_right, -cam_foward));
+
+	glm::mat4 inverse_scale_rotation =
+	{
+		{cam_right.x, cam_up.x, cam_foward.x, 0},
+		{cam_right.y, cam_up.y, cam_foward.y, 0},
+		{cam_right.z, cam_up.z, cam_foward.z, 0},
+		{0, 0, 0, 1},
+	};
+
+	glm::mat4 inverse_transform =
+	{
+		{1, 0, 0, 0},
+		{0, 1, 0, 0},
+		{0, 0, 1, 0},
+		{-cam_position.x, -cam_position.y, -cam_position.z, 1},
+	};
+
+	auto toret = inverse_scale_rotation * inverse_transform;
+
+	return toret;
+}
+
 glm::mat4 Math::BuildPerspectiveProjectionMatrix(float width, float height, float near, float far)
 {
 	float projection_plane = near;

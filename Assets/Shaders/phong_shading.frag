@@ -121,8 +121,8 @@ void main()
     {
         vec3 ReflectionVector=ComputeReflection(NormalVector, ViewVector);
         int textureIndex=0;
-        vec2 uv=ComputeCubeMapUV(ReflectionVector,textureIndex);
-        TotalColor=mix(vec3(texture(skybox[textureIndex], uv)), TotalColor,0.1);
+        vec2 uv=ComputeSkyBoxMapUV(ReflectionVector,textureIndex);
+        TotalColor=mix(vec3(texture(skybox[textureIndex], uv)), TotalColor,0.01);
     }
     
     TotalColor=ComputeFog(Fog, TotalColor, ViewDistance);
