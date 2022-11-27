@@ -173,7 +173,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
-    <ClCompile Include="Scene\Scenario3.cpp" />
+    <ClCompile Include="Scene\Scenario_3.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />
     <ClCompile Include="Scene\Scenario_2.cpp" />
     <ClCompile Include="main.cpp" />

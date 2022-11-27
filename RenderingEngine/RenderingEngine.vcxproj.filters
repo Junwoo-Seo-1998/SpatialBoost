@@ -260,7 +260,7 @@
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp">
       <Filter>Scene\CommonOverlay</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\Scenario3.cpp">
+    <ClCompile Include="Scene\Scenario_3.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Scenario_1.cpp">

@@ -127,10 +127,20 @@ void main()
 
     if(showRefract&&!showReflect)
     {
-        vec3 RefractionVector=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt);
+        vec3 RefractionVectorR=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt-RGBRatio);
+        vec3 RefractionVectorG=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt);
+        vec3 RefractionVectorB=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt+RGBRatio);
         int textureIndex=0;
-        vec2 uv=ComputeSkyBoxMapUV(RefractionVector,textureIndex);
-        TotalColor=mix(vec3(texture(skybox[textureIndex], uv)), TotalColor,0.01);
+
+        vec2 uv=ComputeSkyBoxMapUV(RefractionVectorR,textureIndex);
+        float refractionR=texture(skybox[textureIndex], uv).r;
+        uv=ComputeSkyBoxMapUV(RefractionVectorG,textureIndex);
+        float refractionG=texture(skybox[textureIndex], uv).g;
+        uv=ComputeSkyBoxMapUV(RefractionVectorB,textureIndex);
+        float refractionB=texture(skybox[textureIndex], uv).b;
+
+         vec3 refractionRGB=vec3(refractionR, refractionG, refractionB);
+        TotalColor=mix(refractionRGB, TotalColor,0.01);
     }
 
     if(showReflect&&showRefract)

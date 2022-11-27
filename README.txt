@@ -12,10 +12,6 @@ the application to fail.
 
 #Which part of the assignment has been completed? 
 - I believe I completed all requirements.
-#Implement both functions and compare and contrast them (in your README
-file)
-i figured out that cpu calculation does interpolation but that joint point can go wrong since the uvs are computed based on vertex. so there can be huge gap.
-therefore, it generate strange effects for texture. however, gpu handles it from fragment wise. therefore we don't have strange effects since uv gap is small.
 
 #Which part of the assignment has NOT been completed (not done, not working, etc.) and
 explanation on why those parts are not completed?
@@ -24,14 +20,14 @@ explanation on why those parts are not completed?
 #Where the relevant source codes (both C++ and shaders) for the assignment are located.
 #Specify the file path (folder name), file name, and function name (or line number).
 
-in Assets/Shaders folder there are shader sources for vertex and fragment shaders to draw Phong stuffs and blinn shaders.
-in RenderingEngine/Core/Graphics Folder for graphics stuff.
-in RenderingEngine/Core/Data Folder for graphics data type stuff like light data.
-in Math.h files for uv computing.
+in Assets/Shaders folder there are shader sources for vertex and fragment shaders to draw Phong shaders and blinn shaders.
+in RenderingEngine/Core/Graphics Folder for graphics stuff like FrameBuffers.
+in RenderingEngine/Core/Data Folder for graphics data types.
 For Shader files (Assets/Shaders/*.*)
+For Construct the 6 texture maps for cube mapping algorithm see AssetManager GenerateSkybox function and Each scene update function parts(Core/AssetManager.cpp)
 For Scene setups Scene/*.cpp and Scene/*.h
-
-
+For FrameBuffer Update see UpdateFrameBuffers and DrawEnv functions in scenario files.
+For Implement the environment mapping algorithm in the fragment shader see (Assets/Shaders/common.glsl and Assets/Shaders/*.frag)
 
 #Which machine did you test your application on. 
 The application was tested on my machine.

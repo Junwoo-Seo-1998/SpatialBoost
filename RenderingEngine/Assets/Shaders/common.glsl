@@ -12,6 +12,7 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #define MAX_LIGHTS 16
+#define ZERO 0.000000001
 struct LightData
 {
     int LightType;
@@ -125,7 +126,7 @@ vec3 ComputePointLight(in LightData light, in AttenuationData attenuation, in Ma
 	//
     vec3 ambient = material.Ambient*light.Ambient;
 	vec3 diffuse = material.Diffuse*light.Diffuse*max(dot(normalVector,lightVector),0.f);
-	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),ZERO), material.Shininess);
 
     float att=ComputeAttenuation(attenuation,lightDistance);
     return att*(ambient+diffuse+specular);
@@ -139,7 +140,7 @@ vec3 ComputeDirectionLight(in LightData light, in AttenuationData attenuation, i
 	//
     vec3 ambient = material.Ambient*light.Ambient;
 	vec3 diffuse = material.Diffuse*light.Diffuse*max(dot(normalVector,lightVector),0.f);
-	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),ZERO), material.Shininess);
     return ambient+diffuse+specular;
 }
 
@@ -153,7 +154,7 @@ vec3 ComputeSpotLight(in LightData light, in AttenuationData attenuation, in Mat
 	//
     vec3 ambient = material.Ambient*light.Ambient;
 	vec3 diffuse = material.Diffuse*light.Diffuse*max(dot(normalVector,lightVector),0.f);
-	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),ZERO), material.Shininess);
 
     float att=ComputeAttenuation(attenuation,lightDistance);
     float spotLightEffect=ComputeSpotLightEffect(light, lightVector);
@@ -174,7 +175,7 @@ vec3 ComputeBlinnPointLight(in LightData light, in AttenuationData attenuation, 
 	//
     vec3 ambient = material.Ambient*light.Ambient;
 	vec3 diffuse = material.Diffuse*light.Diffuse*max(dot(normalVector,lightVector),0.f);
-	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),ZERO), material.Shininess);
 
     float att=ComputeAttenuation(attenuation,lightDistance);
     return att*(ambient+diffuse+specular);
@@ -188,7 +189,7 @@ vec3 ComputeBlinnDirectionLight(in LightData light, in AttenuationData attenuati
 	//
     vec3 ambient = material.Ambient*light.Ambient;
 	vec3 diffuse = material.Diffuse*light.Diffuse*max(dot(normalVector,lightVector),0.f);
-	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),ZERO), material.Shininess);
     return ambient+diffuse+specular;
 }
 
@@ -202,7 +203,7 @@ vec3 ComputeBlinnSpotLight(in LightData light, in AttenuationData attenuation, i
 	//
     vec3 ambient = material.Ambient*light.Ambient;
 	vec3 diffuse = material.Diffuse*light.Diffuse*max(dot(normalVector,lightVector),0.f);
-	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),0.f), material.Shininess);
+	vec3 specular = material.Specular*light.Specular*pow(max(dot(reflection,viewVector),ZERO), material.Shininess);
 
     float att=ComputeAttenuation(attenuation,lightDistance);
     float spotLightEffect=ComputeSpotLightEffect(light, lightVector);

@@ -109,7 +109,7 @@ void Scenario_3::DrawEnv(const glm::mat4& worldToCam)
 	world_to_cam = worldToCam;
 	vertex_array->Bind();
 	perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(90.f), 1.f, 0.1f, 1000.f);
-	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
 	auto skybox = AssetManager::GetShader("skybox_shader");
 	skybox->Use();
 	vertex_array->AttachBuffer(*AssetManager::GetSkybox());
@@ -126,7 +126,7 @@ void Scenario_3::DrawEnv(const glm::mat4& worldToCam)
 
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
 
 	current_shader = AssetManager::GetShader(selected_shader);
 
@@ -391,7 +391,7 @@ void Scenario_3::Update()
 	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	glViewport(0, 0, width, height);
 	perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), AspectRatio, 0.1f, 1000.f);
-	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
 	auto skybox = AssetManager::GetShader("skybox_shader");
 	skybox->Use();
 	vertex_array->AttachBuffer(*AssetManager::GetSkybox());
@@ -408,7 +408,7 @@ void Scenario_3::Update()
 
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
 
 	current_shader = AssetManager::GetShader(selected_shader);
 
