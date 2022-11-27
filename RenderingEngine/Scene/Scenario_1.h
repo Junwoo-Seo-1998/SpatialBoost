@@ -57,7 +57,7 @@ private:
 	Entity demo_mesh;
 	Entity orbit;
 
-	std::string current_mesh = "bunny";
+	std::string current_mesh = "GeneratedSphere";
 
 	glm::vec3 Global_Ambient_Color = { 0.01f,0.0f,0.01f };
 
@@ -67,6 +67,10 @@ private:
 
 	glm::vec4 Mat_Ambient = { 0.001f,0.001f,0.001f,1.f };
 	glm::vec4 Mat_Emissive{ 0.0f };
+	int MatRadio = static_cast<int>(select::ShowFresnelEffect);
+	float Mat_RefractiveIndex = 2.1f;
+	float Mat_RGBRefractionRatio = 0.016f;
+	float Mat_FresnelPower = 0.5f;
 
 	int light_number = 8;
 	int light_type = 0;
@@ -76,7 +80,7 @@ private:
 	glm::vec4 line_color = { 1.f,1.f, 0.f,1.f };
 	glm::vec4 fog_color{ 0.5f };
 	float fog_near = 0.1f;
-	float fog_far = 20.f;
+	float fog_far = 195.f;
 
 	float inner = 30.f;
 	float outer = 45.f;

@@ -65,11 +65,11 @@ void Scenario_1::Start()
 
 
 
-	Entity plane = CreateEntity();
-	plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
-	plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
-	plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
-	plane.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Plane"));
+	//Entity plane = CreateEntity();
+	//plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
+	//plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
+	//plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
+	//plane.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Plane"));
 
 	float radius = 3.f;
 	orbit = CreateEntity();
@@ -104,8 +104,6 @@ void Scenario_1::DrawEnv(const glm::mat4& worldToCam)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	world_to_cam = worldToCam;
 	vertex_array->Bind();
-	auto [width, height] = Application::Get().GetWindowSize();
-	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(90.f), 1.f, 0.1f, 1000.f);
 	glDepthMask(GL_FALSE);
 	auto skybox = AssetManager::GetShader("skybox_shader");
@@ -311,6 +309,7 @@ void Scenario_1::DrawEnv(const glm::mat4& worldToCam)
 	{
 		current_shader->SetInt("useTexture", 0);
 		current_shader->SetInt("showReflect", 0);
+		current_shader->SetInt("showRefract", 0);
 		auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>(entt::exclude<MaterialComponent, LightComponent>);
 		for (auto& entity : Meshes)
 		{
@@ -337,7 +336,7 @@ void Scenario_1::DrawEnv(const glm::mat4& worldToCam)
 
 void Scenario_1::UpdateFrameBuffers(const glm::vec3& object_pos)
 {
-
+	glViewport(0, 0, 1024, 1024);
 	FrameBuffers[0]->Bind();
 	//left
 	DrawEnv(Math::BuildCameraMatrixWithDirection(object_pos, { -1,0,0 }));
@@ -584,6 +583,7 @@ void Scenario_1::Update()
 	{
 		current_shader->SetInt("useTexture", 0);
 		current_shader->SetInt("showReflect", 0);
+		current_shader->SetInt("showRefract", 0);
 		auto Meshes = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent>(entt::exclude<MaterialComponent, LightComponent>);
 		for (auto& entity : Meshes)
 		{
@@ -606,7 +606,6 @@ void Scenario_1::Update()
 
 		}
 
-
 		current_shader->SetInt("useTexture", 1);
 		if(useCpu)
 			current_shader->SetInt("UseCPU", 1);
@@ -615,7 +614,11 @@ void Scenario_1::Update()
 
 		current_shader->SetInt("NormalEntity", TextureEntity);
 
-		current_shader->SetInt("showReflect", 1);
+
+		current_shader->SetFloat("Nt", Mat_RefractiveIndex);
+		current_shader->SetFloat("RGBRatio", Mat_RGBRefractionRatio);
+		current_shader->SetFloat("fresnelPower", Mat_FresnelPower);
+
 		current_shader->SetFrameBufferColorTexture("skybox[0]", FrameBuffers[0], 0);
 		current_shader->SetFrameBufferColorTexture("skybox[1]", FrameBuffers[1], 1);
 
@@ -624,7 +627,30 @@ void Scenario_1::Update()
 
 		current_shader->SetFrameBufferColorTexture("skybox[4]", FrameBuffers[4], 4);
 		current_shader->SetFrameBufferColorTexture("skybox[5]", FrameBuffers[5], 5);
-		
+
+
+		if (MatRadio == static_cast<int>(select::ShowFresnelEffect))
+		{
+			current_shader->SetInt("showReflect", 1);
+			current_shader->SetInt("showRefract", 1);
+		}
+		else if (MatRadio == static_cast<int>(select::ShowReflection))
+		{
+			current_shader->SetInt("showReflect", 1);
+			current_shader->SetInt("showRefract", 0);
+		}
+		else if (MatRadio == static_cast<int>(select::ShowRefraction))
+		{
+			current_shader->SetInt("showReflect", 0);
+			current_shader->SetInt("showRefract", 1);
+		}
+		else
+		{
+			current_shader->SetInt("showReflect", 0);
+			current_shader->SetInt("showRefract", 0);
+			current_shader->SetTexture("DiffuseTexture", AssetManager::GetTexture("diff"), 0);
+			current_shader->SetTexture("SpecularTexture", AssetManager::GetTexture("spec"), 1);
+		}
 
 		auto MeshesWithMaterial = GetRegistry().view<TransformComponent, VertexNormalMeshRendererComponent, MaterialComponent>();
 		for (auto& entity : MeshesWithMaterial)
@@ -699,6 +725,24 @@ void Scenario_1::LateUpdate()
 	ImGui::Text("Material");
 	ImGui::DragFloat3("Material Ambient", &Mat_Ambient[0], 0.1f, 0.001f, 1.f);
 	ImGui::DragFloat3("Material Emissive", &Mat_Emissive[0], 0.1f, 0.001f, 1.f);
+	ImGui::RadioButton("Show Fresnel Effect", &MatRadio, static_cast<int>(select::ShowFresnelEffect)); ImGui::SameLine();
+	ImGui::RadioButton("Show Reflection", &MatRadio, static_cast<int>(select::ShowReflection));
+	ImGui::RadioButton("Show Refraction", &MatRadio, static_cast<int>(select::ShowRefraction)); ImGui::SameLine();
+	ImGui::RadioButton("None", &MatRadio, static_cast<int>(select::None));
+
+	static const char* listbox_items[] = { "Air", "Hydrogen", "Water", "Olive Oil", "Ice (solidified water)", "Quartz", "Diamond", "Acrylic / plexiglas / Lucite" };
+	static float listbox_values[] = { 1.000293f, 1.000132f, 1.333f, 1.47f, 1.31f, 1.46f, 2.42f, 1.49f };
+	static int listbox_item_current = 1;
+	ImGui::ListBox("Refractive Type", &listbox_item_current, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
+	
+	if (ImGui::Button("Apply Selected Value"))
+	{
+		Mat_RefractiveIndex = listbox_values[listbox_item_current];
+	}
+
+	ImGui::DragFloat("Refractive Index", &Mat_RefractiveIndex, 0.1f, 1.0f, 100.f);
+	ImGui::DragFloat("Refractive Index RGB Diff", &Mat_RGBRefractionRatio, 0.01f, 0.0f, 1.f);
+	ImGui::DragFloat("Fresnel Power", &Mat_FresnelPower, 0.1f, 0.1f, 50.f);
 
 	ImGui::Text("Light Type");
 
@@ -745,26 +789,22 @@ void Scenario_1::LateUpdate()
 		ImGui::EndCombo();
 	}
 
-	ImGui::ColorEdit3("Fog Color", &fog_color[0]);
-	ImGui::DragFloat("Fog Near", &fog_near, 0.5f, 1.f, fog_far - 1.f);
-	ImGui::DragFloat("Fog Far", &fog_far, 0.5f, fog_near + 1.f, 200.f);
-
 	if(ImGui::Button("Reload"))
 	{
 		if(selected_shader== "Phong_Shading")
 		{
 			current_shader = AssetManager::ReloadSherFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
 		}
-		if (selected_shader == "Phong_Lighting")
-		{
-			current_shader = AssetManager::ReloadSherFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_light.vert", "Assets/Shaders/phong_light.frag");
-		}
 		if(selected_shader == "Blinn_Shading")
 		{
 			current_shader = AssetManager::ReloadSherFromFile("Blinn_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/blinn_shading.vert", "Assets/Shaders/blinn_shading.frag");
 		}
-		
 	}
+
+	ImGui::ColorEdit3("Fog Color", &fog_color[0]);
+	ImGui::DragFloat("Fog Near", &fog_near, 0.5f, 1.f, fog_far - 1.f);
+	ImGui::DragFloat("Fog Far", &fog_far, 0.5f, fog_near + 1.f, 200.f);
+
 	ImGui::Text("UV Control");
 	ImGui::Checkbox("Use CPU", &useCpu);
 	ImGui::RadioButton("Planar", &current_uv_method, static_cast<int>(UVTypes::Planar)); ImGui::SameLine();

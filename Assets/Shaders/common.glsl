@@ -67,6 +67,22 @@ vec3 ComputeReflection(vec3 normalVector, vec3 lightVector)
 {
     return 2*(dot(normalVector,lightVector))*normalVector-lightVector;
 }
+
+vec3 ComputeRefraction(vec3 normalVector, vec3 viewVector, float Ni, float Nt)
+{
+    float K=Ni/Nt;
+    float NdotV=dot(normalVector, viewVector);
+    vec3 T=(K*NdotV-sqrt(1-K*K*(1-NdotV*NdotV)))*normalVector-K*viewVector;
+    return T;
+}
+
+float ComputeFresnel(vec3 normalVector, vec3 viewVector, float Ni, float Nt, float power)
+{
+    float K=Ni/Nt;
+    float f=pow(1.0-K, 2)/pow(1.0+K, 2);
+    return f+(1-f)*pow(1-dot(normalVector,viewVector),power);
+}
+
 vec3 ComputeHalfVector(vec3 viewVector, vec3 lightVector)
 {
     return normalize(viewVector+lightVector);

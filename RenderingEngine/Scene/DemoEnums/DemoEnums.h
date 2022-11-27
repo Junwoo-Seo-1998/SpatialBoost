@@ -12,5 +12,10 @@ End Header --------------------------------------------------------*/
 enum class select
 {
 	DrawVertexNormal = 0,
-	DrawFaceNormal
+	DrawFaceNormal,
+
+	ShowFresnelEffect,
+	ShowRefraction,
+	ShowReflection,
+	None
 };

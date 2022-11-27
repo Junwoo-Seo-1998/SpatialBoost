@@ -44,8 +44,11 @@ uniform bool UseCPU;
 uniform bool NormalEntity;
 
 uniform bool showReflect;
+uniform bool showRefract;
 
-
+uniform float fresnelPower;
+uniform float Nt;
+uniform float RGBRatio;
 
 void main()
 {
@@ -116,13 +119,46 @@ void main()
         }
     }
     
-
-    if(showReflect)
+    if(showReflect&&!showRefract)
     {
         vec3 ReflectionVector=ComputeReflection(NormalVector, ViewVector);
         int textureIndex=0;
         vec2 uv=ComputeSkyBoxMapUV(ReflectionVector,textureIndex);
         TotalColor=mix(vec3(texture(skybox[textureIndex], uv)), TotalColor,0.01);
+    }
+
+    if(showRefract&&!showReflect)
+    {
+        vec3 RefractionVector=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt);
+        int textureIndex=0;
+        vec2 uv=ComputeSkyBoxMapUV(RefractionVector,textureIndex);
+        TotalColor=mix(vec3(texture(skybox[textureIndex], uv)), TotalColor,0.01);
+    }
+
+    if(showReflect&&showRefract)
+    {
+        int textureIndex=0;
+        vec3 ReflectionVector=ComputeReflection(NormalVector, ViewVector);
+        vec2 uv=ComputeSkyBoxMapUV(ReflectionVector,textureIndex);
+
+        vec3 reflectionRGB=texture(skybox[textureIndex], uv).rgb;
+
+        vec3 RefractionVectorR=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt-RGBRatio);
+        vec3 RefractionVectorG=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt);
+        vec3 RefractionVectorB=ComputeRefraction(NormalVector, ViewVector, 1.0, Nt+RGBRatio);
+
+        uv=ComputeSkyBoxMapUV(RefractionVectorR,textureIndex);
+        float refractionR=texture(skybox[textureIndex], uv).r;
+        uv=ComputeSkyBoxMapUV(RefractionVectorG,textureIndex);
+        float refractionG=texture(skybox[textureIndex], uv).g;
+        uv=ComputeSkyBoxMapUV(RefractionVectorB,textureIndex);
+        float refractionB=texture(skybox[textureIndex], uv).b;
+
+        vec3 refractionRGB=vec3(refractionR, refractionG, refractionB);
+        
+        float fresnelRatio=ComputeFresnel(NormalVector, ViewVector,  1.0, Nt, fresnelPower);
+        vec3 fresnelColor=mix(refractionRGB, reflectionRGB, fresnelRatio);
+        TotalColor=mix(fresnelColor, TotalColor,0.01);
     }
     
     TotalColor=ComputeFog(Fog, TotalColor, ViewDistance);
