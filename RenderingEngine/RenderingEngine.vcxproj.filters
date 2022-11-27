@@ -108,6 +108,9 @@
     <ClInclude Include="Core\Graphics\Buffer.h">
       <Filter>Core\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Graphics\FrameBuffer.h">
+      <Filter>Core\Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Graphics\Shader.h">
       <Filter>Core\Graphics</Filter>
     </ClInclude>
@@ -171,7 +174,6 @@
     <ClInclude Include="Scene\Scenario_3.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Graphics\FrameBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -205,6 +207,9 @@
       <Filter>Core\Event\InputEvents</Filter>
     </ClCompile>
     <ClCompile Include="Core\Graphics\Buffer.cpp">
+      <Filter>Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Graphics\FrameBuffer.cpp">
       <Filter>Core\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Core\Graphics\Shader.cpp">
@@ -265,6 +270,5 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Graphics\FrameBuffer.cpp" />
   </ItemGroup>
 </Project>
