@@ -13,7 +13,7 @@ Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include <functional>
 #include "Core/Utils/Math.h"
-
+#include <string>
 
 enum class EventType : int
 {
