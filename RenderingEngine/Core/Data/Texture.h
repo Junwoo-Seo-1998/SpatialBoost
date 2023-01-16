@@ -15,12 +15,16 @@ struct TextureData;
 class Texture
 {
 public:
-	Texture(std::shared_ptr<TextureData> texture_data);
+	static std::shared_ptr<Texture> CreateTexture(std::shared_ptr<TextureData> texture_data);
+	static std::shared_ptr<Texture> CreateTexture(const TextureData& texture_data);
 	virtual ~Texture();
 	std::tuple<int, int> GetWidthHeight() const;
 	unsigned int GetTextureID() const;
-	void Bind(unsigned int unit = 0);
+
+	void BindTexture(unsigned int unit = 0);
 private:
+	Texture(std::shared_ptr<TextureData> texture_data);
+	Texture(const TextureData& texture_data);
 	int m_Width;
 	int m_Height;
 	unsigned int m_TextureID;

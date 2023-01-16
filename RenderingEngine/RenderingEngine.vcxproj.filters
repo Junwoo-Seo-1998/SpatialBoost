@@ -270,5 +270,6 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Data\TextureData.cpp" />
   </ItemGroup>
 </Project>

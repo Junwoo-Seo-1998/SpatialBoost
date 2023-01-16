@@ -151,6 +151,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Component\TransformComponent.cpp" />
     <ClCompile Include="Core\Data\Mesh.cpp" />
     <ClCompile Include="Core\Data\Texture.cpp" />
+    <ClCompile Include="Core\Data\TextureData.cpp" />
     <ClCompile Include="Core\Data\UV.cpp" />
     <ClCompile Include="Core\Event\ApplicationEvents\ApplicationEvents.cpp" />
     <ClCompile Include="Core\Event\Event.cpp" />

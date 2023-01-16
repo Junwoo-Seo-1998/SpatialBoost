@@ -144,7 +144,7 @@ void Shader::SetTexture(const std::string& name, std::shared_ptr<Texture> textur
 		std::cout << "error on shader location! - " << name << std::endl;
 		return;
 	}
-	texture->Bind(unit);
+	texture->BindTexture(unit);
 	glUniform1i(location, unit);
 }
 

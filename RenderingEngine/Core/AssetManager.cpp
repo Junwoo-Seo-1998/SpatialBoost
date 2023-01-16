@@ -205,7 +205,7 @@ std::shared_ptr<Shader> AssetManager::GetShader(const std::string& key_name)
 
 std::shared_ptr<Texture> AssetManager::LoadTextureFromFile(const std::string& key_name, const std::string& file_name)
 {
-	std::shared_ptr<Texture> texture = std::make_shared<Texture>(File::ReadImageToTexture(file_name));
+	std::shared_ptr<Texture> texture = Texture::CreateTexture(File::ReadImageToTexture(file_name));
 	m_Textures[key_name] = texture;
 	return texture;
 }
