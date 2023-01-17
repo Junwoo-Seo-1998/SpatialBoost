@@ -99,7 +99,7 @@ void Scenario_3::Start()
 	FrameBufferSpecification specification{ 1024,1024, {FrameBufferFormat::RGBA, FrameBufferFormat::Depth} };
 	for (int i = 0; i < 6; ++i)
 	{
-		FrameBuffers[i] = std::make_shared<FrameBuffer>(specification);
+		FrameBuffers[i] = FrameBuffer::CreateFrameBuffer(specification);
 	}
 }
 
@@ -634,14 +634,14 @@ void Scenario_3::Update()
 		current_shader->SetFloat("RGBRatio", Mat_RGBRefractionRatio);
 		current_shader->SetFloat("fresnelPower", Mat_FresnelPower);
 
-		current_shader->SetFrameBufferColorTexture("skybox[0]", FrameBuffers[0], 0);
-		current_shader->SetFrameBufferColorTexture("skybox[1]", FrameBuffers[1], 1);
+		current_shader->SetTexture("skybox[0]", FrameBuffers[0]->GetColorTexture(), 0);
+		current_shader->SetTexture("skybox[1]", FrameBuffers[1]->GetColorTexture(), 1);
 
-		current_shader->SetFrameBufferColorTexture("skybox[2]", FrameBuffers[2], 2);
-		current_shader->SetFrameBufferColorTexture("skybox[3]", FrameBuffers[3], 3);
+		current_shader->SetTexture("skybox[2]", FrameBuffers[2]->GetColorTexture(), 2);
+		current_shader->SetTexture("skybox[3]", FrameBuffers[3]->GetColorTexture(), 3);
 
-		current_shader->SetFrameBufferColorTexture("skybox[4]", FrameBuffers[4], 4);
-		current_shader->SetFrameBufferColorTexture("skybox[5]", FrameBuffers[5], 5);
+		current_shader->SetTexture("skybox[4]", FrameBuffers[4]->GetColorTexture(), 4);
+		current_shader->SetTexture("skybox[5]", FrameBuffers[5]->GetColorTexture(), 5);
 
 		if (MatRadio == static_cast<int>(select::ShowFresnelEffect))
 		{
@@ -837,20 +837,20 @@ void Scenario_3::LateUpdate()
 	ImGui::Begin("FrameBuffers");
 	constexpr ImVec2 size{ 100,100 };
 
-	unsigned textureID = FrameBuffers[5]->GetColorTexture(0);
+	unsigned textureID = FrameBuffers[5]->GetColorTexture(0)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
-	textureID = FrameBuffers[0]->GetColorTexture(0);
-	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
-	ImGui::SameLine();
-	textureID = FrameBuffers[2]->GetColorTexture(0);
+	textureID = FrameBuffers[0]->GetColorTexture(0)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 	ImGui::SameLine();
-	textureID = FrameBuffers[1]->GetColorTexture(0);
+	textureID = FrameBuffers[2]->GetColorTexture(0)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
-	textureID = FrameBuffers[3]->GetColorTexture(0);
+	ImGui::SameLine();
+	textureID = FrameBuffers[1]->GetColorTexture(0)->GetTextureID();
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	textureID = FrameBuffers[3]->GetColorTexture(0)->GetTextureID();
 	ImGui::SameLine();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
-	textureID = FrameBuffers[4]->GetColorTexture(0);
+	textureID = FrameBuffers[4]->GetColorTexture(0)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 	ImGui::End();
 

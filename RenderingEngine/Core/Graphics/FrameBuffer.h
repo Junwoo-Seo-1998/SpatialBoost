@@ -12,9 +12,11 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include <vector>
+#include "Core/Data/Texture.h"
 enum class FrameBufferFormat
 {
 	None = 0,
+	RGB,
 	RGBA,
 	Depth,
 };
@@ -40,26 +42,27 @@ struct FrameBufferSpecification
 class FrameBuffer
 {
 public:
-	FrameBuffer(const FrameBufferSpecification& spec);
-	~FrameBuffer();
-
-	void BuildFrameBuffer();
+	static std::shared_ptr<FrameBuffer> CreateFrameBuffer(const FrameBufferSpecification& spec);
+	FrameBuffer() = delete;
+	virtual ~FrameBuffer();
 
 	void Bind() const;
-	void Unbind() const;
+	void UnBind() const;
 
 	void Resize(unsigned int width, unsigned int height);
 
 	unsigned int GetFrameBufferID() const;
-	unsigned int GetColorTexture(int index) const;
-	unsigned int GetDepthTexture() const;
+	std::shared_ptr<Texture> GetColorTexture(int index=0);
+	std::shared_ptr<Texture> GetDepthTexture();
 
 private:
+	FrameBuffer(const FrameBufferSpecification& spec);
+	void BuildFrameBuffer();
 	FrameBufferSpecification m_DescribedFrameBuffer;
 	std::vector<FrameBufferFormat> m_ColorFormats;
 	FrameBufferFormat m_DepthFormat;
 
 	unsigned int m_FrameBufferID;
-	std::vector<unsigned int> m_ColorBufferIDs;
-	unsigned int m_DepthBufferID;
+	std::vector<std::shared_ptr<Texture>> m_ColorTextures;
+	std::shared_ptr<Texture> m_DepthTexture;
 };

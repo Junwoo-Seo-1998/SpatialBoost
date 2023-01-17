@@ -44,7 +44,6 @@ public:
 	void SetMat4(const std::string& name, const glm::mat4& value) const;
 
 	void SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned int unit = 0);
-	void SetFrameBufferColorTexture(const std::string& name, std::shared_ptr<FrameBuffer> texture, unsigned int unit = 0);
 	void Reload();
 
 	GLuint GetProgramID();
