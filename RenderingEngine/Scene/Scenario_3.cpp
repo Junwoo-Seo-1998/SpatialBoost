@@ -813,11 +813,11 @@ void Scenario_3::LateUpdate()
 	{
 		if (selected_shader == "Phong_Shading")
 		{
-			current_shader = AssetManager::ReloadSherFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
+			current_shader = AssetManager::ReloadShaderFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
 		}
 		if (selected_shader == "Blinn_Shading")
 		{
-			current_shader = AssetManager::ReloadSherFromFile("Blinn_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/blinn_shading.vert", "Assets/Shaders/blinn_shading.frag");
+			current_shader = AssetManager::ReloadShaderFromFile("Blinn_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/blinn_shading.vert", "Assets/Shaders/blinn_shading.frag");
 		}
 
 	}

@@ -175,7 +175,9 @@ std::shared_ptr<VertexBuffer> AssetManager::GetSkybox()
 std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_name, const std::string& vert_file, const std::string& frag_file)
 {
 	std::cout << "Shader Files: " << vert_file << ", " << frag_file << std::endl;
-	std::shared_ptr<Shader> shader = std::make_shared<Shader>(File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({ 
+		{ShaderType::VertexShader,{vert_file}}, {ShaderType::FragmentShader,{frag_file}}
+	});
 	m_Shaders[key_name] = shader;
 	return shader;
 }
@@ -184,16 +186,20 @@ std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_
 	const std::string& frag_file)
 {
 	std::cout << "Shader Files: " << common_file << ", " << vert_file << ", " << frag_file << std::endl;
-	std::shared_ptr<Shader> shader = std::make_shared<Shader>(File::ReadFileToString(common_file), File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({
+		{ShaderType::VertexShader,{common_file,vert_file}}, {ShaderType::FragmentShader,{common_file,frag_file}}
+		});
 	m_Shaders[key_name] = shader;
 	return shader;
 }
 
-std::shared_ptr<Shader> AssetManager::ReloadSherFromFile(const std::string& key_name, const std::string& common_file,
+std::shared_ptr<Shader> AssetManager::ReloadShaderFromFile(const std::string& key_name, const std::string& common_file,
 	const std::string& vert_file, const std::string& frag_file)
 {
 	std::cout << "Reload Shader Files: " << common_file << ", " << vert_file << ", " << frag_file << std::endl;
-	std::shared_ptr<Shader> shader = std::make_shared<Shader>(File::ReadFileToString(common_file), File::ReadFileToString(vert_file), File::ReadFileToString(frag_file));
+	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({
+		{ShaderType::VertexShader,{common_file,vert_file}}, {ShaderType::FragmentShader,{common_file,frag_file}}
+		});
 	m_Shaders[key_name] = shader;
 	return shader;
 }
