@@ -48,7 +48,10 @@ struct VertexNormalMeshRendererComponent
 };
 
 
-
+struct RendererComponent
+{
+	bool enabled = true;
+};
 
 
 

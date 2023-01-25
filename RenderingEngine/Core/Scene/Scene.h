@@ -35,6 +35,7 @@ public:
 	Entity GetMainCamera() const;
 
 	Entity CreateEntity();
+	Entity CreateEntityFromModel();
 	entt::registry& GetRegistry();
 
 

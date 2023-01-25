@@ -44,6 +44,12 @@ Entity Scene::CreateEntity()
 	return entity;
 }
 
+Entity Scene::CreateEntityFromModel()
+{
+	//todo: implement
+	return CreateEntity();
+}
+
 entt::registry& Scene::GetRegistry()
 {
 	return m_Registry;

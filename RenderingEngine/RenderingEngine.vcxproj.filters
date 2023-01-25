@@ -176,6 +176,7 @@
     </ClInclude>
     <ClInclude Include="Core\Component\CameraComponent.h" />
     <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Core\Component\MeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -277,5 +278,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Component\CameraComponent.cpp" />
     <ClCompile Include="Core\Time.cpp" />
+    <ClCompile Include="Core\Component\Meshcomponent.cpp" />
   </ItemGroup>
 </Project>

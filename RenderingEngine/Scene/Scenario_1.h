@@ -35,11 +35,6 @@ public:
 	void OnDestroy() override;
 	void OnEvent(Event& event) override;
 private:
-	std::shared_ptr<VertexArray> vertex_array;
-	std::string selected_shader;
-	std::shared_ptr<Shader> current_shader;
-	std::shared_ptr<Shader> line_shader;
-	std::shared_ptr<VertexBuffer> buffer;
 
 	bool StopRotation=false;
 

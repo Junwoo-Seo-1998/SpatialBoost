@@ -21,6 +21,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Component/CameraComponent.h"
 #include "Core/Component/LightComponent.h"
 #include "Core/Component/MaterialComponent.h"
+#include "Core/Component/MeshComponent.h"
 #include "Core/Component/RendererComponent.h"
 #include "Core/Component/TransformComponent.h"
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
@@ -53,19 +54,18 @@ void Scenario_1::Start()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	line_shader = AssetManager::GetShader("line_shader");
-	selected_shader = "Phong_Shading";
-	current_shader = AssetManager::GetShader(selected_shader);
-
-	vertex_array = VertexArray::CreateVertexArray();
-	vertex_array->Bind();
+	MainCamera.GetComponent<TransformComponent>().Position = { 0,0,10 };
 
 	demo_mesh = CreateEntity();
 	demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
+	/*
 	demo_mesh.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
 	demo_mesh.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
 	demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
-	demo_mesh.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));
+	demo_mesh.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));*/
+	demo_mesh.AddComponent<RendererComponent>();
+	demo_mesh.AddComponent<MeshComponent>(AssetManager::GetVertexNormalMesh("bunny"));
+	demo_mesh.AddComponent<MaterialComponent>();
 	auto mat = demo_mesh.AddComponent<MaterialComponent>();
 
 
@@ -103,8 +103,7 @@ void Scenario_1::Start()
 void Scenario_1::Update()
 {
 	float dt = Time::GetDelta();
-	//MainCamera.GetComponent<TransformComponent>().Rotation.y += dt;
-	current_shader = AssetManager::GetShader(selected_shader);
+	//MainCamera.GetComponent<TransformComponent>().Position.y += 100*dt;
 }
 
 void Scenario_1::PostUpdate()
