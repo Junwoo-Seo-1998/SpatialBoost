@@ -18,6 +18,8 @@ public:
 	virtual void OnAttach() {}
 	virtual void OnDetach() {}
 	virtual void OnUpdate() {}
+	virtual void OnRender() {}
+	virtual void OnPostRender() {}
 	virtual void OnGuiRender() {}
 	virtual void OnEvent([[maybe_unused]] Event& event) {}
 };

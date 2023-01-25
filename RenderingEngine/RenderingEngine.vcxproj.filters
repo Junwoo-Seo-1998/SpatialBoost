@@ -126,6 +126,12 @@
     <ClInclude Include="Core\Layer\LayerManager.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Layer\RenderLayer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Layer\SkyboxRenderLayer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Scene\Entity.h">
       <Filter>Core\Scene</Filter>
     </ClInclude>
@@ -168,12 +174,7 @@
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\Scenario_2.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\Scenario_3.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
+    <ClInclude Include="Core\Component\CameraComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -192,6 +193,9 @@
       <Filter>Core\Data</Filter>
     </ClCompile>
     <ClCompile Include="Core\Data\Texture.cpp">
+      <Filter>Core\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Data\TextureData.cpp">
       <Filter>Core\Data</Filter>
     </ClCompile>
     <ClCompile Include="Core\Data\UV.cpp">
@@ -225,6 +229,12 @@
       <Filter>Core\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Core\Layer\LayerManager.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Layer\RenderLayer.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Layer\SkyboxRenderLayer.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
     <ClCompile Include="Core\Scene\Entity.cpp">
@@ -263,13 +273,7 @@
     <ClCompile Include="Scene\Scenario_1.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\Scenario_2.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\Scenario_3.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Data\TextureData.cpp" />
+    <ClCompile Include="Core\Component\CameraComponent.cpp" />
   </ItemGroup>
 </Project>

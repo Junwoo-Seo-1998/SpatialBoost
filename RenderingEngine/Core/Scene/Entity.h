@@ -24,7 +24,7 @@ public:
 	Comp_type& AddComponent(Args&&... args);
 
 	template<typename Comp_type>
-	bool HasComponent();
+	bool HasComponent() const;
 
 	template <typename Comp_type>
 	Comp_type& GetComponent();
@@ -45,7 +45,7 @@ Comp_type& Entity::AddComponent(Args&&... args)
 }
 
 template <typename Comp_type>
-bool Entity::HasComponent()
+bool Entity::HasComponent() const
 {
 	return m_Scene->m_Registry.any_of<Comp_type>(m_EntityHandle);
 }

@@ -104,6 +104,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Core\AssetManager.h" />
+    <ClInclude Include="Core\Component\CameraComponent.h" />
     <ClInclude Include="Core\Component\LightComponent.h" />
     <ClInclude Include="Core\Component\MaterialComponent.h" />
     <ClInclude Include="Core\Component\RendererComponent.h" />
@@ -127,6 +128,8 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\ImGui\ImGuiRenderer.h" />
     <ClInclude Include="Core\Layer\Layer.h" />
     <ClInclude Include="Core\Layer\LayerManager.h" />
+    <ClInclude Include="Core\Layer\RenderLayer.h" />
+    <ClInclude Include="Core\Layer\SkyboxRenderLayer.h" />
     <ClInclude Include="Core\Scene\Entity.h" />
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
@@ -141,12 +144,11 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h" />
     <ClInclude Include="Scene\DemoEnums\DemoEnums.h" />
     <ClInclude Include="Scene\Scenario_1.h" />
-    <ClInclude Include="Scene\Scenario_2.h" />
-    <ClInclude Include="Scene\Scenario_3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp" />
     <ClCompile Include="Core\AssetManager.cpp" />
+    <ClCompile Include="Core\Component\CameraComponent.cpp" />
     <ClCompile Include="Core\Component\RendererComponent.cpp" />
     <ClCompile Include="Core\Component\TransformComponent.cpp" />
     <ClCompile Include="Core\Data\Mesh.cpp" />
@@ -163,6 +165,8 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\ImGui\BuildImGui.cpp" />
     <ClCompile Include="Core\ImGui\ImGuiRenderer.cpp" />
     <ClCompile Include="Core\Layer\LayerManager.cpp" />
+    <ClCompile Include="Core\Layer\RenderLayer.cpp" />
+    <ClCompile Include="Core\Layer\SkyboxRenderLayer.cpp" />
     <ClCompile Include="Core\Scene\Entity.cpp" />
     <ClCompile Include="Core\Scene\Scene.cpp" />
     <ClCompile Include="Core\Scene\SceneManager.cpp" />
@@ -175,8 +179,6 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Window\Window.cpp" />
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />
-    <ClCompile Include="Scene\Scenario_2.cpp" />
-    <ClCompile Include="Scene\Scenario_3.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

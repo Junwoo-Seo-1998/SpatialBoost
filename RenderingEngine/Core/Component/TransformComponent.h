@@ -22,6 +22,9 @@ public:
 		: Position(translation) {}
 
 	glm::mat4 GetTransform() const;
+	glm::vec3 GetRight() const;
+	glm::vec3 GetUp() const;
+	glm::vec3 GetForward() const;
 
 	glm::vec3 Position{ 0.f };
 	glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };

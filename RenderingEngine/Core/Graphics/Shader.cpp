@@ -140,7 +140,7 @@ int Shader::GetUniformLocation(const std::string& name) const
 	GLint location = glGetUniformLocation(m_ShaderProgram, name.c_str());
 	if (location == -1)
 	{
-		//std::cout << "error on shader location! - " << name << std::endl;
+		std::cout << "error on shader location! - " << name << std::endl;
 		return -1;
 	}
 	return location;

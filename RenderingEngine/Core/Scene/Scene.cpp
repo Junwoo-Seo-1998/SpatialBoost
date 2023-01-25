@@ -11,12 +11,30 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include "Scene.h"
+
+#include "Core/Component/CameraComponent.h"
 #include "Core/Component/TransformComponent.h"
 
 Scene::Scene(Application& app)
 	:App(app)
 {
-	
+	MainCamera = CreateEntity();
+	MainCamera.AddComponent<CameraComponent>();
+}
+
+void Scene::SetMainCamera(Entity cam)
+{
+	if(!MainCamera.HasComponent<CameraComponent>())
+	{
+		//error
+		return;
+	}
+	MainCamera = cam;
+}
+
+Entity Scene::GetMainCamera() const
+{
+	return MainCamera;
 }
 
 Entity Scene::CreateEntity()

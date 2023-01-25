@@ -159,7 +159,7 @@ void FrameBuffer::BuildFrameBuffer()
 	}
 
 
-	if (m_ColorFormats.size() > 1)
+	if (!m_ColorFormats.empty())
 	{
 		const unsigned int size = static_cast<unsigned int>(m_ColorFormats.size());
 
@@ -168,7 +168,7 @@ void FrameBuffer::BuildFrameBuffer()
 		GLenum buffers[4] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2,GL_COLOR_ATTACHMENT3 };
 		glNamedFramebufferDrawBuffers(m_FrameBufferID, size, buffers);
 	}
-	else if (m_ColorFormats.empty())//means only depth
+	else if (m_DepthFormat != FrameBufferFormat::None)//means only depth
 	{
 		glNamedFramebufferDrawBuffer(m_FrameBufferID, GL_NONE);
 		glNamedFramebufferReadBuffer(m_FrameBufferID, GL_NONE);

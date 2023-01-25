@@ -81,15 +81,19 @@ void Application::Update()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_ImGuiRenderer->GuiBegin();
 		m_SceneManager->GetCurrentScene()->Update();
-		m_SceneManager->GetCurrentScene()->LateUpdate();
+		m_SceneManager->GetCurrentScene()->PostUpdate();
 		for (auto layer : m_LayerManager->GetLayers())
-		{
 			layer->OnUpdate();
-		}
 		for (auto layer:m_LayerManager->GetOverLays())
-		{
 			layer->OnUpdate();
-		}
+		for (auto layer : m_LayerManager->GetLayers())
+			layer->OnRender();
+		for (auto layer : m_LayerManager->GetOverLays())
+			layer->OnRender();
+		for (auto layer : m_LayerManager->GetLayers())
+			layer->OnPostRender();
+		for (auto layer : m_LayerManager->GetOverLays())
+			layer->OnPostRender();
 		m_ImGuiRenderer->GuiEnd();
 		m_LayerManager->ClearDeleteQueue();
 		m_Window->Update();
@@ -113,6 +117,11 @@ void Application::SetCurrentScene(std::shared_ptr<Scene> scene)
 std::shared_ptr<LayerManager> Application::GetLayerManager()
 {
 	return m_LayerManager;
+}
+
+std::shared_ptr<SceneManager> Application::GetSceneManager()
+{
+	return m_SceneManager;
 }
 
 std::tuple<int, int> Application::GetWindowSize()

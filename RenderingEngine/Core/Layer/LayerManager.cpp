@@ -17,21 +17,25 @@ LayerManager::~LayerManager()
 void LayerManager::PushLayer(std::shared_ptr<Layer> layer)
 {
 	m_Layers.emplace_back(layer);
+	layer->OnAttach();
 }
 
 void LayerManager::PushOverlay(std::shared_ptr<Layer> overlay)
 {
 	m_Overlays.emplace_back(overlay);
+	overlay->OnAttach();
 }
 
 void LayerManager::PopLayer(std::shared_ptr<Layer> layer)
 {
 	m_LayerDeleteQueue.push(layer);
+	layer->OnDetach();
 }
 
 void LayerManager::PopOverlay(std::shared_ptr<Layer> overlay)
 {
 	m_OverlayDeleteQueue.push(overlay);
+	overlay->OnDetach();
 }
 
 void LayerManager::ClearDeleteQueue()

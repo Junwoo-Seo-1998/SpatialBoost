@@ -26,16 +26,22 @@ public:
 	virtual void OnEnable() = 0;
 	virtual void Start() = 0;
 	virtual void Update() = 0;
-	virtual void LateUpdate() = 0;
+	virtual void PostUpdate() = 0;
 	virtual void OnDisable() = 0;
 	virtual void OnDestroy() = 0;
 	virtual void OnEvent(Event& event) = 0;
 
+	void SetMainCamera(Entity cam);
+	Entity GetMainCamera() const;
+
 	Entity CreateEntity();
 	entt::registry& GetRegistry();
+
+
 protected:
 	Application& App;
 	entt::registry m_Registry;
+	Entity MainCamera;
 	friend class Entity;
 };
 

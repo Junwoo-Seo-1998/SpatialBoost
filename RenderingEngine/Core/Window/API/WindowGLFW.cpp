@@ -18,6 +18,22 @@ End Header --------------------------------------------------------*/
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
 #include "Core/Event/InputEvents/KeyBoardEvent.h"
 
+void GLAPIENTRY OpenGLMessageCallback(
+	GLenum source,
+	GLenum type,
+	GLuint id,
+	GLenum severity,
+	GLsizei length,
+	const GLchar* message,
+	const void* userParam)
+{
+	if (GL_DEBUG_TYPE_OTHER == type)
+		return;
+	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+		type, severity, message);
+}
+
 bool WindowGLFW::Init()
 {
 	if (glfwInit() != GLFW_TRUE)
@@ -34,6 +50,9 @@ bool WindowGLFW::Init()
 	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 	std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+
 	glClearColor(0.f,0.f,0.f, 1.f);
 
 	//set glfw callback

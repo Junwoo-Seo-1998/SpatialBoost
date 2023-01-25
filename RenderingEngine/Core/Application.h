@@ -38,6 +38,7 @@ public:
 	void SetCurrentScene(std::shared_ptr<Scene> scene);
 
 	std::shared_ptr<LayerManager> GetLayerManager();
+	std::shared_ptr<SceneManager> GetSceneManager();
 
 	std::tuple<int, int> GetWindowSize();
 	//for user to access it 

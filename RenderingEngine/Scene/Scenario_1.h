@@ -29,25 +29,19 @@ public:
 	void Awake() override;
 	void OnEnable() override;
 	void Start() override;
-	void DrawEnv(const glm::mat4& worldToCam);
-	void UpdateFrameBuffers(const glm::vec3& object_pos);
 	void Update() override;
-	void LateUpdate() override;
+	void PostUpdate() override;
 	void OnDisable() override;
 	void OnDestroy() override;
 	void OnEvent(Event& event) override;
 private:
 	std::shared_ptr<FrameBuffer> FrameBuffers[6];
-	float reDrawTime = 0.025f;
-	float reDrawAcc = 0.f;
 	std::shared_ptr<VertexArray> vertex_array;
 	std::string selected_shader;
 	std::shared_ptr<Shader> current_shader;
 	std::shared_ptr<Shader> line_shader;
 	std::shared_ptr<VertexBuffer> buffer;
-	glm::mat4 perspective = Math::BuildPerspectiveProjectionMatrixFovy(glm::radians(45.f), 800.f / 800.f, 0.1f, 1000.f);
-	glm::mat4 world_to_cam{};
-	glm::vec3 campos = { 0,2,8 };
+
 	bool StopRotation=false;
 
 	bool cullBackFace = true;
@@ -67,10 +61,6 @@ private:
 
 	glm::vec4 Mat_Ambient = { 0.001f,0.001f,0.001f,1.f };
 	glm::vec4 Mat_Emissive{ 0.0f };
-	int MatRadio = static_cast<int>(select::ShowFresnelEffect);
-	float Mat_RefractiveIndex = 2.1f;
-	float Mat_RGBRefractionRatio = 0.13f;
-	float Mat_FresnelPower = 0.5f;
 
 	int light_number = 8;
 	int light_type = 0;
@@ -91,7 +81,6 @@ private:
 	float m_center_speed = 1.f;
 	float m_orbit_speed = 0.5f;
 
-	bool useCpu = false;
 	int TextureEntity = 0;
 	int current_uv_method = 2;
 	std::shared_ptr<Layer> overlay;

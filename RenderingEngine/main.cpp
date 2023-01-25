@@ -16,10 +16,12 @@ End Header --------------------------------------------------------*/
 #include<memory>
 
 #include "Core/AssetManager.h"
+#include "Core/Layer/LayerManager.h"
+#include "Core/Layer/RenderLayer.h"
+#include "Core/Layer/SkyboxRenderLayer.h"
 #include "Core/Utils/File.h"
 
 #include "Scene/Scenario_1.h"
-#include "Scene/Scenario_2.h"
 
 
 class MyApp : public Application
@@ -54,6 +56,9 @@ class MyApp : public Application
 		AssetManager::GenerateSkybox();
 
 		SetCurrentScene(std::make_shared<Scenario_1>(Application::Get()));
+
+		Application::Get().GetLayerManager()->PushLayer(std::make_shared<SkyboxRenderLayer>());
+		Application::Get().GetLayerManager()->PushLayer(std::make_shared<RenderLayer>());
 	}
 };
 std::shared_ptr<Application> CoreMain()

@@ -24,3 +24,19 @@ glm::mat4 TransformComponent::GetTransform() const
 
 	return Parent->GetTransform() * current;
 }
+
+glm::vec3 TransformComponent::GetRight() const
+{
+	return glm::toMat4(glm::quat(Rotation)) * glm::vec4{ 1.f,0.f,0.f ,0.f };
+}
+
+glm::vec3 TransformComponent::GetUp() const
+{
+	return glm::toMat4(glm::quat(Rotation)) * glm::vec4{ 0.f,1.f,0.f ,0.f };
+}
+
+
+glm::vec3 TransformComponent::GetForward() const
+{
+	return glm::toMat4(glm::quat(Rotation)) * glm::vec4{ 0.f,0.f,-1.f ,0.f };
+}
