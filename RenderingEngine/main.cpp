@@ -57,8 +57,9 @@ class MyApp : public Application
 
 		SetCurrentScene(std::make_shared<Scenario_1>(Application::Get()));
 
-		Application::Get().GetLayerManager()->PushLayer(std::make_shared<SkyboxRenderLayer>());
+
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<RenderLayer>());
+		Application::Get().GetLayerManager()->PushLayer(std::make_shared<SkyboxRenderLayer>());
 	}
 };
 std::shared_ptr<Application> CoreMain()

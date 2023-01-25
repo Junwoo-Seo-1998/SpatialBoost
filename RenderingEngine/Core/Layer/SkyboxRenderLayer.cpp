@@ -11,7 +11,7 @@
 void SkyboxRenderLayer::OnAttach()
 {
 	skybox_shader = AssetManager::GetShader("skybox_shader");
-	vao = std::make_shared<VertexArray>();
+	vao = VertexArray::CreateVertexArray();
 }
 
 void SkyboxRenderLayer::OnDetach()
@@ -32,7 +32,7 @@ void SkyboxRenderLayer::OnPostRender()
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	vao->Bind();
 	skybox_shader->Use();
-	vao->AttachBuffer(*AssetManager::GetSkybox());
+	AssetManager::GetSkybox()->BindToVertexArray();
 	auto [width, height] = Application::Get().GetWindowSize();
 	const float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	glm::mat3 world_to_cam = Math::BuildCameraMatrixWithDirection(transform.Position, transform.GetForward(), transform.GetUp());

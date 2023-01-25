@@ -163,8 +163,9 @@ void AssetManager::GenerateSkybox()
 		 1.0f, -1.0f,  1.0f
 		 }
 	};
-	m_Skybox = std::make_shared<VertexBuffer>(skyboxVertices, sizeof(skyboxVertices));
-	m_Skybox->DescribeData({ {0,Float3} });
+	m_Skybox = VertexBuffer::CreateVertexBuffer(sizeof(skyboxVertices));
+	m_Skybox->SetData(sizeof(skyboxVertices), skyboxVertices);
+	m_Skybox->SetDataTypes({ {0, DataType::Float3} });
 }
 
 std::shared_ptr<VertexBuffer> AssetManager::GetSkybox()

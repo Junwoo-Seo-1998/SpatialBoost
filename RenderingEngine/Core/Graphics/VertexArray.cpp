@@ -11,43 +11,16 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"VertexArray.h"
-
-
-
-VertexArray::VertexArray()
-	:m_VertexArray(0)
-{
-}
-
+#include <glad.h>
 VertexArray::~VertexArray()
 {
-	glBindVertexArray(0);
+	UnBind();
 	glDeleteVertexArrays(1, &m_VertexArray);
 }
 
-void VertexArray::AttachBuffer(const VertexBuffer& buffer, bool ManualVAO)
+std::shared_ptr<VertexArray> VertexArray::CreateVertexArray()
 {
-	if(!ManualVAO)
-		Bind();
-	const DescribedData& data_descriptions = buffer.GetDescribedData();
-	buffer.Bind();
-	for (const auto& description : data_descriptions)
-	{
-		glEnableVertexAttribArray(description.m_LayoutLocation);
-		const void * pointer = static_cast<char*>(nullptr) + description.m_Offset;
-		glVertexAttribPointer(description.m_LayoutLocation, static_cast<GLint>(description.m_ElementCount), 
-			description.ShaderDataTypeToOpenGLBaseType(),
-			description.m_Normalize ? GL_TRUE : GL_FALSE,
-			static_cast<GLsizei>(data_descriptions.GetStride()),
-			pointer);
-	}
-}
-
-void VertexArray::AttachBuffer(const ElementBuffer& buffer, bool ManualVAO)
-{
-	if (!ManualVAO)
-		Bind();
-	buffer.Bind();
+	return std::shared_ptr<VertexArray>(new VertexArray{});
 }
 
 void VertexArray::Bind() const
@@ -60,8 +33,8 @@ void VertexArray::UnBind() const
 	glBindVertexArray(0);
 }
 
-void VertexArray::CreateVertexArray()
+VertexArray::VertexArray()
+	:m_VertexArray(0)
 {
-	glGenVertexArrays(1, &m_VertexArray);
-	glBindVertexArray(m_VertexArray);
+	glCreateVertexArrays(1, &m_VertexArray);
 }

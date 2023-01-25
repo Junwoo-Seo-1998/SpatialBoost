@@ -67,8 +67,9 @@ void UV::BufferPointUV(UVTypes types, std::vector<glm::vec3>& entry, const Bound
 		break;
 	}
 
-	m_PointUV[static_cast<int>(types)] = std::make_shared<VertexBuffer>(uv->data(), uv->size() * sizeof(glm::vec2));
-	m_PointUV[static_cast<int>(types)]->DescribeData({ {2,Float2} });
+	m_PointUV[static_cast<int>(types)] =VertexBuffer::CreateVertexBuffer(uv->size() * sizeof(glm::vec2));
+	m_PointUV[static_cast<int>(types)]->SetData(uv->size() * sizeof(glm::vec2), uv->data());
+	m_PointUV[static_cast<int>(types)]->SetDataTypes({ {2, DataType::Float2} });
 }
 
 void UV::BufferNormalUV(UVTypes types, std::vector<glm::vec3>& entry, const BoundingBox& box)
@@ -90,8 +91,9 @@ void UV::BufferNormalUV(UVTypes types, std::vector<glm::vec3>& entry, const Boun
 		break;
 	}
 
-	m_NormalUV[static_cast<int>(types)] = std::make_shared<VertexBuffer>(uv->data(), uv->size() * sizeof(glm::vec2));
-	m_NormalUV[static_cast<int>(types)]->DescribeData({ {2,Float2} });
+	m_NormalUV[static_cast<int>(types)] = VertexBuffer::CreateVertexBuffer(uv->size() * sizeof(glm::vec2));
+	m_NormalUV[static_cast<int>(types)]->SetData(uv->size() * sizeof(glm::vec2), uv->data());
+	m_NormalUV[static_cast<int>(types)]->SetDataTypes({ {2, DataType::Float2} });
 }
 
 void UV::BufferPointUV(UVTypes types, std::vector<Vertex>& entry, const BoundingBox& box)
@@ -120,8 +122,9 @@ void UV::BufferPointUV(UVTypes types, std::vector<Vertex>& entry, const Bounding
 		}
 		uvs->push_back(uv);
 	}
-	m_PointUV[static_cast<int>(types)] = std::make_shared<VertexBuffer>(uvs->data(), uvs->size() * sizeof(glm::vec2));
-	m_PointUV[static_cast<int>(types)]->DescribeData({ {2,Float2} });
+	m_PointUV[static_cast<int>(types)] = VertexBuffer::CreateVertexBuffer(uvs->size() * sizeof(glm::vec2));
+	m_PointUV[static_cast<int>(types)]->SetData(uvs->size() * sizeof(glm::vec2), uvs->data());
+	m_PointUV[static_cast<int>(types)]->SetDataTypes({ {2, DataType::Float2} });
 }
 
 
@@ -151,6 +154,7 @@ void UV::BufferNormalUV(UVTypes types, std::vector<Vertex>& entry, const Boundin
 		}
 		uvs->push_back(uv);
 	}
-	m_NormalUV[static_cast<int>(types)] = std::make_shared<VertexBuffer>(uvs->data(), uvs->size() * sizeof(glm::vec2));
-	m_NormalUV[static_cast<int>(types)]->DescribeData({ {2,Float2} });
+	m_NormalUV[static_cast<int>(types)] = VertexBuffer::CreateVertexBuffer(uvs->size() * sizeof(glm::vec2));
+	m_NormalUV[static_cast<int>(types)]->SetData(uvs->size() * sizeof(glm::vec2), uvs->data());
+	m_NormalUV[static_cast<int>(types)]->SetDataTypes({ {2, DataType::Float2} });
 }

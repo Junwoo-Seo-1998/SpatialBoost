@@ -11,22 +11,20 @@ Project: junwoo.seo_cs300_1
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
-#include<glad.h>
-#include"Core/Graphics/Buffer.h"
+#include <memory>
 
 class VertexArray
 {
 public:
-	VertexArray();
 	virtual ~VertexArray();
-
-	void AttachBuffer(const VertexBuffer& buffer, bool ManualVAO = false);
-	void AttachBuffer(const ElementBuffer& buffer, bool ManualVAO = false);
+	static std::shared_ptr<VertexArray> CreateVertexArray();
+	//void AttachBuffer(const VertexBuffer& buffer, bool ManualVAO = false);
+	//void AttachBuffer(const ElementBuffer& buffer, bool ManualVAO = false);
 
 	void Bind() const;
 	void UnBind() const;
 private:
-	void CreateVertexArray();
+	VertexArray();
 private:
-	GLuint m_VertexArray;
+	unsigned m_VertexArray;
 };

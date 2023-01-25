@@ -57,7 +57,7 @@ void Scenario_1::Start()
 	selected_shader = "Phong_Shading";
 	current_shader = AssetManager::GetShader(selected_shader);
 
-	vertex_array = std::make_shared<VertexArray>();
+	vertex_array = VertexArray::CreateVertexArray();
 	vertex_array->Bind();
 
 	demo_mesh = CreateEntity();
@@ -97,11 +97,6 @@ void Scenario_1::Start()
 		theta += d_theta;
 	}
 
-	FrameBufferSpecification specification{ 1024,1024, {FrameBufferFormat::RGBA, FrameBufferFormat::Depth} };
-	for (int i = 0; i < 6; ++i)
-	{
-		FrameBuffers[i] = FrameBuffer::CreateFrameBuffer(specification);
-	}
 }
 
 

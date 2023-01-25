@@ -135,11 +135,11 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateOrbit(float radius, int numDivi
 	new_vertex->push_back(prev);
 	new_vertex->push_back((*new_vertex)[0]);
 
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
+	std::shared_ptr<VertexBuffer> vertex_buffer = VertexBuffer::CreateVertexBuffer(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)));
+	vertex_buffer->SetData(static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)), new_vertex->data());
 
-	vertex_buffer->DescribeData({ {0,Float3} });
+	vertex_buffer->SetDataTypes({ {0, DataType::Float3} });
 	mesh->AttachBuffer(vertex_buffer);
 
 	mesh->SetVertices(new_vertex);
@@ -162,9 +162,9 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateFaceNormalMesh(const std::vector<gl
 		new_vertex->push_back({ loaded_points[loaded_index[offset + 1]],face_normals[i] });
 		new_vertex->push_back({ loaded_points[loaded_index[offset + 2]],face_normals[i] });
 	}
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(Vertex));
-	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(Vertex)));
-	vertex_buffer->DescribeData({ {0,Float3},{1,Float3} });
+	std::shared_ptr<VertexBuffer> vertex_buffer = VertexBuffer::CreateVertexBuffer(new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->SetData(static_cast<unsigned int>(new_vertex->size() * sizeof(Vertex)), new_vertex->data());
+	vertex_buffer->SetDataTypes({ {0, DataType::Float3},{1, DataType::Float3} });
 
 	mesh->AttachBuffer(vertex_buffer);
 
@@ -189,11 +189,11 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateFaceNormalLineMesh(const std::v
 		new_vertex->push_back(face_center);
 		new_vertex->push_back(face_center + normal_len * face_normals[i]);
 	}
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
+	std::shared_ptr<VertexBuffer> vertex_buffer = VertexBuffer::CreateVertexBuffer(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)));
+	vertex_buffer->SetData(static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)), new_vertex->data());
 
-	vertex_buffer->DescribeData({ {0,Float3} });
+	vertex_buffer->SetDataTypes({ {0, DataType::Float3} });
 	mesh->AttachBuffer(vertex_buffer);
 
 	mesh->SetVertices(new_vertex);
@@ -215,9 +215,9 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateVertexNormalMesh(const std::vector<
 	}
 
 
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(Vertex));
-	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(Vertex)));
-	vertex_buffer->DescribeData({ {0,Float3},{1,Float3} });
+	std::shared_ptr<VertexBuffer> vertex_buffer = VertexBuffer::CreateVertexBuffer(new_vertex->size() * sizeof(Vertex));
+	vertex_buffer->SetData(static_cast<unsigned int>(new_vertex->size() * sizeof(Vertex)), new_vertex->data());
+	vertex_buffer->SetDataTypes({ {0, DataType::Float3},{1, DataType::Float3} });
 
 	std::shared_ptr<ElementBuffer> index_buffer = std::make_shared<ElementBuffer>(loaded_index);
 	mesh->AttachBuffer(vertex_buffer);
@@ -241,11 +241,11 @@ std::shared_ptr<LineMesh> MeshGenerator::GenerateVertexNormalLineMesh(const std:
 		new_vertex->push_back(loaded_points[i]);
 		new_vertex->push_back(loaded_points[i] + normal_len * vertex_normals[i]);
 	}
-	std::shared_ptr<VertexBuffer> vertex_buffer = std::make_shared<VertexBuffer>(new_vertex->size() * sizeof(glm::vec3));
+	std::shared_ptr<VertexBuffer> vertex_buffer = VertexBuffer::CreateVertexBuffer(new_vertex->size() * sizeof(glm::vec3));
 
-	vertex_buffer->BufferData(new_vertex->data(), static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)));
+	vertex_buffer->SetData(static_cast<unsigned int>(new_vertex->size() * sizeof(glm::vec3)), new_vertex->data());
 
-	vertex_buffer->DescribeData({ {0,Float3} });
+	vertex_buffer->SetDataTypes({ {0, DataType::Float3} });
 	mesh->AttachBuffer(vertex_buffer);
 
 	mesh->SetVertices(new_vertex);

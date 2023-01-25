@@ -13,8 +13,9 @@ Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include<vector>
 #include<glad.h>
+#include <memory>
 
-enum DataType
+enum class DataType
 {
 	None = 0, Bool, Int, Int2, Int3, Int4, Float, Float2, Float3, Float4, Mat3, Mat4,
 };
@@ -30,21 +31,22 @@ struct DataAndLayoutLocation
 
 	DataAndLayoutLocation() = delete;
 	DataAndLayoutLocation(unsigned int layout_location, DataType data, bool normalize = false);
-	GLenum ShaderDataTypeToOpenGLBaseType() const;
+	unsigned ShaderDataTypeToOpenGLBaseType() const;
 };
 
 class DescribedData
 {
 public:
-	DescribedData():m_Stride(0) {}
+	DescribedData() :m_Stride(0) {}
 	DescribedData(const std::initializer_list<DataAndLayoutLocation>& described_data);
 
 	unsigned int GetStride() const { return m_Stride; }
 
-	std::vector<DataAndLayoutLocation>::iterator begin() { return m_DescribedData.begin(); }
-	std::vector<DataAndLayoutLocation>::iterator end() { return m_DescribedData.end(); }
-	std::vector<DataAndLayoutLocation>::const_iterator begin() const { return m_DescribedData.cbegin(); }
-	std::vector<DataAndLayoutLocation>::const_iterator end() const { return m_DescribedData.cend(); }
+	[[nodiscard]] int GetSize() const { return static_cast<int>(m_DescribedData.size()); }
+	[[nodiscard]] std::vector<DataAndLayoutLocation>::iterator begin() { return m_DescribedData.begin(); }
+	[[nodiscard]] std::vector<DataAndLayoutLocation>::iterator end() { return m_DescribedData.end(); }
+	[[nodiscard]] std::vector<DataAndLayoutLocation>::const_iterator begin() const { return m_DescribedData.cbegin(); }
+	[[nodiscard]] std::vector<DataAndLayoutLocation>::const_iterator end() const { return m_DescribedData.cend(); }
 private:
 	std::vector<DataAndLayoutLocation> m_DescribedData;
 	unsigned int m_Stride;
@@ -53,21 +55,19 @@ private:
 class VertexBuffer
 {
 public:
-	VertexBuffer(unsigned int size);
-	VertexBuffer(const void* data, unsigned size);
-	virtual ~VertexBuffer();
-
-	void BufferData(const void* data, unsigned size, unsigned offset = 0);
-
+	VertexBuffer() = delete;
+	~VertexBuffer();
+	static std::shared_ptr<VertexBuffer> CreateVertexBuffer(int byte_size);
 	void Bind() const;
-	void Unbind() const;
+	void BindToVertexArray() const;
+	void UnBind() const;
+	void SetData(int size, const void* data, unsigned offset = 0);
+	void SetDataTypes(const DescribedData& data);
+private:
 
-	void DescribeData(const DescribedData& described_Data) { m_DescribedData = described_Data; }
-	const DescribedData& GetDescribedData() const { return m_DescribedData; }
-private:
-	void CreateBuffer(const void* data, unsigned size);
-private:
-	GLuint m_Buffer;
+	VertexBuffer(int byte_size);
+	void CreateBuffer(int size, const void* data);
+	unsigned m_Buffer;
 	DescribedData m_DescribedData;
 };
 

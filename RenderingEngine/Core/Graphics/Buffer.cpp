@@ -12,6 +12,7 @@ Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Buffer.h"
 
+
 DataAndLayoutLocation::DataAndLayoutLocation(unsigned layout_location, DataType data, bool normalize)
 	:m_DataType(data), m_LayoutLocation(layout_location), m_Size(0), m_ElementCount(0), m_Offset(0), m_Normalize(normalize)
 {
@@ -48,7 +49,7 @@ DataAndLayoutLocation::DataAndLayoutLocation(unsigned layout_location, DataType 
 	}
 }
 
-GLenum DataAndLayoutLocation::ShaderDataTypeToOpenGLBaseType() const
+unsigned DataAndLayoutLocation::ShaderDataTypeToOpenGLBaseType() const
 {
 	switch (m_DataType)
 	{
@@ -81,19 +82,6 @@ DescribedData::DescribedData(const std::initializer_list<DataAndLayoutLocation>&
 	}
 }
 
-VertexBuffer::VertexBuffer(unsigned size)
-	:m_Buffer(0)
-{
-	//just create empty which will be filled later.
-	CreateBuffer(nullptr, size);
-}
-
-VertexBuffer::VertexBuffer(const void* data, unsigned size)
-	:m_Buffer(0)
-{
-	CreateBuffer(data, size);
-}
-
 
 VertexBuffer::~VertexBuffer()
 {
@@ -101,10 +89,34 @@ VertexBuffer::~VertexBuffer()
 	glDeleteBuffers(1, &m_Buffer);
 }
 
-void VertexBuffer::BufferData(const void* data, unsigned size, unsigned offset)
+
+void VertexBuffer::SetData(int size, const void* data, unsigned offset)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
 	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+}
+
+void VertexBuffer::SetDataTypes(const DescribedData& data)
+{
+	m_DescribedData = data;
+}
+
+VertexBuffer::VertexBuffer(int byte_size)
+	:m_Buffer(0), m_DescribedData()
+{
+	CreateBuffer(byte_size, nullptr);
+}
+
+void VertexBuffer::CreateBuffer(int size, const void* data)
+{
+	glCreateBuffers(1, &m_Buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
+	glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+}
+
+std::shared_ptr<VertexBuffer> VertexBuffer::CreateVertexBuffer(int byte_size)
+{
+	return std::shared_ptr<VertexBuffer>(new VertexBuffer{ byte_size });
 }
 
 void VertexBuffer::Bind() const
@@ -112,18 +124,28 @@ void VertexBuffer::Bind() const
 	glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
 }
 
-void VertexBuffer::Unbind() const
+void VertexBuffer::BindToVertexArray() const
+{
+	//ENGINE_ASSERT(m_DescribedData.GetSize() > 0, "There should be at least one described data. \
+	//\nExample:\nvertex_buffer->SetDataTypes({ {0, DataType::Float3} });//layout location, data type");
+	Bind();
+	for (const auto& description : m_DescribedData)
+	{
+		glEnableVertexAttribArray(description.m_LayoutLocation);
+		const void* pointer = static_cast<char*>(nullptr) + description.m_Offset;
+		glVertexAttribPointer(description.m_LayoutLocation, static_cast<GLint>(description.m_ElementCount),
+			description.ShaderDataTypeToOpenGLBaseType(),
+			description.m_Normalize ? GL_TRUE : GL_FALSE,
+			static_cast<GLsizei>(m_DescribedData.GetStride()),
+			pointer);
+	}
+}
+
+void VertexBuffer::UnBind() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBuffer::CreateBuffer(const void* data, unsigned size)
-{
-
-	glCreateBuffers(1, &m_Buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
-	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-}
 
 
 ElementBuffer::ElementBuffer(const std::vector<unsigned int>& indices)
