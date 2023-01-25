@@ -12,6 +12,7 @@ Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include"Application.h"
 #include "glad.h"
+#include "Time.h"
 #include "Core/Scene/SceneManager.h"
 #include "Event/ApplicationEvents/ApplicationEvents.h"
 #include "ImGui/ImGuiRenderer.h"
@@ -78,6 +79,7 @@ void Application::Update()
 	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
 	while (!m_Window->ShouldClose())
 	{
+		Time::Update();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_ImGuiRenderer->GuiBegin();
 		m_SceneManager->GetCurrentScene()->Update();

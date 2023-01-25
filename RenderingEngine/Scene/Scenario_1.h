@@ -76,8 +76,6 @@ private:
 	float outer = 45.f;
 	float falloff = 32.f;
 
-
-	float m_LastTime = 0.f;
 	float m_center_speed = 1.f;
 	float m_orbit_speed = 0.5f;
 

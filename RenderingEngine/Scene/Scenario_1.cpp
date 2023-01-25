@@ -17,6 +17,7 @@ End Header --------------------------------------------------------*/
 #include "CommonOverlay/CommonOverlay.h"
 #include "Core/Application.h"
 #include "Core/AssetManager.h"
+#include "Core/Time.h"
 #include "Core/Component/CameraComponent.h"
 #include "Core/Component/LightComponent.h"
 #include "Core/Component/MaterialComponent.h"
@@ -106,10 +107,8 @@ void Scenario_1::Start()
 
 void Scenario_1::Update()
 {
-	float time = (float)glfwGetTime();
-	float dt = time - m_LastTime;
-	m_LastTime = time;
-	
+	float dt = Time::GetDelta();
+	//MainCamera.GetComponent<TransformComponent>().Rotation.y += dt;
 	current_shader = AssetManager::GetShader(selected_shader);
 }
 
