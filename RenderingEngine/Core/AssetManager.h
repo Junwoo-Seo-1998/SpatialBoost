@@ -15,6 +15,8 @@ End Header --------------------------------------------------------*/
 #include "Core/Data/Mesh.h"
 #include <memory>
 #include <unordered_map>
+
+class UUID;
 class Texture;
 class Application;
 class Scene;
@@ -23,11 +25,13 @@ class Shader;
 class AssetManager
 {
 public:
+	static UUID GetUUID(const std::string& asset_name);
 	static void LoadMeshFromFile(const std::string& file_name, const std::string& key_name);
-	static std::shared_ptr<Mesh> GetVertexNormalMesh(const std::string& name);
-	static std::shared_ptr<LineMesh> GetVertexNormalLineMesh(const std::string& name);
-	static std::shared_ptr<Mesh> GetFaceNormalMesh(const std::string& name);
-	static std::shared_ptr<LineMesh> GetFaceNormalLineMesh(const std::string& name);
+
+	static std::shared_ptr<Mesh> GetVertexNormalMesh(UUID uuid);
+	static std::shared_ptr<LineMesh> GetVertexNormalLineMesh(UUID uuid);
+	static std::shared_ptr<Mesh> GetFaceNormalMesh(UUID uuid);
+	static std::shared_ptr<LineMesh> GetFaceNormalLineMesh(UUID uuid);
 
 	static void GeneratePlane(const std::string& key_name, float size = 1.f);
 	static void GenerateSphere(const std::string& key_name, float radius = 1.f, int segments = 30, int rings = 30);
@@ -47,10 +51,10 @@ public:
 	static std::shared_ptr<Scene> GetScene(const std::string& scene_name);
 private:
 	static std::shared_ptr<VertexBuffer>m_Skybox;
-	static std::unordered_map<std::string, std::shared_ptr<Mesh>>m_VertexNormalMesh;
-	static std::unordered_map<std::string, std::shared_ptr<LineMesh>>m_VertexNormalLineMesh;
-	static std::unordered_map<std::string, std::shared_ptr<Mesh>>m_FaceNormalMesh;
-	static std::unordered_map<std::string, std::shared_ptr<LineMesh>>m_FaceNormalLineMesh;
+	static std::unordered_map<UUID, std::shared_ptr<Mesh>>m_VertexNormalMesh;
+	static std::unordered_map<UUID, std::shared_ptr<LineMesh>>m_VertexNormalLineMesh;
+	static std::unordered_map<UUID, std::shared_ptr<Mesh>>m_FaceNormalMesh;
+	static std::unordered_map<UUID, std::shared_ptr<LineMesh>>m_FaceNormalLineMesh;
 
 	static std::unordered_map<std::string, std::shared_ptr<Shader>>m_Shaders;
 	static std::unordered_map<std::string, std::shared_ptr<Texture>>m_Textures;

@@ -59,9 +59,12 @@ void RenderLayer::OnRender()
 		glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
 		shader->SetMat4("Matrix.Normal", normal_matrix);
 
-		meshComp.mesh->GetBuffer()->BindToVertexArray();
-		meshComp.mesh->GetIndexBuffer()->Bind();
-		glDrawElements(GL_TRIANGLES, meshComp.mesh->GetIndices()->size(), GL_UNSIGNED_INT, nullptr);
+		auto mesh = AssetManager::GetVertexNormalMesh(meshComp.uuid);
+
+		mesh->GetBuffer()->BindToVertexArray();
+		mesh->GetIndexBuffer()->Bind();
+
+		glDrawElements(GL_TRIANGLES, mesh->GetIndices()->size(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 

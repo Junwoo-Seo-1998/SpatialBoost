@@ -1,7 +1,10 @@
 #pragma once
-#include "Core/Data/Mesh.h"
+#include <string>
+
+#include "Core/UUID.h"
 
 struct MeshComponent
 {
-	std::shared_ptr<Mesh> mesh;
+	MeshComponent(const std::string& asset);
+	UUID uuid;
 };

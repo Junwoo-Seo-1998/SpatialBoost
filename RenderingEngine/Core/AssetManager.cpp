@@ -15,20 +15,30 @@ End Header --------------------------------------------------------*/
 #include "Utils/ObjParser.h"
 #include "Core/Graphics/Shader.h"
 #include <iostream>
+
+#include "UUID.h"
 #include "Utils/File.h"
 #include "Core/Data/Texture.h"
 #include "Core/Data/TextureData.h"
 #include "Data/UV.h"
 std::shared_ptr<VertexBuffer>AssetManager::m_Skybox;
-std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
-std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
-std::unordered_map<std::string, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
-std::unordered_map<std::string, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
+std::unordered_map<std::string, UUID> m_UUIDMap;
+
+std::unordered_map<UUID, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
+std::unordered_map<UUID, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
+std::unordered_map<UUID, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
+std::unordered_map<UUID, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
 
 std::unordered_map<std::string, std::shared_ptr<Shader>>AssetManager::m_Shaders;
 std::unordered_map<std::string, std::shared_ptr<Texture>>AssetManager::m_Textures;
 
 std::unordered_map<std::string, std::shared_ptr<Scene>>AssetManager::m_Scenes;
+
+UUID AssetManager::GetUUID(const std::string& asset_name)
+{
+	return m_UUIDMap[asset_name];
+}
+
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
 	std::cout << "Load - " << file_name << std::endl;
@@ -42,37 +52,40 @@ void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::str
 
 	std::shared_ptr<BoundingBox> box = MeshGenerator::GenerateBoundingBox(loaded_points);
 
-	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(loaded_points, loaded_indices, generated_face_normal);
-	m_FaceNormalMesh[key_name]->SetBoundingBox(box);
+	UUID uuid{};
+	m_UUIDMap[key_name] = uuid;
 
-	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(loaded_points, loaded_indices, generated_face_normal);
+	m_FaceNormalMesh[uuid] = MeshGenerator::GenerateFaceNormalMesh(loaded_points, loaded_indices, generated_face_normal);
+	m_FaceNormalMesh[uuid]->SetBoundingBox(box);
+
+	m_FaceNormalLineMesh[uuid] = MeshGenerator::GenerateFaceNormalLineMesh(loaded_points, loaded_indices, generated_face_normal);
 	
 
-	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(loaded_points, loaded_indices, generated_vertex_normal);
-	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
-	m_VertexNormalMesh[key_name]->SetUV(std::make_shared<UV>(*m_VertexNormalMesh[key_name]->GetVertices(), *box));
+	m_VertexNormalMesh[uuid] = MeshGenerator::GenerateVertexNormalMesh(loaded_points, loaded_indices, generated_vertex_normal);
+	m_VertexNormalMesh[uuid]->SetBoundingBox(box);
+	m_VertexNormalMesh[uuid]->SetUV(std::make_shared<UV>(*m_VertexNormalMesh[uuid]->GetVertices(), *box));
 
-	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(loaded_points, loaded_indices, generated_vertex_normal);
+	m_VertexNormalLineMesh[uuid] = MeshGenerator::GenerateVertexNormalLineMesh(loaded_points, loaded_indices, generated_vertex_normal);
 }
 
-std::shared_ptr<Mesh> AssetManager::GetVertexNormalMesh(const std::string& name)
+std::shared_ptr<Mesh> AssetManager::GetVertexNormalMesh(UUID uuid)
 {
-	return m_VertexNormalMesh[name];
+	return m_VertexNormalMesh[uuid];
 }
 
-std::shared_ptr<LineMesh> AssetManager::GetVertexNormalLineMesh(const std::string& name)
+std::shared_ptr<LineMesh> AssetManager::GetVertexNormalLineMesh(UUID uuid)
 {
-	return m_VertexNormalLineMesh[name];
+	return m_VertexNormalLineMesh[uuid];
 }
 
-std::shared_ptr<Mesh> AssetManager::GetFaceNormalMesh(const std::string& name)
+std::shared_ptr<Mesh> AssetManager::GetFaceNormalMesh(UUID uuid)
 {
-	return m_FaceNormalMesh[name];
+	return m_FaceNormalMesh[uuid];
 }
 
-std::shared_ptr<LineMesh> AssetManager::GetFaceNormalLineMesh(const std::string& name)
+std::shared_ptr<LineMesh> AssetManager::GetFaceNormalLineMesh(UUID uuid)
 {
-	return m_FaceNormalLineMesh[name];
+	return m_FaceNormalLineMesh[uuid];
 }
 
 void AssetManager::GeneratePlane(const std::string& key_name, float size)
@@ -84,13 +97,16 @@ void AssetManager::GeneratePlane(const std::string& key_name, float size)
 
 	std::shared_ptr<BoundingBox> box = MeshGenerator::GenerateBoundingBox(*gen_points);
 
-	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(*gen_points, *gen_indices, generated_face_normal);
-	m_FaceNormalMesh[key_name]->SetBoundingBox(box);
-	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(*gen_points, *gen_indices, generated_face_normal);
+	UUID uuid{};
+	m_UUIDMap[key_name] = uuid;
 
-	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
-	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
-	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_FaceNormalMesh[uuid] = MeshGenerator::GenerateFaceNormalMesh(*gen_points, *gen_indices, generated_face_normal);
+	m_FaceNormalMesh[uuid]->SetBoundingBox(box);
+	m_FaceNormalLineMesh[uuid] = MeshGenerator::GenerateFaceNormalLineMesh(*gen_points, *gen_indices, generated_face_normal);
+
+	m_VertexNormalMesh[uuid] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_VertexNormalMesh[uuid]->SetBoundingBox(box);
+	m_VertexNormalLineMesh[uuid] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
 }
 
 void AssetManager::GenerateSphere(const std::string& key_name, float radius, int segments, int rings)
@@ -102,13 +118,16 @@ void AssetManager::GenerateSphere(const std::string& key_name, float radius, int
 
 	std::shared_ptr<BoundingBox> box = MeshGenerator::GenerateBoundingBox(*gen_points);
 
-	m_FaceNormalMesh[key_name] = MeshGenerator::GenerateFaceNormalMesh(*gen_points, *gen_indices, generated_face_normal);
-	m_FaceNormalMesh[key_name]->SetBoundingBox(box);
-	m_FaceNormalLineMesh[key_name] = MeshGenerator::GenerateFaceNormalLineMesh(*gen_points, *gen_indices, generated_face_normal);
+	UUID uuid{};
+	m_UUIDMap[key_name] = uuid;
 
-	m_VertexNormalMesh[key_name] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
-	m_VertexNormalMesh[key_name]->SetBoundingBox(box);
-	m_VertexNormalLineMesh[key_name] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_FaceNormalMesh[uuid] = MeshGenerator::GenerateFaceNormalMesh(*gen_points, *gen_indices, generated_face_normal);
+	m_FaceNormalMesh[uuid]->SetBoundingBox(box);
+	m_FaceNormalLineMesh[uuid] = MeshGenerator::GenerateFaceNormalLineMesh(*gen_points, *gen_indices, generated_face_normal);
+
+	m_VertexNormalMesh[uuid] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_VertexNormalMesh[uuid]->SetBoundingBox(box);
+	m_VertexNormalLineMesh[uuid] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
 }
 
 void AssetManager::GenerateSkybox()

@@ -64,7 +64,7 @@ void Scenario_1::Start()
 	demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
 	demo_mesh.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));*/
 	demo_mesh.AddComponent<RendererComponent>();
-	demo_mesh.AddComponent<MeshComponent>(AssetManager::GetVertexNormalMesh("bunny"));
+	demo_mesh.AddComponent<MeshComponent>("bunny");
 	demo_mesh.AddComponent<MaterialComponent>();
 	auto mat = demo_mesh.AddComponent<MaterialComponent>();
 
@@ -88,10 +88,8 @@ void Scenario_1::Start()
 		auto GeneratedSphere = CreateEntity();
 		GeneratedSphere.GetComponent<TransformComponent>().Position = position;
 		GeneratedSphere.GetComponent<TransformComponent>().Parent = &parent_transform;
-		GeneratedSphere.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("GeneratedOrbitSphere"));
-		GeneratedSphere.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("GeneratedOrbitSphere"));
-		GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("GeneratedOrbitSphere"));
-		GeneratedSphere.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("GeneratedOrbitSphere"));
+		GeneratedSphere.AddComponent<MeshComponent>("GeneratedOrbitSphere");
+		GeneratedSphere.AddComponent<MaterialComponent>();
 		auto Light = GeneratedSphere.AddComponent<LightComponent>();
 		Light.light.m_LightType = LightType::SpotLight;
 		theta += d_theta;

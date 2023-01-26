@@ -141,6 +141,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Utils\MeshGenerator.h" />
     <ClInclude Include="Core\Utils\MouseCodes.h" />
     <ClInclude Include="Core\Utils\ObjParser.h" />
+    <ClInclude Include="Core\UUID.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
     <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h" />
@@ -179,6 +180,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Utils\MeshGenerator.cpp" />
     <ClCompile Include="Core\Utils\ObjParser.cpp" />
     <ClCompile Include="Core\Utils\stb_impl.cpp" />
+    <ClCompile Include="Core\UUID.cpp" />
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
