@@ -16,6 +16,7 @@ End Header --------------------------------------------------------*/
 #include<memory>
 
 #include "Core/AssetManager.h"
+#include "Core/Layer/CameraLayer.h"
 #include "Core/Layer/LayerManager.h"
 #include "Core/Layer/RenderLayer.h"
 #include "Core/Layer/SkyboxRenderLayer.h"
@@ -60,6 +61,7 @@ class MyApp : public Application
 
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<RenderLayer>());
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<SkyboxRenderLayer>());
+		Application::Get().GetLayerManager()->PushLayer(std::make_shared<CameraLayer>());
 	}
 };
 std::shared_ptr<Application> CoreMain()

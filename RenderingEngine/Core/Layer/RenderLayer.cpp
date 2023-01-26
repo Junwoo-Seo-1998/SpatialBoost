@@ -37,8 +37,6 @@ void RenderLayer::OnRender()
 	auto& camTransform = mainCam.GetComponent<TransformComponent>();
 	auto& camComp = mainCam.GetComponent<CameraComponent>();
 
-	auto [width, height] = Application::Get().GetWindowSize();
-	const float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	glm::mat4 world_to_cam = Math::BuildCameraMatrixWithDirection(camTransform.Position, camTransform.GetForward(), camTransform.GetUp());
 
 	shader->SetMat4("Matrix.View", world_to_cam);

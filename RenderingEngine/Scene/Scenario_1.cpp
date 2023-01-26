@@ -55,16 +55,14 @@ void Scenario_1::Start()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	MainCamera.GetComponent<TransformComponent>().Position = { 0,5,10 };
-	MainCamera.GetComponent<TransformComponent>().Rotation = { glm::radians(-15.f),0, 0 };
+	MainCamera.GetComponent<TransformComponent>().Position = { 0,0,10 };
+	//MainCamera.GetComponent<TransformComponent>().Rotation = { glm::radians(-15.f),0, 0 };
 
 	demo_mesh = CreateEntity();
 	demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
 	demo_mesh.AddComponent<RendererComponent>();
 	demo_mesh.AddComponent<MeshComponent>("bunny");
 	demo_mesh.AddComponent<MaterialComponent>();
-	auto mat = demo_mesh.AddComponent<MaterialComponent>();
-
 
 
 	Entity plane = CreateEntity();
@@ -99,7 +97,7 @@ void Scenario_1::Start()
 void Scenario_1::Update()
 {
 	float dt = Time::GetDelta();
-	//MainCamera.GetComponent<TransformComponent>().Position.y += 100*dt;
+	//MainCamera.GetComponent<TransformComponent>().Position.y += dt;
 }
 
 void Scenario_1::PostUpdate()
