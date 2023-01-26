@@ -146,7 +146,8 @@ typedef enum class KeyCode : unsigned short
 	RightControl = 345,
 	RightAlt = 346,
 	RightSuper = 347,
-	Menu = 348
+	Menu = 348,
+	Last
 } Key;
 
 inline std::ostream& operator<<(std::ostream& os, KeyCode keyCode)

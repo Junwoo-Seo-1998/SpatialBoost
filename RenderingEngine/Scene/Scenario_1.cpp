@@ -26,12 +26,10 @@ End Header --------------------------------------------------------*/
 #include "Core/Component/TransformComponent.h"
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
 #include "Core/Utils/MeshGenerator.h"
-#include "GLFW/glfw3.h"
 #include "Core/Graphics/Shader.h"
-#include "Core/Graphics/VertexArray.h"
+#include "Core/Input/Input.h"
 #include "Core/Layer/LayerManager.h"
-#include "Core/Layer/RenderLayer.h"
-#include "Core/Layer/SkyboxRenderLayer.h"
+
 
 Scenario_1::Scenario_1(Application& app)
 	: Scene(app)
@@ -54,15 +52,11 @@ void Scenario_1::Start()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	MainCamera.GetComponent<TransformComponent>().Position = { 0,0,10 };
+	MainCamera.GetComponent<TransformComponent>().Position = { 0,5,10 };
+	MainCamera.GetComponent<TransformComponent>().Rotation = { glm::radians(-15.f),0, 0 };
 
 	demo_mesh = CreateEntity();
 	demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
-	/*
-	demo_mesh.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh("bunny"));
-	demo_mesh.AddComponent<FaceNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("bunny"));
-	demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh("bunny"));
-	demo_mesh.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetVertexNormalMesh("bunny"));*/
 	demo_mesh.AddComponent<RendererComponent>();
 	demo_mesh.AddComponent<MeshComponent>("bunny");
 	demo_mesh.AddComponent<MaterialComponent>();
@@ -70,11 +64,12 @@ void Scenario_1::Start()
 
 
 
-	//Entity plane = CreateEntity();
-	//plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
-	//plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
-	//plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
-	//plane.AddComponent<VertexNormalMeshRendererComponent>(AssetManager::GetFaceNormalMesh("Plane"));
+	Entity plane = CreateEntity();
+	plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
+	plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
+	plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
+	plane.AddComponent<RendererComponent>();
+	plane.AddComponent<MeshComponent>("Plane");
 
 	float radius = 3.f;
 	orbit = CreateEntity();

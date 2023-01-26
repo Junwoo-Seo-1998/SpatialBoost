@@ -18,6 +18,7 @@ class WindowGLFW :
 {
 private:
     GLFWwindow* m_Window = nullptr;
+    static void GLFWCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 public:
     virtual bool Init() override;
     virtual bool ShouldClose() override;

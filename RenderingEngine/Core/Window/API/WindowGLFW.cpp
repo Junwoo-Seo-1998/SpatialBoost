@@ -17,6 +17,7 @@ End Header --------------------------------------------------------*/
 
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
 #include "Core/Event/InputEvents/KeyBoardEvent.h"
+#include "Core/Input/Input.h"
 
 void GLAPIENTRY OpenGLMessageCallback(
 	GLenum source,
@@ -34,11 +35,39 @@ void GLAPIENTRY OpenGLMessageCallback(
 		type, severity, message);
 }
 
+void WindowGLFW::GLFWCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+{
+	WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+	switch (action)
+	{
+		case GLFW_PRESS:
+		{
+			Input::SetKey(static_cast<KeyCode>(key), true, false);
+			KeyBoardPressedEvent event(static_cast<KeyCode>(key), 0);
+			data.eventCallback(event);
+			break;
+		}
+		case GLFW_RELEASE:
+		{
+			Input::SetKey(static_cast<KeyCode>(key), false, false);
+			break;
+		}
+		case GLFW_REPEAT:
+		{
+			Input::SetKey(static_cast<KeyCode>(key), true, true);
+			break;
+		}
+		default:
+			break;
+	}
+}
+
 bool WindowGLFW::Init()
 {
 	if (glfwInit() != GLFW_TRUE)
 		return false;
-	m_Window = glfwCreateWindow(800, 800, "CS300! - junwoo.seo", nullptr, nullptr);
+	m_Window = glfwCreateWindow(800, 800, "CS350! - junwoo.seo", nullptr, nullptr);
 	if (m_Window == NULL)
 	{
 		glfwTerminate();
@@ -58,28 +87,7 @@ bool WindowGLFW::Init()
 	//set glfw callback
 		//so that we can use data of window in glfw call backs.
 	glfwSetWindowUserPointer(static_cast<GLFWwindow*>(m_WindowData.window), &m_WindowData);
-	glfwSetKeyCallback(static_cast<GLFWwindow*>(m_WindowData.window), [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-			switch (action)
-			{
-			case GLFW_PRESS:
-			{
-				KeyBoardPressedEvent event(static_cast<KeyCode>(key), 0);
-				data.eventCallback(event);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				break;
-			}
-			case GLFW_REPEAT:
-			{
-				break;
-			}
-			}
-		});
+	glfwSetKeyCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWCallback);
 
 	glfwSetWindowSizeCallback(static_cast<GLFWwindow*>(m_WindowData.window), [](GLFWwindow* window, int width, int height)
 		{

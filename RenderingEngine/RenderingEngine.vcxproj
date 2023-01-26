@@ -127,6 +127,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Graphics\Shader.h" />
     <ClInclude Include="Core\Graphics\VertexArray.h" />
     <ClInclude Include="Core\ImGui\ImGuiRenderer.h" />
+    <ClInclude Include="Core\Input\Input.h" />
     <ClInclude Include="Core\Layer\Layer.h" />
     <ClInclude Include="Core\Layer\LayerManager.h" />
     <ClInclude Include="Core\Layer\RenderLayer.h" />
@@ -168,6 +169,7 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClCompile Include="Core\Graphics\VertexArray.cpp" />
     <ClCompile Include="Core\ImGui\BuildImGui.cpp" />
     <ClCompile Include="Core\ImGui\ImGuiRenderer.cpp" />
+    <ClCompile Include="Core\Input\Input.cpp" />
     <ClCompile Include="Core\Layer\LayerManager.cpp" />
     <ClCompile Include="Core\Layer\RenderLayer.cpp" />
     <ClCompile Include="Core\Layer\SkyboxRenderLayer.cpp" />

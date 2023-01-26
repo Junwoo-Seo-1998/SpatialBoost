@@ -18,6 +18,7 @@ End Header --------------------------------------------------------*/
 #include "ImGui/ImGuiRenderer.h"
 #include "Core/Layer/LayerManager.h"
 #include "Core/Layer/Layer.h"
+#include "Input/Input.h"
 Application* Application::s_Instance;
 Application::Application()
 	:m_Window(std::make_shared<Window>()),m_SceneManager(std::make_shared<SceneManager>()), m_ImGuiRenderer(std::make_shared<ImGuiRenderer>())
@@ -98,6 +99,7 @@ void Application::Update()
 			layer->OnPostRender();
 		m_ImGuiRenderer->GuiEnd();
 		m_LayerManager->ClearDeleteQueue();
+		Input::Reset();
 		m_Window->Update();
 	}
 	

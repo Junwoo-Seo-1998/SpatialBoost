@@ -178,6 +178,7 @@
     <ClInclude Include="Core\Time.h" />
     <ClInclude Include="Core\Component\MeshComponent.h" />
     <ClInclude Include="Core\UUID.h" />
+    <ClInclude Include="Core\Input\Input.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -281,5 +282,6 @@
     <ClCompile Include="Core\Time.cpp" />
     <ClCompile Include="Core\Component\Meshcomponent.cpp" />
     <ClCompile Include="Core\UUID.cpp" />
+    <ClCompile Include="Core\Input\Input.cpp" />
   </ItemGroup>
 </Project>
