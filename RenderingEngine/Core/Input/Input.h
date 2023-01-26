@@ -16,12 +16,16 @@ class Input
 	friend WindowGLFW;
 public:
 	Input() = delete;
-	static bool IsKeyPressed(KeyCode key);
-	static bool IsTriggered(KeyCode key);
-	static bool IsRepeating(KeyCode key);
-	static bool IsKeyReleased(KeyCode key);
+	
+	static bool IsPressed(Key key);
+	static bool IsPressed(Mouse button);
+	static bool IsTriggered(Key key);
+	static bool IsRepeating(Key key);
+	static bool IsReleased(Key key);
+	static bool IsReleased(Mouse button);
 private:
 	static void Reset();
-	static void SetKey(KeyCode key, bool state, bool repeating);
+	static void SetKey(Key key, bool state);
+	static void SetMouseButton(Mouse button, bool state);
 
 };

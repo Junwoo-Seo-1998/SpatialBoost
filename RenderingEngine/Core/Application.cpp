@@ -80,6 +80,7 @@ void Application::Update()
 	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
 	while (!m_Window->ShouldClose())
 	{
+		
 		Time::Update();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_ImGuiRenderer->GuiBegin();
@@ -101,6 +102,7 @@ void Application::Update()
 		m_LayerManager->ClearDeleteQueue();
 		Input::Reset();
 		m_Window->Update();
+		
 	}
 	
 }

@@ -26,10 +26,13 @@ End Header --------------------------------------------------------*/
 #include "Core/Component/TransformComponent.h"
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
 #include "Core/Utils/MeshGenerator.h"
+#include "GLFW/glfw3.h"
 #include "Core/Graphics/Shader.h"
+#include "Core/Graphics/VertexArray.h"
 #include "Core/Input/Input.h"
 #include "Core/Layer/LayerManager.h"
-
+#include "Core/Layer/RenderLayer.h"
+#include "Core/Layer/SkyboxRenderLayer.h"
 
 Scenario_1::Scenario_1(Application& app)
 	: Scene(app)

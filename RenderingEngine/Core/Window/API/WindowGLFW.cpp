@@ -35,7 +35,7 @@ void GLAPIENTRY OpenGLMessageCallback(
 		type, severity, message);
 }
 
-void WindowGLFW::GLFWCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+void WindowGLFW::GLFWKeyCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
 {
 	WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -43,23 +43,42 @@ void WindowGLFW::GLFWCallback(GLFWwindow* window, int key, int /*scancode*/, int
 	{
 		case GLFW_PRESS:
 		{
-			Input::SetKey(static_cast<KeyCode>(key), true, false);
+			Input::SetKey(static_cast<KeyCode>(key), true);
 			KeyBoardPressedEvent event(static_cast<KeyCode>(key), 0);
 			data.eventCallback(event);
 			break;
 		}
 		case GLFW_RELEASE:
 		{
-			Input::SetKey(static_cast<KeyCode>(key), false, false);
+			Input::SetKey(static_cast<KeyCode>(key), false);
 			break;
 		}
 		case GLFW_REPEAT:
 		{
-			Input::SetKey(static_cast<KeyCode>(key), true, true);
+			Input::SetKey(static_cast<KeyCode>(key), true);
 			break;
 		}
 		default:
 			break;
+	}
+}
+
+void WindowGLFW::GLFWMouseCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	switch (action)
+	{
+	case GLFW_PRESS:
+	{
+		Input::SetMouseButton(static_cast<Mouse>(button), true);
+		break;
+	}
+	case GLFW_RELEASE:
+	{
+		Input::SetMouseButton(static_cast<Mouse>(button), false);
+		break;
+	}
+	default:
+		break;
 	}
 }
 
@@ -87,8 +106,8 @@ bool WindowGLFW::Init()
 	//set glfw callback
 		//so that we can use data of window in glfw call backs.
 	glfwSetWindowUserPointer(static_cast<GLFWwindow*>(m_WindowData.window), &m_WindowData);
-	glfwSetKeyCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWCallback);
-
+	glfwSetKeyCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWKeyCallback);
+	glfwSetMouseButtonCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWMouseCallback);
 	glfwSetWindowSizeCallback(static_cast<GLFWwindow*>(m_WindowData.window), [](GLFWwindow* window, int width, int height)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
