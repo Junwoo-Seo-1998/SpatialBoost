@@ -12,8 +12,8 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include <entt/entt.hpp>
-
 #include "Entity.h"
+using namespace entt::literals;
 class Event;
 class SceneManager;
 class Application;
@@ -31,6 +31,9 @@ public:
 	virtual void OnDestroy() = 0;
 	virtual void OnEvent(Event& event) = 0;
 
+	void SetWorldEntity(Entity worldEntity);
+	Entity GetWorldEntity();
+
 	void SetMainCamera(Entity cam);
 	Entity GetMainCamera() const;
 
@@ -43,6 +46,7 @@ protected:
 	Application& App;
 	entt::registry m_Registry;
 	Entity MainCamera;
+	Entity WorldEntity;
 	friend class Entity;
 };
 

@@ -126,12 +126,26 @@ Shader::Shader(const ShaderSource& shaderSrc, bool is_file)
 	if (!success) {
 		glGetProgramInfoLog(m_ShaderProgram, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
-		static_assert(true, "ERROR::SHADER::PROGRAM::LINK_FAILED\n");
 	}
 
 	//no need only program
 	for (auto shader : shaders)
 		glDeleteShader(shader);
+
+	/*GLint numActiveUniforms = 0;
+	glGetProgramiv(m_ShaderProgram, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
+	printf("Active Uniforms: %d\n", numActiveUniforms);
+
+	for (int i = 0; i < numActiveUniforms; ++i)
+	{
+		char buffer[256] = { 0, };
+		GLsizei len = 0;
+		GLint size = 0;
+		GLenum type;
+		glGetActiveUniform(m_ShaderProgram, (GLuint)i, 255, &len, &size, &type, buffer);
+
+		printf("Uniform #%d Type: %u Name: %s\n", i, type, buffer);
+	}*/
 }
 
 
@@ -144,6 +158,52 @@ int Shader::GetUniformLocation(const std::string& name) const
 		return -1;
 	}
 	return location;
+}
+
+int Shader::TryUniformLocation(const std::string& name) const
+{
+	GLint location = glGetUniformLocation(m_ShaderProgram, name.c_str());
+	return location;
+}
+
+void Shader::TrySetInt(const std::string& name, const int value) const
+{
+	int location = TryUniformLocation(name);
+	if (location == -1)
+		return;
+	glUniform1i(location, value);
+}
+
+void Shader::TrySetFloat(const std::string& name, const float value) const
+{
+	int location = TryUniformLocation(name);
+	if (location == -1)
+		return;
+	glUniform1f(location, value);
+}
+
+void Shader::TrySetFloat3(const std::string& name, const glm::vec3& value) const
+{
+	int location = TryUniformLocation(name);
+	if (location == -1)
+		return;
+	glUniform3f(location, value.x, value.y, value.z);
+}
+
+void Shader::TrySetFloat4(const std::string& name, const glm::vec4& value) const
+{
+	int location = TryUniformLocation(name);
+	if (location == -1)
+		return;
+	glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
+void Shader::TrySetMat4(const std::string& name, const glm::mat4& value) const
+{
+	int location = TryUniformLocation(name);
+	if (location == -1)
+		return;
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 unsigned Shader::CompileShader(ShaderType type, const std::vector<std::string>& src)

@@ -13,12 +13,8 @@ Creation date: Sep 10 2022
 End Header --------------------------------------------------------*/
 #include<vector>
 #include<glad.h>
-#include <memory>
-
-enum class DataType
-{
-	None = 0, Bool, Int, Int2, Int3, Int4, Float, Float2, Float3, Float4, Mat3, Mat4,
-};
+#include<memory>
+#include"Core/Utils/DataType.h"
 
 struct DataAndLayoutLocation
 {

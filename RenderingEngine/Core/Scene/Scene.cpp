@@ -20,6 +20,18 @@ Scene::Scene(Application& app)
 {
 	MainCamera = CreateEntity();
 	MainCamera.AddComponent<CameraComponent>();
+
+	WorldEntity = CreateEntity();
+}
+
+void Scene::SetWorldEntity(Entity worldEntity)
+{
+	WorldEntity = worldEntity;
+}
+
+Entity Scene::GetWorldEntity()
+{
+	return WorldEntity;
 }
 
 void Scene::SetMainCamera(Entity cam)

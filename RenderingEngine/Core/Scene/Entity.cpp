@@ -11,7 +11,9 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include"Entity.h"
+#include"Scene.h"
 Entity::Entity(entt::entity entity_handle, Scene* scene)
 	:m_EntityHandle(entity_handle), m_Scene(scene)
 {
 }
+

@@ -42,6 +42,7 @@ public:
 	static std::shared_ptr<Shader> LoadShaderFromFile(const std::string& key_name, const std::string& common_file, const std::string& vert_file, const std::string& frag_file);
 	static std::shared_ptr<Shader> ReloadShaderFromFile(const std::string& key_name, const std::string& common_file, const std::string& vert_file, const std::string& frag_file);
 	static std::shared_ptr<Shader> GetShader(const std::string& key_name);
+	static std::shared_ptr<Shader> GetShader(UUID uuid);
 
 	static std::shared_ptr<Texture> LoadTextureFromFile(const std::string& key_name, const std::string& file_name);
 	static std::shared_ptr<Texture> GetTexture(const std::string& key_name);
@@ -56,7 +57,7 @@ private:
 	static std::unordered_map<UUID, std::shared_ptr<Mesh>>m_FaceNormalMesh;
 	static std::unordered_map<UUID, std::shared_ptr<LineMesh>>m_FaceNormalLineMesh;
 
-	static std::unordered_map<std::string, std::shared_ptr<Shader>>m_Shaders;
+	static std::unordered_map<UUID, std::shared_ptr<Shader>>m_Shaders;
 	static std::unordered_map<std::string, std::shared_ptr<Texture>>m_Textures;
 
 	static std::unordered_map<std::string, std::shared_ptr<Scene>>m_Scenes;

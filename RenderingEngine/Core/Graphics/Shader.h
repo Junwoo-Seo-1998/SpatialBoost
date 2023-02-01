@@ -30,9 +30,10 @@ enum class ShaderType
 
 using ShaderSource = std::unordered_map<ShaderType, std::vector<std::string>>;
 
-
+class RenderLayer;
 class Shader
 {
+	friend RenderLayer;
 public:
 	~Shader();
 	static std::shared_ptr<Shader> CreateShaderFromString(const ShaderSource& srcs);
@@ -52,6 +53,14 @@ private:
 	Shader(const ShaderSource& shaderSrc, bool is_file);
 
 	int GetUniformLocation(const std::string& name) const;
+	int TryUniformLocation(const std::string& name) const;
+
+	void TrySetInt(const std::string& name, const int value) const;
+	void TrySetFloat(const std::string& name, const float value) const;
+	void TrySetFloat3(const std::string& name, const glm::vec3& value) const;
+	void TrySetFloat4(const std::string& name, const glm::vec4& value) const;
+	void TrySetMat4(const std::string& name, const glm::mat4& value) const;
+
 	unsigned CompileShader(ShaderType type, const std::vector<std::string>& src);
 	unsigned m_ShaderProgram;
 };

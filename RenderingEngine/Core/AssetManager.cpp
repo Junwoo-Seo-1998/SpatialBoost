@@ -29,7 +29,7 @@ std::unordered_map<UUID, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalL
 std::unordered_map<UUID, std::shared_ptr<Mesh>>AssetManager::m_FaceNormalMesh;
 std::unordered_map<UUID, std::shared_ptr<LineMesh>>AssetManager::m_FaceNormalLineMesh;
 
-std::unordered_map<std::string, std::shared_ptr<Shader>>AssetManager::m_Shaders;
+std::unordered_map<UUID, std::shared_ptr<Shader>>AssetManager::m_Shaders;
 std::unordered_map<std::string, std::shared_ptr<Texture>>AssetManager::m_Textures;
 
 std::unordered_map<std::string, std::shared_ptr<Scene>>AssetManager::m_Scenes;
@@ -198,7 +198,10 @@ std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_
 	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({ 
 		{ShaderType::VertexShader,{vert_file}}, {ShaderType::FragmentShader,{frag_file}}
 	});
-	m_Shaders[key_name] = shader;
+	UUID uuid{};
+	m_UUIDMap[key_name] = uuid;
+
+	m_Shaders[uuid] = shader;
 	return shader;
 }
 
@@ -209,7 +212,10 @@ std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_
 	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({
 		{ShaderType::VertexShader,{common_file,vert_file}}, {ShaderType::FragmentShader,{common_file,frag_file}}
 		});
-	m_Shaders[key_name] = shader;
+	UUID uuid{};
+	m_UUIDMap[key_name] = uuid;
+
+	m_Shaders[uuid] = shader;
 	return shader;
 }
 
@@ -220,13 +226,21 @@ std::shared_ptr<Shader> AssetManager::ReloadShaderFromFile(const std::string& ke
 	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({
 		{ShaderType::VertexShader,{common_file,vert_file}}, {ShaderType::FragmentShader,{common_file,frag_file}}
 		});
-	m_Shaders[key_name] = shader;
+	UUID uuid{};
+	m_UUIDMap[key_name] = uuid;
+
+	m_Shaders[uuid] = shader;
 	return shader;
 }
 
 std::shared_ptr<Shader> AssetManager::GetShader(const std::string& key_name)
 {
-	return m_Shaders[key_name];
+	return m_Shaders[m_UUIDMap[key_name]];
+}
+
+std::shared_ptr<Shader> AssetManager::GetShader(UUID uuid)
+{
+	return m_Shaders[uuid];
 }
 
 std::shared_ptr<Texture> AssetManager::LoadTextureFromFile(const std::string& key_name, const std::string& file_name)

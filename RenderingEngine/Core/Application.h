@@ -28,7 +28,6 @@ public:
 public:
 	void OnEvent(Event& event);
 	bool OnWindowResize(WindowResizeEvent& event);
-
 	bool Init();
 	virtual void UserDefinedInit()=0;
 	void Update();

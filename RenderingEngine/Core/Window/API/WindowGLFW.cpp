@@ -86,7 +86,7 @@ bool WindowGLFW::Init()
 {
 	if (glfwInit() != GLFW_TRUE)
 		return false;
-	m_Window = glfwCreateWindow(800, 800, "CS350! - junwoo.seo", nullptr, nullptr);
+	m_Window = glfwCreateWindow(m_WindowData.width, m_WindowData.height, "CS350! - junwoo.seo", nullptr, nullptr);
 	if (m_Window == NULL)
 	{
 		glfwTerminate();

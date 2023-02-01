@@ -14,6 +14,7 @@ enum class TextureChannel
 {
 	RGB,
 	RGBA,
+	RGBA32F,
 	Depth,
 	None,
 };

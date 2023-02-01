@@ -14,6 +14,11 @@ End Header --------------------------------------------------------*/
 //for now glfw
 #include "Core/Window/API/WindowGLFW.h"
 
+std::tuple<int, int> WindowAPI::GetWindowSize()
+{
+	return { m_WindowData.width,m_WindowData.height };
+}
+
 void WindowAPI::SetEventCallbackFunction(const EventCallbackFunction& callback)
 {
 	m_WindowData.eventCallback = callback;
@@ -33,6 +38,11 @@ bool Window::ShouldClose()
 void* Window::GetWindowHandle()
 {
 	return m_WindowAPI->GetWindowHandle();
+}
+
+std::tuple<int, int> Window::GetWindowSize()
+{
+	return m_WindowAPI->GetWindowSize();
 }
 
 void Window::Update()

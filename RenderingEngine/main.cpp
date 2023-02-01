@@ -21,7 +21,6 @@ End Header --------------------------------------------------------*/
 #include "Core/Layer/RenderLayer.h"
 #include "Core/Layer/SkyboxRenderLayer.h"
 #include "Core/Utils/File.h"
-
 #include "Scene/Scenario_1.h"
 
 
@@ -35,6 +34,8 @@ class MyApp : public Application
 		AssetManager::LoadShaderFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_light.vert", "Assets/Shaders/phong_light.frag");
 		AssetManager::LoadShaderFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
 		AssetManager::LoadShaderFromFile("Blinn_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/blinn_shading.vert", "Assets/Shaders/blinn_shading.frag");
+		AssetManager::LoadShaderFromFile("Deferred_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred.vert", "Assets/Shaders/deferred.frag");
+		AssetManager::LoadShaderFromFile("Deferred_Phong", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred_phong.vert", "Assets/Shaders/deferred_phong.frag");
 
 		AssetManager::LoadMeshFromFile("Assets/4Sphere.obj", "4Sphere");
 		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");

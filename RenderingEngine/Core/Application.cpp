@@ -91,6 +91,10 @@ void Application::Update()
 		for (auto layer:m_LayerManager->GetOverLays())
 			layer->OnUpdate();
 		for (auto layer : m_LayerManager->GetLayers())
+			layer->OnPreRender();
+		for (auto layer : m_LayerManager->GetOverLays())
+			layer->OnPreRender();
+		for (auto layer : m_LayerManager->GetLayers())
 			layer->OnRender();
 		for (auto layer : m_LayerManager->GetOverLays())
 			layer->OnRender();
@@ -98,6 +102,10 @@ void Application::Update()
 			layer->OnPostRender();
 		for (auto layer : m_LayerManager->GetOverLays())
 			layer->OnPostRender();
+		for (auto layer : m_LayerManager->GetLayers())
+			layer->OnGuiRender();
+		for (auto layer : m_LayerManager->GetOverLays())
+			layer->OnGuiRender();
 		m_ImGuiRenderer->GuiEnd();
 		m_LayerManager->ClearDeleteQueue();
 		Input::Reset();
@@ -132,8 +140,8 @@ std::shared_ptr<SceneManager> Application::GetSceneManager()
 
 std::tuple<int, int> Application::GetWindowSize()
 {
-	int width, height;
-	glfwGetWindowSize(static_cast<GLFWwindow*>(m_Window->GetWindowHandle()), &width, &height);
-	return { width, height };
+	//int width, height;
+	//glfwGetWindowSize(static_cast<GLFWwindow*>(m_Window->GetWindowHandle()), &width, &height);
+	return m_Window->GetWindowSize();
 }
 

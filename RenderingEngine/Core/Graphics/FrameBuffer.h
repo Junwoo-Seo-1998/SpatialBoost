@@ -18,6 +18,7 @@ enum class FrameBufferFormat
 	None = 0,
 	RGB,
 	RGBA,
+	RGBA32F,
 	Depth,
 };
 

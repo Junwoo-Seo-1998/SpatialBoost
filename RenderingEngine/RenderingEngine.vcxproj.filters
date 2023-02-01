@@ -25,6 +25,9 @@
     <Filter Include="Core\ImGui">
       <UniqueIdentifier>{D8137ACD-C4CB-BB1A-2DD3-947619AA560B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Input">
+      <UniqueIdentifier>{AD4E7BCD-9906-BD1A-020E-9676EEE4570B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Layer">
       <UniqueIdentifier>{7A9BAACD-6653-EC1A-CF5A-C576BB31870B}</UniqueIdentifier>
     </Filter>
@@ -57,10 +60,16 @@
     <ClInclude Include="Core\AssetManager.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Component\CameraComponent.h">
+      <Filter>Core\Component</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Component\LightComponent.h">
       <Filter>Core\Component</Filter>
     </ClInclude>
     <ClInclude Include="Core\Component\MaterialComponent.h">
+      <Filter>Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Component\MeshComponent.h">
       <Filter>Core\Component</Filter>
     </ClInclude>
     <ClInclude Include="Core\Component\RendererComponent.h">
@@ -120,6 +129,12 @@
     <ClInclude Include="Core\ImGui\ImGuiRenderer.h">
       <Filter>Core\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Input\Input.h">
+      <Filter>Core\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Layer\CameraLayer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Layer\Layer.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
@@ -140,6 +155,12 @@
     </ClInclude>
     <ClInclude Include="Core\Scene\SceneManager.h">
       <Filter>Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Time.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UUID.h">
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\File.h">
       <Filter>Core\Utils</Filter>
@@ -174,12 +195,7 @@
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Component\CameraComponent.h" />
-    <ClInclude Include="Core\Time.h" />
-    <ClInclude Include="Core\Component\MeshComponent.h" />
-    <ClInclude Include="Core\UUID.h" />
-    <ClInclude Include="Core\Input\Input.h" />
-    <ClInclude Include="Core\Layer\CameraLayer.h" />
+    <ClInclude Include="Core\Utils\DataType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -187,6 +203,12 @@
     </ClCompile>
     <ClCompile Include="Core\AssetManager.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Component\CameraComponent.cpp">
+      <Filter>Core\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Component\Meshcomponent.cpp">
+      <Filter>Core\Component</Filter>
     </ClCompile>
     <ClCompile Include="Core\Component\RendererComponent.cpp">
       <Filter>Core\Component</Filter>
@@ -233,6 +255,12 @@
     <ClCompile Include="Core\ImGui\ImGuiRenderer.cpp">
       <Filter>Core\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Input\Input.cpp">
+      <Filter>Core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Layer\CameraLayer.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Layer\LayerManager.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
@@ -250,6 +278,12 @@
     </ClCompile>
     <ClCompile Include="Core\Scene\SceneManager.cpp">
       <Filter>Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Time.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UUID.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Utils\File.cpp">
       <Filter>Core\Utils</Filter>
@@ -279,11 +313,7 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Component\CameraComponent.cpp" />
-    <ClCompile Include="Core\Time.cpp" />
-    <ClCompile Include="Core\Component\Meshcomponent.cpp" />
-    <ClCompile Include="Core\UUID.cpp" />
-    <ClCompile Include="Core\Input\Input.cpp" />
-    <ClCompile Include="Core\Layer\CameraLayer.cpp" />
+    <ClCompile Include="Core\Component\MaterialComponent.cpp" />
+    <ClCompile Include="Core\Data\Material.cpp" />
   </ItemGroup>
 </Project>

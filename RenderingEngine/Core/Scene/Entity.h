@@ -61,3 +61,4 @@ void Entity::RemoveComponent()
 {
 	m_Scene->m_Registry.remove<Comp_type>(m_EntityHandle);
 }
+

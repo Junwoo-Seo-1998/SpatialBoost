@@ -9,8 +9,20 @@ Project: junwoo.seo_cs300_2
 Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
+#include <string>
 #include "Core/Data/Material.h"
+#include "Core/UUID.h"
+enum class RenderMode
+{
+	Deferred = 0,
+	Forward
+};
 struct MaterialComponent
 {
+	MaterialComponent() = default;
+	MaterialComponent(const std::string& shader);
+	UUID shader = UUID::null;
+	RenderMode mode = RenderMode::Deferred;
 	Material material;
+	MaterialData& operator[](const std::string& key);
 };

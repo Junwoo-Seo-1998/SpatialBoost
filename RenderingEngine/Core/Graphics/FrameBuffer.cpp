@@ -82,8 +82,6 @@ FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
 {
 
 	//ENGINE_ASSERT(m_DescribedFrameBuffer.Formats.Formats.empty() != true, "there is no described Format in FrameBuffer!");
-
-	//todo: not using color format now... might use for docking? 
 	for (auto format : m_DescribedFrameBuffer.Formats)
 	{
 		if (helper::IsDepth(format))
@@ -133,6 +131,11 @@ void FrameBuffer::BuildFrameBuffer()
 				m_ColorTextures[i] = Texture::CreateTexture({ width,height,nullptr,TextureChannel::RGBA });
 				break;
 			}
+			case  FrameBufferFormat::RGBA32F:
+			{
+				m_ColorTextures[i] = Texture::CreateTexture({ width,height,nullptr,TextureChannel::RGBA32F });
+				break;
+			}
 			}
 			unsigned textureID = m_ColorTextures[i]->GetTextureID();
 			glNamedFramebufferTexture(m_FrameBufferID, GL_COLOR_ATTACHMENT0 + i, textureID, 0);
@@ -163,9 +166,9 @@ void FrameBuffer::BuildFrameBuffer()
 	{
 		const unsigned int size = static_cast<unsigned int>(m_ColorFormats.size());
 
-		//ENGINE_ASSERT(size <= 4, "Framebuffer max color attachment size is 4");
+		//ENGINE_ASSERT(size <= 6, "Framebuffer max color attachment size is 6");
 
-		GLenum buffers[4] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2,GL_COLOR_ATTACHMENT3 };
+		GLenum buffers[6] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4,GL_COLOR_ATTACHMENT5 };
 		glNamedFramebufferDrawBuffers(m_FrameBufferID, size, buffers);
 	}
 	else if (m_DepthFormat != FrameBufferFormat::None)//means only depth

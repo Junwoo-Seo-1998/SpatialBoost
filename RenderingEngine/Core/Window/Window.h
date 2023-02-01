@@ -25,6 +25,7 @@ public:
 	virtual void* GetWindowHandle() = 0;
 	virtual void Update() = 0;
 	virtual void Close() = 0;
+	virtual std::tuple<int, int> GetWindowSize();
 public:
 	using EventCallbackFunction = std::function<void(Event&)>;
 	void SetEventCallbackFunction(const EventCallbackFunction& callback);
@@ -34,8 +35,8 @@ protected:
 	{
 		void* window = nullptr;
 		std::string title = "window";
-		unsigned int width = 800;
-		unsigned int height = 800;
+		int width = 800;
+		int height = 800;
 
 		EventCallbackFunction eventCallback = nullptr;
 	};
@@ -52,6 +53,7 @@ public:
 	bool Init();
 	bool ShouldClose();
 	void* GetWindowHandle();
+	std::tuple<int, int> GetWindowSize();
 	void Update();
 	void Close();
 	void SetEventCallbackFunction(const EventCallbackFunction& callback);

@@ -61,8 +61,8 @@ void Scenario_1::Start()
 	demo_mesh = CreateEntity();
 	demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
 	demo_mesh.AddComponent<RendererComponent>();
-	demo_mesh.AddComponent<MeshComponent>("bunny");
 	demo_mesh.AddComponent<MaterialComponent>();
+	demo_mesh.AddComponent<MeshComponent>("bunny");
 
 
 	Entity plane = CreateEntity();
@@ -72,6 +72,7 @@ void Scenario_1::Start()
 	plane.AddComponent<RendererComponent>();
 	plane.AddComponent<MeshComponent>("Plane");
 
+	
 	float radius = 3.f;
 	orbit = CreateEntity();
 	auto& parent_transform = orbit.GetComponent<TransformComponent>();
@@ -82,11 +83,14 @@ void Scenario_1::Start()
 	{
 		glm::vec3 position{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
 		auto GeneratedSphere = CreateEntity();
-		GeneratedSphere.GetComponent<TransformComponent>().Position = position;
-		GeneratedSphere.GetComponent<TransformComponent>().Parent = &parent_transform;
+		auto& transform = GeneratedSphere.GetComponent<TransformComponent>();
+		transform.Position = position;
+		GeneratedSphere.AddComponent<RendererComponent>();
 		GeneratedSphere.AddComponent<MeshComponent>("GeneratedOrbitSphere");
-		GeneratedSphere.AddComponent<MaterialComponent>();
-		auto Light = GeneratedSphere.AddComponent<LightComponent>();
+		auto& mat=GeneratedSphere.AddComponent<MaterialComponent>("light_shader");
+		mat.mode = RenderMode::Forward;
+		mat["BaseColor"] = glm::vec4{ 1,1,1,1 };
+		auto& Light = GeneratedSphere.AddComponent<LightComponent>();
 		Light.light.m_LightType = LightType::SpotLight;
 		theta += d_theta;
 	}

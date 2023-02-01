@@ -8,6 +8,7 @@ public:
 	UUID();
 	UUID(uint64_t uuid);
 	UUID(const UUID&) = default;
+	static constexpr uint64_t null = 0;
 private:
 	uint64_t m_UUID;
 };
