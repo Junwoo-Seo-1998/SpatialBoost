@@ -22,6 +22,11 @@ std::shared_ptr<Texture> Texture::CreateTexture(const TextureData& texture_data)
 	return std::shared_ptr<Texture>(new Texture{ texture_data });
 }
 
+std::shared_ptr<Texture> Texture::CreateTexture(const glm::vec4& color)
+{
+	return std::shared_ptr<Texture>(new Texture{ color });
+}
+
 Texture::~Texture()
 {
 	glDeleteTextures(1, &m_TextureID);
@@ -60,6 +65,23 @@ Texture::Texture(std::shared_ptr<TextureData> texture_data)
 		glTextureSubImage2D(m_TextureID, 0, 0, 0, m_Width, m_Height, texture_data->channel.TextureChannelTypeToOpenGLType(), GL_UNSIGNED_BYTE, texture_data->data.get());
 		glGenerateTextureMipmap(m_TextureID);
 	}
+}
+
+Texture::Texture(const glm::vec4& color)
+	:m_Width(1), m_Height(1)
+{
+	glCreateTextures(GL_TEXTURE_2D, 1, &m_TextureID);
+
+	glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glTextureParameteri(m_TextureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(m_TextureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTextureStorage2D(m_TextureID, 1, GL_RGBA8, m_Width, m_Height);
+
+	glTextureSubImage2D(m_TextureID, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_FLOAT, &color);
+	glGenerateTextureMipmap(m_TextureID);
 }
 
 Texture::Texture(const TextureData& texture_data)

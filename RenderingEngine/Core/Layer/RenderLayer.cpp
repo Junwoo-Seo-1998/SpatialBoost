@@ -14,12 +14,13 @@
 #include "Core/Scene/SceneManager.h"
 #include "Core/Graphics/Shader.h"
 #include "Core/Graphics/FrameBuffer.h"
-
+#include "Core/Data/Texture.h"
 void RenderLayer::OnAttach()
 {
 	vao = VertexArray::CreateVertexArray();
-	FrameBufferSpecification spec = { 1024, 1024,
+	FrameBufferSpecification spec = { static_cast<unsigned int>(width), static_cast<unsigned int>(height),
 {
+		FrameBufferFormat::RGBA32F,
 		FrameBufferFormat::RGBA32F,
 		FrameBufferFormat::RGBA32F,
 		FrameBufferFormat::RGBA32F,
@@ -42,22 +43,36 @@ void RenderLayer::OnAttach()
 		{0, DataType::Float3},//location=0, pos
 		{1, DataType::Float2},//location=1, uv
 		});
+
 }
 
 void RenderLayer::OnDetach()
 {
-
+	
 }
 
 void RenderLayer::OnUpdate()
 {
+	auto [w, h] = Application::Get().GetWindowSize();
+	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	
+	if(width!=w || height!=h)
+	{
+		deferred_fb->Resize(w, h);
+		width = w;
+		height = h;
+	}
+
+	auto scene = Application::Get().GetSceneManager()->GetCurrentScene();
+	Entity mainCam = scene->GetMainCamera();
+	auto& camComp = mainCam.GetComponent<CameraComponent>();
+	camComp.aspect_ratio = AspectRatio;
 }
 
 void RenderLayer::OnPreRender()//deferred render
 {
 	deferred_fb->Bind();
-	glViewport(0, 0, 1024, 1024);
+	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	std::shared_ptr<Shader> shader = AssetManager::GetShader(AssetManager::GetUUID("Deferred_shader"));
@@ -72,6 +87,7 @@ void RenderLayer::OnPreRender()//deferred render
 	auto& camComp = mainCam.GetComponent<CameraComponent>();
 
 	glm::mat4 world_to_cam = Math::BuildCameraMatrixWithDirection(camTransform.Position, camTransform.GetForward(), camTransform.GetUp());
+
 
 	auto Renderables = registry.group<RendererComponent, TransformComponent, MeshComponent>(entt::get<MaterialComponent>);
 	for (auto& Renderable : Renderables)
@@ -96,25 +112,33 @@ void RenderLayer::OnPreRender()//deferred render
 			shader->TrySetMat4("Matrix.Projection", camComp.GetPerspective());
 
 			glm::mat4 model = transformComp.GetTransform();
-			shader->TrySetMat4("Matrix.Model", model);
+			shader->SetMat4("Matrix.Model", model);
 			glm::mat4 normal_matrix = glm::transpose(glm::inverse(model));
 			shader->TrySetMat4("Matrix.Normal", normal_matrix);
+
+			//set material
+			shader->TrySetMaterial("MatTexture", material.material);
 
 			auto mesh = AssetManager::GetVertexNormalMesh(meshComp.uuid);
 
 			mesh->GetBuffer()->BindToVertexArray();
+			mesh->GetUV()->GetPointUVBuffer(UVTypes::Spherical)->BindToVertexArray();
 			mesh->GetIndexBuffer()->Bind();
 
 			glDrawElements(GL_TRIANGLES, mesh->GetIndices()->size(), GL_UNSIGNED_INT, nullptr);
 		}
+		else//use default material
+		{
+			
+		}
 	}
 	deferred_fb->UnBind();
-	auto [w, h] = Application::Get().GetWindowSize();
-	glViewport(0, 0, w, h);
 }
 
 void RenderLayer::OnRender()//
 {
+	glViewport(0, 0, width, height);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	auto scene = Application::Get().GetSceneManager()->GetCurrentScene();
 	entt::registry& registry = scene->GetRegistry();
 
@@ -131,28 +155,39 @@ void RenderLayer::OnRender()//
 	//deferred part
 	shader->SetTexture("gPosition", deferred_fb->GetColorTexture(0), 0);
 	shader->SetTexture("gNormal", deferred_fb->GetColorTexture(1), 1);
+	shader->SetTexture("gDiffuse", deferred_fb->GetColorTexture(2), 2);
+	shader->SetTexture("gSpecular", deferred_fb->GetColorTexture(3), 3);
+	shader->SetTexture("gEmissive", deferred_fb->GetColorTexture(4), 4);
 
-	shader->SetInt("LightNumbers", 1);
-	std::string to_string = std::to_string(0);
-	shader->SetInt("Light[" + to_string + "].LightType", 1);
-	glm::vec3 lightPos = glm::vec3(10.f, 0, 0);
-	shader->SetFloat3("Light[" + to_string + "].Position", lightPos);
-	shader->SetFloat3("Light[" + to_string + "].Direction", glm::vec3{ 0, 0, 0 } - lightPos);
-	shader->SetFloat("Light[" + to_string + "].InnerAngle", glm::radians(45.f));
-	shader->SetFloat("Light[" + to_string + "].OuterAngle", glm::radians(50.f));
-	shader->SetFloat("Light[" + to_string + "].FallOff", 32.f);
+	{
+		auto Lights = registry.view<TransformComponent, LightComponent>();
+		//shader->SetInt("LightNumbers", Lights.size());
+		shader->SetInt("LightNumbers", 16);
+		int light_index = 0;
+		for (auto& light : Lights)
+		{
+			auto& transform = Lights.get<TransformComponent>(light);
+			auto& lightComp = Lights.get<LightComponent>(light);
+			std::string to_string = std::to_string(light_index++);
+			shader->SetInt("Light[" + to_string + "].LightType", static_cast<int>(lightComp.light.m_LightType));
+			shader->SetFloat3("Light[" + to_string + "].Position", transform.Position);
+			shader->SetFloat3("Light[" + to_string + "].Direction", transform.GetForward());
+			shader->SetFloat("Light[" + to_string + "].InnerAngle", lightComp.light.m_Angle.inner);
+			shader->SetFloat("Light[" + to_string + "].OuterAngle", lightComp.light.m_Angle.outer);
+			shader->SetFloat("Light[" + to_string + "].FallOff", lightComp.light.falloff);
 
-	shader->SetFloat3("Light[" + to_string + "].Ambient", {0.f,0.f,0.f});
-	shader->SetFloat3("Light[" + to_string + "].Diffuse", { 1.f,1.f,1.f });
-	shader->SetFloat3("Light[" + to_string + "].Specular", { 0.0f,0.0f,0.0f });
-
-
+			shader->SetFloat3("Light[" + to_string + "].Ambient", lightComp.light.Ambient);
+			shader->SetFloat3("Light[" + to_string + "].Diffuse", lightComp.light.Diffuse);
+			shader->SetFloat3("Light[" + to_string + "].Specular", lightComp.light.Specular);
+		}
+	}
 	shader->SetFloat3("CameraPosition", camTransform.Position);
-	shader->SetFloat3("Material.Ambient", { 0.1f,0.1f,0.1f });
-	shader->SetFloat3("Material.Diffuse", { 0.8f,0.8f,0.8f });
-	shader->SetFloat3("Material.Specular", { 0.1f,0.1f,0.1f });
-	shader->SetFloat("Material.Shininess", 32.f);
-	shader->SetFloat3("Material.Emissive", {});
+
+	//shader->SetFloat3("Material.Ambient", { 0.1f,0.1f,0.1f });
+	//shader->SetFloat3("Material.Diffuse", { 0.8f,0.8f,0.8f });
+	//shader->SetFloat3("Material.Specular", { 0.1f,0.1f,0.1f });
+	//shader->SetFloat("Material.Shininess", 32.f);
+	//shader->SetFloat3("Material.Emissive", {});
 
 	shader->SetFloat3("globalAmbient", {});
 
@@ -167,16 +202,17 @@ void RenderLayer::OnRender()//
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	//copy depth
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, deferred_fb->GetFrameBufferID());
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	auto [w, h] = Application::Get().GetWindowSize();
-	glBlitFramebuffer(
-		0, 0, 1024, 1024, // source region
-		0, 0, w, h, // destination region
-		GL_DEPTH_BUFFER_BIT, // field to copy
-		GL_NEAREST // filtering mechanism
-	);
-
+	if (copyDepthInfo)
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, deferred_fb->GetFrameBufferID());
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBlitFramebuffer(
+			0, 0, width, height, // source region
+			0, 0, width, height, // destination region
+			GL_DEPTH_BUFFER_BIT, // field to copy
+			GL_NEAREST // filtering mechanism
+		);
+	}
 
 	auto Renderables = registry.group<RendererComponent, TransformComponent, MeshComponent>(entt::get<MaterialComponent>);
 	for (auto& Renderable: Renderables)
@@ -201,32 +237,7 @@ void RenderLayer::OnRender()//
 			{
 				shader = AssetManager::GetShader(shader_uuid);
 				shader->Use();
-				for(auto& pair:material.material.data)
-				{
-					switch(pair.second.type)
-					{
-						case DataType::Bool:
-							shader->SetInt(pair.first, pair.second.data.Bool);
-							break;
-						case DataType::Int:
-							shader->SetInt(pair.first, pair.second.data.Int);
-							break;
-						case DataType::Float:
-							shader->SetFloat(pair.first, pair.second.data.Float);
-							break;
-						case DataType::Float3:
-							shader->SetFloat3(pair.first, pair.second.data.Float3);
-							break;
-						case DataType::Float4:
-							shader->SetFloat4(pair.first, pair.second.data.Float4);
-							break;
-						case DataType::Mat4:
-							shader->SetMat4(pair.first, pair.second.data.Mat4);
-							break;
-					default: 
-						break;
-					}
-				}
+				shader->SetCustomMaterial(material.material.Data);
 			}
 		}
 		else
@@ -261,13 +272,18 @@ void RenderLayer::OnPostRender()
 void RenderLayer::OnGuiRender()
 {
 	ImGui::Begin("framebuffers");
-	constexpr ImVec2 size{ 200,200 };
+	ImGui::Checkbox("Copy Depth Info", &copyDepthInfo);
+	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	ImVec2 size{ AspectRatio*200,200 };
 	unsigned textureID = deferred_fb->GetColorTexture(0)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 	ImGui::SameLine();
 	textureID = deferred_fb->GetColorTexture(1)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
+	textureID = deferred_fb->GetColorTexture(2)->GetTextureID();
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	ImGui::SameLine();
 	textureID = deferred_fb->GetDepthTexture()->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 	ImGui::End();

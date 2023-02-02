@@ -15,7 +15,7 @@ End Header --------------------------------------------------------*/
 #include "glm/gtc/type_ptr.hpp"
 #include "Core/Data/Texture.h"
 #include "Core/Utils/File.h"
-
+#include "Core/Data/Material.h"
 Shader::~Shader()
 {
 	glUseProgram(0);
@@ -73,7 +73,37 @@ void Shader::SetMat4(const std::string& name, const glm::mat4& value) const
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Shader::SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned unit)
+void Shader::SetCustomMaterial(const std::unordered_map<std::string, MaterialData>& Data) const
+{
+	for (auto& pair : Data)
+	{
+		switch (pair.second.type)
+		{
+		case DataType::Bool:
+			SetInt(pair.first, pair.second.data.Bool);
+			break;
+		case DataType::Int:
+			SetInt(pair.first, pair.second.data.Int);
+			break;
+		case DataType::Float:
+			SetFloat(pair.first, pair.second.data.Float);
+			break;
+		case DataType::Float3:
+			SetFloat3(pair.first, pair.second.data.Float3);
+			break;
+		case DataType::Float4:
+			SetFloat4(pair.first, pair.second.data.Float4);
+			break;
+		case DataType::Mat4:
+			SetMat4(pair.first, pair.second.data.Mat4);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void Shader::SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned unit) const
 {
 	Use();
 	int location = GetUniformLocation(name);
@@ -204,6 +234,24 @@ void Shader::TrySetMat4(const std::string& name, const glm::mat4& value) const
 	if (location == -1)
 		return;
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::TrySetMaterial(const std::string& name, const Material& mat) const
+{
+	
+	TrySetTexture(name +".Diffuse", mat.Diffuse, 6);
+	TrySetTexture(name + ".Specular", mat.Specular, 7);
+	TrySetTexture(name + ".Emissive", mat.Emissive, 8);
+	TrySetFloat(name + ".Shininess", mat.Shininess);
+}
+
+void Shader::TrySetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned unit) const
+{
+	int location = TryUniformLocation(name);
+	if (location == -1)
+		return;
+	texture->BindTexture(unit);
+	glUniform1i(location, unit);
 }
 
 unsigned Shader::CompileShader(ShaderType type, const std::vector<std::string>& src)

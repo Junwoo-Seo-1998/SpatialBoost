@@ -69,6 +69,7 @@ void Scenario_1::Start()
 	plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
 	plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
 	plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
+	//plane.AddComponent<MaterialComponent>();
 	plane.AddComponent<RendererComponent>();
 	plane.AddComponent<MeshComponent>("Plane");
 
@@ -85,13 +86,14 @@ void Scenario_1::Start()
 		auto GeneratedSphere = CreateEntity();
 		auto& transform = GeneratedSphere.GetComponent<TransformComponent>();
 		transform.Position = position;
+		transform.LookAtDir(glm::vec3{ 0,0,0 } - position);
 		GeneratedSphere.AddComponent<RendererComponent>();
 		GeneratedSphere.AddComponent<MeshComponent>("GeneratedOrbitSphere");
 		auto& mat=GeneratedSphere.AddComponent<MaterialComponent>("light_shader");
 		mat.mode = RenderMode::Forward;
 		mat["BaseColor"] = glm::vec4{ 1,1,1,1 };
 		auto& Light = GeneratedSphere.AddComponent<LightComponent>();
-		Light.light.m_LightType = LightType::SpotLight;
+		Light.light.m_LightType = LightType::PointLight;
 		theta += d_theta;
 	}
 
@@ -101,7 +103,9 @@ void Scenario_1::Start()
 void Scenario_1::Update()
 {
 	float dt = Time::GetDelta();
-	//MainCamera.GetComponent<TransformComponent>().Position.y += dt;
+	auto& trans = MainCamera.GetComponent<TransformComponent>();
+	auto pos = demo_mesh.GetComponent<TransformComponent>().Position;
+	trans.LookAtDir(pos - trans.Position);
 }
 
 void Scenario_1::PostUpdate()

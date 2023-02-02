@@ -123,17 +123,17 @@ void FrameBuffer::BuildFrameBuffer()
 			{
 			case FrameBufferFormat::RGB:
 			{
-				m_ColorTextures[i] = Texture::CreateTexture({ width,height,nullptr,TextureChannel::RGB });
+				m_ColorTextures[i] = Texture::CreateTexture(TextureData{ width,height,nullptr,TextureChannel::RGB });
 				break;
 			}
 			case  FrameBufferFormat::RGBA:
 			{
-				m_ColorTextures[i] = Texture::CreateTexture({ width,height,nullptr,TextureChannel::RGBA });
+				m_ColorTextures[i] = Texture::CreateTexture(TextureData{ width,height,nullptr,TextureChannel::RGBA });
 				break;
 			}
 			case  FrameBufferFormat::RGBA32F:
 			{
-				m_ColorTextures[i] = Texture::CreateTexture({ width,height,nullptr,TextureChannel::RGBA32F });
+				m_ColorTextures[i] = Texture::CreateTexture(TextureData{ width,height,nullptr,TextureChannel::RGBA32F });
 				break;
 			}
 			}
@@ -153,7 +153,7 @@ void FrameBuffer::BuildFrameBuffer()
 		{
 		case FrameBufferFormat::Depth:
 		{
-			m_DepthTexture = Texture::CreateTexture({ width,height,nullptr, TextureChannel::Depth });
+			m_DepthTexture = Texture::CreateTexture(TextureData{ width,height,nullptr, TextureChannel::Depth });
 			break;
 		}
 		}

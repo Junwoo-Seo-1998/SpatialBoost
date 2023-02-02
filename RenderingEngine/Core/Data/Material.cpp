@@ -56,7 +56,8 @@ MaterialData& MaterialData::operator=(const glm::mat4& val)
 	return *this;
 }
 
+
 MaterialData& Material::operator[](const std::string& key)
 {
-	return data[key];
+	return Data[key];
 }

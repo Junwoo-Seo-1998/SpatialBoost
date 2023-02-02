@@ -6,12 +6,21 @@ in VS_OUT{
 
 layout (location = 0) out vec4 gPosition;
 layout (location = 1) out vec4 gNormal;
-//layout (location = 2) out vec4 gAlbedoSpec;
+layout (location = 2) out vec4 gDiffuse;
+layout (location = 3) out vec4 gSpecular;
+layout (location = 4) out vec4 gEmissive;
+
+uniform MaterialTexture MatTexture;
 
 void main()
 {
-    // store the fragment position vector in the first gbuffer texture
     gPosition = vec4(fs_in.FragPos, 1.f);
-    // also store the per-fragment normals into the gbuffer
+
     gNormal = vec4(normalize(fs_in.NormalVector), 1.f);
+
+    gDiffuse = vec4(texture(MatTexture.Diffuse, fs_in.UV).rgb, 1.f);
+
+    gSpecular = vec4(texture(MatTexture.Specular, fs_in.UV).rgb, MatTexture.Shininess);
+
+    gEmissive = texture(MatTexture.Emissive, fs_in.UV);
 }

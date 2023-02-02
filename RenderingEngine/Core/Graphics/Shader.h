@@ -18,6 +18,9 @@ End Header --------------------------------------------------------*/
 #include <unordered_map>
 
 #include "FrameBuffer.h"
+struct MaterialData;
+struct Material;
+
 enum class ShaderType
 {
 	VertexShader = 0,
@@ -45,8 +48,8 @@ public:
 	void SetFloat3(const std::string& name, const glm::vec3& value) const;
 	void SetFloat4(const std::string& name, const glm::vec4& value) const;
 	void SetMat4(const std::string& name, const glm::mat4& value) const;
-
-	void SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned int unit = 0);
+	void SetCustomMaterial(const std::unordered_map<std::string, MaterialData>& Data) const;
+	void SetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned int unit = 0) const;
 	unsigned GetShaderProgram();
 private:
 	Shader();
@@ -60,7 +63,8 @@ private:
 	void TrySetFloat3(const std::string& name, const glm::vec3& value) const;
 	void TrySetFloat4(const std::string& name, const glm::vec4& value) const;
 	void TrySetMat4(const std::string& name, const glm::mat4& value) const;
-
+	void TrySetMaterial(const std::string& name, const Material& mat) const;
+	void TrySetTexture(const std::string& name, std::shared_ptr<Texture> texture, unsigned int unit = 0) const;
 	unsigned CompileShader(ShaderType type, const std::vector<std::string>& src);
 	unsigned m_ShaderProgram;
 };

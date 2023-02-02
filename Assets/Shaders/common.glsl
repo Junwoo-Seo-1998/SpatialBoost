@@ -41,6 +41,14 @@ struct MatrixData
     mat4 Normal;
 };
 
+struct MaterialTexture
+{
+    sampler2D Diffuse;
+    sampler2D Specular;
+    sampler2D Emissive;
+    float Shininess;
+};
+
 struct MaterialData
 {
     vec3 Ambient;
