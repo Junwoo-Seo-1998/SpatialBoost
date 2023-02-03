@@ -29,7 +29,7 @@ class MyApp : public Application
 	virtual void UserDefinedInit() override
 	{
 		AssetManager::LoadShaderFromFile("skybox_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/skybox.vert", "Assets/Shaders/skybox.frag");
-		AssetManager::LoadShaderFromFile("line_shader", "Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
+		AssetManager::LoadShaderFromFile("line_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
 		AssetManager::LoadShaderFromFile("light_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
 		AssetManager::LoadShaderFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_light.vert", "Assets/Shaders/phong_light.frag");
 		AssetManager::LoadShaderFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");

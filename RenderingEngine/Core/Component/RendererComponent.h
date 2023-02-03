@@ -15,12 +15,7 @@ End Header --------------------------------------------------------*/
 class LineMesh;
 class Mesh;
 
-struct LineRendererComponent
-{
-	LineRendererComponent(std::shared_ptr<LineMesh> mesh);
 
-	std::shared_ptr<LineMesh> mesh;
-};
 
 struct FaceNormalLineRendererComponent
 {
@@ -47,8 +42,17 @@ struct VertexNormalMeshRendererComponent
 	std::shared_ptr<Mesh> mesh;
 };
 
+struct LineRendererComponent
+{
+	bool enabled = true;
+};
 
 struct RendererComponent
+{
+	bool enabled = true;
+};
+
+struct DebugRendererComponent
 {
 	bool enabled = true;
 };

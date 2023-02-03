@@ -26,7 +26,18 @@ IncludeDir["GLM"]="Libs/glm/"
 IncludeDir["ENTT"]="Libs/entt/"
 IncludeDir["IMGUI"]="Libs/imgui/"
 IncludeDir["STB_IMAGE"]="Libs/stb_image/"
+IncludeDir["ASSIMP"]="Libs/assimp/include/"
 
+Library = {}
+Library["DASSIMP"]="assimp-vc143-mtd.lib"
+Library["ASSIMP"]="assimp-vc143-mt.lib"
+LibraryDir = {}
+LibraryDir["DASSIMP"]="Libs/assimp/dbg"
+LibraryDir["ASSIMP"]="Libs/assimp/rel"
+
+Shared = {}
+Shared["DASSIMP"]="../Libs/assimp/dbg/assimp-vc143-mtd.dll"
+Shared["ASSIMP"]="../Libs/assimp/rel/assimp-vc143-mt.dll"
 
 project "RenderingEngine"
     location "RenderingEngine"
@@ -40,9 +51,9 @@ project "RenderingEngine"
         "GLFW",
         "GLAD",
         "opengl32.lib",
-        "ImGui"
+        "ImGui",
     }
-
+    
     disablewarnings { "4819", "4002", "4005","6031", "4267", "26498", "26819", "28020", "26439" }
     linkoptions { "-IGNORE:4075","-IGNORE:4098"}
     includedirs
@@ -53,7 +64,8 @@ project "RenderingEngine"
         "%{IncludeDir.GLM}",
         "%{IncludeDir.ENTT}",
         "%{IncludeDir.IMGUI}",
-        "%{IncludeDir.STB_IMAGE}"
+        "%{IncludeDir.STB_IMAGE}",
+        "%{IncludeDir.ASSIMP}"
     }
     files {
         "RenderingEngine/**.h",
@@ -74,6 +86,31 @@ project "RenderingEngine"
     filter "configurations:Debug"
         defines { "DEBUG" }
         symbols "On"
+        debugdir "bin/%{cfg.buildcfg}"
+        libdirs 
+        {
+            "%{LibraryDir.DASSIMP}"
+        }
+
+        links {
+            "%{Library.DASSIMP}"
+        }
+        postbuildcommands 
+        {
+            '{COPYFILE} %{Shared.DASSIMP} ../bin/%{cfg.buildcfg}/assimp-vc143-mtd.dll',
+        }
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
+        debugdir "bin/%{cfg.buildcfg}"
+        libdirs 
+        {
+            "%{LibraryDir.ASSIMP}"
+        }
+        links {
+            "%{Library.ASSIMP}"
+        }
+        postbuildcommands 
+        {
+            '{COPYFILE} %{Shared.ASSIMP} ../bin/%{cfg.buildcfg}/assimp-vc143-mt.dll',
+        }

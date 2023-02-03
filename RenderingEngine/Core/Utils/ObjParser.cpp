@@ -15,10 +15,11 @@ End Header --------------------------------------------------------*/
 #include <fstream>
 #include <sstream>
 #include"Core/Utils/Math.h"
-
+#include"assimp/Importer.hpp"
 void ObjParser::ParseFile(const std::string& file_name, std::vector<glm::vec3>& loaded_points,
 	std::vector<unsigned>& loaded_indices)
 {
+	Assimp::Importer importer;
 	std::ifstream file(file_name);
 	std::stringstream stringstream;
 	std::string line;

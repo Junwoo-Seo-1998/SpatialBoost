@@ -63,16 +63,19 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Libs\assimp\dbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>-IGNORE:4075 -IGNORE:4098 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Debug\Assets"
-xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
+xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"
+copy /B /Y ..\Libs\assimp\dbg\assimp-vc143-mtd.dll ..\bin\Debug\assimp-vc143-mtd.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
@@ -88,17 +91,20 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Libs\assimp\rel;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>-IGNORE:4075 -IGNORE:4098 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Release\Assets"
-xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
+xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"
+copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -137,8 +143,8 @@ xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"</Command>
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
     <ClInclude Include="Core\Time.h" />
-    <ClInclude Include="Core\Utils\DataType.h" />
     <ClInclude Include="Core\UUID.h" />
+    <ClInclude Include="Core\Utils\DataType.h" />
     <ClInclude Include="Core\Utils\File.h" />
     <ClInclude Include="Core\Utils\KeyCodes.h" />
     <ClInclude Include="Core\Utils\Math.h" />

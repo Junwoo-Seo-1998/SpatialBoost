@@ -60,7 +60,6 @@ public:
 	void SetData(int size, const void* data, unsigned offset = 0);
 	void SetDataTypes(const DescribedData& data);
 private:
-
 	VertexBuffer(int byte_size);
 	void CreateBuffer(int size, const void* data);
 	unsigned m_Buffer;

@@ -19,6 +19,11 @@ public:
 	void OnGuiRender() override;
 	void OnEvent(Event& event) override;
 private:
+	void DeferredRender();
+	void DeferredRenderQuad();
+	void ForwardRender();
+	
+private:
 	std::shared_ptr<VertexArray> vao;
 	std::shared_ptr<VertexBuffer> quad_buffer;
 	std::shared_ptr<FrameBuffer> deferred_fb;

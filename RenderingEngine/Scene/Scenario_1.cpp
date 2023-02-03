@@ -77,7 +77,9 @@ void Scenario_1::Start()
 	float radius = 3.f;
 	orbit = CreateEntity();
 	auto& parent_transform = orbit.GetComponent<TransformComponent>();
-	orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(radius));
+	orbit.AddComponent<LineRendererComponent>();
+	orbit.AddComponent<MeshComponent>("GeneratedOrbitSphere");
+
 	float d_theta = 2.f * glm::pi<float>() / static_cast<float>(16);
 	float theta = 0.f;
 	for (int step = 0; step < 16; ++step)

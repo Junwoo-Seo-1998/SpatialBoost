@@ -1,4 +1,3 @@
-#version 460 core
 /* Start Header -------------------------------------------------------
 Copyright (C) 2022 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the prior written
@@ -12,11 +11,9 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 layout (location = 0) in vec3 aPos;
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform MatrixData Matrix;
 		
 void main()
 {
-	gl_Position = projection*view*model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
+	gl_Position = Matrix.Projection*Matrix.View*Matrix.Model*vec4(aPos.x, aPos.y, aPos.z, 1.0);
 }

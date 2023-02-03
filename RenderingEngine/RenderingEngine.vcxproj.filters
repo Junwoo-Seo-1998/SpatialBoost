@@ -162,6 +162,9 @@
     <ClInclude Include="Core\UUID.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\DataType.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Utils\File.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
@@ -195,7 +198,6 @@
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Utils\DataType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -207,6 +209,9 @@
     <ClCompile Include="Core\Component\CameraComponent.cpp">
       <Filter>Core\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Component\MaterialComponent.cpp">
+      <Filter>Core\Component</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Component\Meshcomponent.cpp">
       <Filter>Core\Component</Filter>
     </ClCompile>
@@ -215,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="Core\Component\TransformComponent.cpp">
       <Filter>Core\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Data\Material.cpp">
+      <Filter>Core\Data</Filter>
     </ClCompile>
     <ClCompile Include="Core\Data\Mesh.cpp">
       <Filter>Core\Data</Filter>
@@ -313,7 +321,5 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Component\MaterialComponent.cpp" />
-    <ClCompile Include="Core\Data\Material.cpp" />
   </ItemGroup>
 </Project>
