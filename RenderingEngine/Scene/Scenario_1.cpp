@@ -12,6 +12,7 @@ End Header --------------------------------------------------------*/
 
 #include <iostream>
 #include <glm/ext/scalar_constants.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "imgui.h"
 #include "CommonOverlay/CommonOverlay.h"
@@ -19,6 +20,7 @@ End Header --------------------------------------------------------*/
 #include "Core/AssetManager.h"
 #include "Core/Time.h"
 #include "Core/Component/CameraComponent.h"
+#include "Core/Component/DemoComponent.h"
 #include "Core/Component/LightComponent.h"
 #include "Core/Component/MaterialComponent.h"
 #include "Core/Component/MeshComponent.h"
@@ -41,8 +43,6 @@ Scenario_1::Scenario_1(Application& app)
 
 void Scenario_1::Awake()
 {
-	overlay = std::make_shared<CommonOverlay>();
-	Application::Get().GetLayerManager()->PushOverlay(overlay);
 }
 
 void Scenario_1::OnEnable()
@@ -58,7 +58,11 @@ void Scenario_1::Start()
 	MainCamera.GetComponent<TransformComponent>().Position = { 0,5,10 };
 	//MainCamera.GetComponent<TransformComponent>().Rotation = { glm::radians(-15.f),0, 0 };
 
+	demo_ctrl = CreateEntity();
+	demo_ctrl.AddComponent<DemoControlComponent>();
+
 	demo_mesh = CreateEntity();
+	demo_mesh.AddComponent<DemoComponent>();
 	demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
 	demo_mesh.AddComponent<RendererComponent>();
 	demo_mesh.AddComponent<MaterialComponent>();
@@ -108,7 +112,39 @@ void Scenario_1::Start()
 void Scenario_1::Update()
 {
 	float dt = Time::GetDelta();
-	
+	auto& ctrl = demo_ctrl.GetComponent<DemoControlComponent>();
+
+	glm::vec3 orbit_rot;
+	if (!ctrl.StopRotation)
+	{
+		auto& orbit_trans = orbit.GetComponent<TransformComponent>();
+		orbit_trans.Rotation.y += orbit_trans.Rotation.y >= 360.f ? -360.f + 0.5f * dt : 0.5f * dt;
+		orbit_rot = orbit_trans.Rotation;
+	}
+
+	auto rot_mat = glm::toMat4(glm::quat(orbit_rot));
+	{//light update
+		float radius = 3.f;
+		float d_theta = 2.f * glm::pi<float>() / static_cast<float>(ctrl.LightNumber);
+		float theta = 0.f;
+		auto Lights = GetRegistry().view<TransformComponent, LightComponent, RendererComponent>();
+		int i = 0;
+		for (auto& entity : Lights)
+		{
+			auto [TransformComp, Light, Renderer] = Lights.get<TransformComponent, LightComponent, RendererComponent>(entity);
+
+			if (i <= ctrl.LightNumber)
+				Renderer.enabled = true;
+			else
+				Renderer.enabled = false;
+
+			glm::vec3 position{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
+			TransformComp.Position = rot_mat * glm::vec4{ position ,1.f };
+			TransformComp.LookAtDir(glm::vec3{ 0,0,0 } - position);
+			theta += d_theta;
+			i++;
+		}
+	}
 }
 
 void Scenario_1::PostUpdate()
@@ -122,7 +158,6 @@ void Scenario_1::OnDisable()
 
 void Scenario_1::OnDestroy()
 {
-	Application::Get().GetLayerManager()->PopOverlay(overlay);
 }
 
 void Scenario_1::OnEvent(Event& event)

@@ -199,6 +199,8 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Core\Layer\LineRenderLayer.h" />
+    <ClInclude Include="Scene\CommonOverlay\DemoOverLay.h" />
+    <ClInclude Include="Core\Component\DemoComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -323,5 +325,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Layer\LineRenderLayer.cpp" />
+    <ClCompile Include="Scene\CommonOverlay\DemoOverLay.cpp" />
   </ItemGroup>
 </Project>

@@ -55,7 +55,7 @@ void LineRenderLayer::OnPostRender()
 		shader = AssetManager::GetShader("line_shader");
 		shader->Use();
 		//default
-		shader->SetFloat4("BaseColor", glm::vec4{ 0,0.5f,0.2f,1.f });
+		shader->SetFloat4("BaseColor", lineColor);
 		shader->SetMat4("Matrix.View", world_to_cam);
 		shader->SetMat4("Matrix.Projection", camComp.GetPerspective());
 
@@ -79,7 +79,7 @@ void LineRenderLayer::OnPostRender()
 		shader->Use();
 
 		//default
-		shader->SetFloat4("BaseColor", glm::vec4{ 0,0.5f,0.2f,1.f });
+		shader->SetFloat4("BaseColor", lineColor);
 		shader->SetMat4("Matrix.View", world_to_cam);
 		shader->SetMat4("Matrix.Projection", camComp.GetPerspective());
 
@@ -119,6 +119,7 @@ void LineRenderLayer::OnGuiRender()
 	ImGui::Checkbox("DrawNormal", &drawNormal);
 	ImGui::RadioButton("VertexNormals", &radio, static_cast<int>(select::DrawVertexNormal)); ImGui::SameLine();
 	ImGui::RadioButton("FaceNormals", &radio, static_cast<int>(select::DrawFaceNormal));
+	ImGui::ColorEdit3("Line Color", &lineColor.x);
 	ImGui::End();
 }
 

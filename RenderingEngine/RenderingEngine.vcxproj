@@ -111,6 +111,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Core\AssetManager.h" />
     <ClInclude Include="Core\Component\CameraComponent.h" />
+    <ClInclude Include="Core\Component\DemoComponent.h" />
     <ClInclude Include="Core\Component\LightComponent.h" />
     <ClInclude Include="Core\Component\MaterialComponent.h" />
     <ClInclude Include="Core\Component\MeshComponent.h" />
@@ -155,6 +156,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
     <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h" />
+    <ClInclude Include="Scene\CommonOverlay\DemoOverLay.h" />
     <ClInclude Include="Scene\DemoEnums\DemoEnums.h" />
     <ClInclude Include="Scene\Scenario_1.h" />
   </ItemGroup>
@@ -199,6 +201,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
+    <ClCompile Include="Scene\CommonOverlay\DemoOverLay.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
