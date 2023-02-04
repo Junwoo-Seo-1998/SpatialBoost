@@ -34,3 +34,8 @@ VertexNormalMeshRendererComponent::VertexNormalMeshRendererComponent(std::shared
 	:mesh(mesh)
 {
 }
+
+LineRendererComponent::LineRendererComponent(std::shared_ptr<LineMesh> mesh)
+	:mesh(mesh)
+{
+}

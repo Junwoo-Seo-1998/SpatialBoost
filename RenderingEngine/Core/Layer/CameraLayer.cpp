@@ -20,7 +20,7 @@ void CameraLayer::OnDetach()
 
 void CameraLayer::OnUpdate()
 {
-	constexpr float speed = 10.f;
+	constexpr float speed = 15.f;
 	auto scene = Application::Get().GetSceneManager()->GetCurrentScene();
 
 	Entity mainCam = scene->GetMainCamera();
@@ -38,12 +38,24 @@ void CameraLayer::OnUpdate()
 		movement -= camTransform.GetRight();
 	if (Input::IsPressed(KeyCode::D))
 		movement += camTransform.GetRight();
+	if (Input::IsPressed(KeyCode::Space))
+	{
+		movement += camTransform.GetUp();
+	}
+	if (Input::IsPressed(KeyCode::LeftControl))
+	{
+		movement -= camTransform.GetUp();
+	}
 	const float len = static_cast<float>(movement.length());
 	if (len !=0.f)
 	{
 		movement /= len;
 	}
 	camTransform.Position += movement * speed * Time::GetDelta();
+
+	camTransform.LookAtDir(glm::vec3{ 0,0,0 } - camTransform.Position);
+	if (glm::length(camTransform.Position) <= 2.f)
+		camTransform.Position += camTransform.GetForward() * 8.f;
 }
 
 void CameraLayer::OnRender()

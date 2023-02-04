@@ -107,6 +107,7 @@ void AssetManager::GeneratePlane(const std::string& key_name, float size)
 	m_VertexNormalMesh[uuid] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
 	m_VertexNormalMesh[uuid]->SetBoundingBox(box);
 	m_VertexNormalLineMesh[uuid] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
+	m_VertexNormalMesh[uuid]->SetUV(std::make_shared<UV>(*m_VertexNormalMesh[uuid]->GetVertices(), *box));
 }
 
 void AssetManager::GenerateSphere(const std::string& key_name, float radius, int segments, int rings)

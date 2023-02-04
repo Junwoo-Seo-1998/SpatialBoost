@@ -16,6 +16,7 @@ enum class TextureChannel
 	RGBA,
 	RGBA32F,
 	Depth,
+	DepthStencil,
 	None,
 };
 

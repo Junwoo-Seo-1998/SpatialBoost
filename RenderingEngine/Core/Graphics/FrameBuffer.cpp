@@ -26,6 +26,8 @@ namespace helper
 		{
 		case FrameBufferFormat::Depth:
 			return true;
+		case FrameBufferFormat::DepthStencil:
+			return true;
 		}
 		return false;
 	}
@@ -156,9 +158,22 @@ void FrameBuffer::BuildFrameBuffer()
 			m_DepthTexture = Texture::CreateTexture(TextureData{ width,height,nullptr, TextureChannel::Depth });
 			break;
 		}
+		case FrameBufferFormat::DepthStencil:
+		{
+			m_DepthTexture = Texture::CreateTexture(TextureData{ width,height,nullptr, TextureChannel::DepthStencil });
+			break;
+		}
 		}
 		unsigned textureID = m_DepthTexture->GetTextureID();
-		glNamedFramebufferTexture(m_FrameBufferID, GL_DEPTH_STENCIL_ATTACHMENT, textureID, 0);
+		switch (m_DepthFormat)
+		{
+		case FrameBufferFormat::Depth:
+			glNamedFramebufferTexture(m_FrameBufferID, GL_DEPTH_ATTACHMENT, textureID, 0);
+			break;
+		case FrameBufferFormat::DepthStencil:
+			glNamedFramebufferTexture(m_FrameBufferID, GL_DEPTH_STENCIL_ATTACHMENT, textureID, 0);
+			break;
+		}
 	}
 
 

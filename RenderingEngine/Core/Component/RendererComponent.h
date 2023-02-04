@@ -44,7 +44,9 @@ struct VertexNormalMeshRendererComponent
 
 struct LineRendererComponent
 {
-	bool enabled = true;
+	LineRendererComponent(std::shared_ptr<LineMesh> mesh);
+
+	std::shared_ptr<LineMesh> mesh;
 };
 
 struct RendererComponent

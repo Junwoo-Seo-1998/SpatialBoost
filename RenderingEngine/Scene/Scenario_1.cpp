@@ -55,7 +55,7 @@ void Scenario_1::Start()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	MainCamera.GetComponent<TransformComponent>().Position = { 0,0,10 };
+	MainCamera.GetComponent<TransformComponent>().Position = { 0,5,10 };
 	//MainCamera.GetComponent<TransformComponent>().Rotation = { glm::radians(-15.f),0, 0 };
 
 	demo_mesh = CreateEntity();
@@ -69,7 +69,7 @@ void Scenario_1::Start()
 	plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
 	plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
 	plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
-	//plane.AddComponent<MaterialComponent>();
+	plane.AddComponent<MaterialComponent>();
 	plane.AddComponent<RendererComponent>();
 	plane.AddComponent<MeshComponent>("Plane");
 
@@ -77,8 +77,7 @@ void Scenario_1::Start()
 	float radius = 3.f;
 	orbit = CreateEntity();
 	auto& parent_transform = orbit.GetComponent<TransformComponent>();
-	orbit.AddComponent<LineRendererComponent>();
-	orbit.AddComponent<MeshComponent>("GeneratedOrbitSphere");
+	orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(radius));
 
 	float d_theta = 2.f * glm::pi<float>() / static_cast<float>(16);
 	float theta = 0.f;
@@ -105,9 +104,7 @@ void Scenario_1::Start()
 void Scenario_1::Update()
 {
 	float dt = Time::GetDelta();
-	auto& trans = MainCamera.GetComponent<TransformComponent>();
-	auto pos = demo_mesh.GetComponent<TransformComponent>().Position;
-	trans.LookAtDir(pos - trans.Position);
+	
 }
 
 void Scenario_1::PostUpdate()

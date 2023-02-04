@@ -20,6 +20,7 @@ enum class FrameBufferFormat
 	RGBA,
 	RGBA32F,
 	Depth,
+	DepthStencil,
 };
 
 struct DescribedFrameBufferFormats

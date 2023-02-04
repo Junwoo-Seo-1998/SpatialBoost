@@ -25,7 +25,7 @@ void RenderLayer::OnAttach()
 		FrameBufferFormat::RGBA32F,
 		FrameBufferFormat::RGBA32F,
 		FrameBufferFormat::RGBA32F,
-		FrameBufferFormat::Depth } };
+		FrameBufferFormat::DepthStencil } };
 	deferred_fb = FrameBuffer::CreateFrameBuffer(spec);
 
 	constexpr float textureQuad[] = {
@@ -93,6 +93,8 @@ void RenderLayer::OnGuiRender()
 	ImGui::Begin("framebuffers");
 	ImGui::Checkbox("Copy Depth Info", &copyDepthInfo);
 	float AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+
+	ImGui::Text("Position & Normal");
 	ImVec2 size{ AspectRatio*200,200 };
 	unsigned textureID = deferred_fb->GetColorTexture(0)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
@@ -100,7 +102,16 @@ void RenderLayer::OnGuiRender()
 	textureID = deferred_fb->GetColorTexture(1)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
+	ImGui::Text("Diffuse & Specular");
 	textureID = deferred_fb->GetColorTexture(2)->GetTextureID();
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+	ImGui::SameLine();
+	textureID = deferred_fb->GetColorTexture(3)->GetTextureID();
+	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+
+
+	ImGui::Text("Emissive & Depth");
+	textureID = deferred_fb->GetColorTexture(4)->GetTextureID();
 	ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(textureID)), size, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 	ImGui::SameLine();
 	textureID = deferred_fb->GetDepthTexture()->GetTextureID();
@@ -117,7 +128,7 @@ void RenderLayer::DeferredRender()
 {
 	deferred_fb->Bind();
 	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	std::shared_ptr<Shader> shader = AssetManager::GetShader(AssetManager::GetUUID("Deferred_shader"));
 	vao->Bind();
@@ -266,36 +277,26 @@ void RenderLayer::ForwardRender()
 
 	vao->Bind();
 	//line render
-	/*{
+	{
 		shader = AssetManager::GetShader("line_shader");
 		shader->Use();
 		//default
-
+		shader->SetFloat4("BaseColor", glm::vec4{ 0,0.5f,0.2f,1.f });
 		shader->TrySetMat4("Matrix.View", world_to_cam);
 		shader->TrySetMat4("Matrix.Projection", camComp.GetPerspective());
 
-		auto Renderables = registry.group<LineRendererComponent, TransformComponent, MeshComponent>();
-		for (auto& Renderable : Renderables)
+		auto LineMeshes = registry.view<TransformComponent, LineRendererComponent>();
+		for (auto& entity : LineMeshes)
 		{
-			auto& rendererComp = Renderables.get<LineRendererComponent>(Renderable);
-			if (!rendererComp.enabled)
-				continue;
-			auto& transformComp = Renderables.get<TransformComponent>(Renderable);
-			auto& meshComp = Renderables.get<MeshComponent>(Renderable);
+			auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, LineRendererComponent>(entity);
+			shader->SetMat4("Matrix.Model", TransformComp.GetTransform());
 
-			
-			glm::mat4 model = transformComp.GetTransform();
-			shader->TrySetMat4("Matrix.Model", model);
+			LineRendererComp.mesh->GetBuffer()->BindToVertexArray();
 
-			auto mesh = AssetManager::GetVertexNormalMesh(meshComp.uuid);
-
-			mesh->GetBuffer()->BindToVertexArray();
-			mesh->GetIndexBuffer()->Bind();
-
-			glDrawArrays(mesh->GetGLDrawType(), 0, static_cast<GLsizei>(mesh->GetVertices()->size()));
+			glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
 		}
 
-	}*/
+	}
 
 	//render
 	{

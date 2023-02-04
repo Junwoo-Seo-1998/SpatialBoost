@@ -12,6 +12,8 @@ unsigned TextureChannelData::TextureChannelTypeToOpenGLInnerType() const
 	case TextureChannel::RGBA32F:
 		return GL_RGBA32F;
 	case TextureChannel::Depth:
+		return GL_DEPTH_COMPONENT24;
+	case TextureChannel::DepthStencil:
 		return GL_DEPTH24_STENCIL8;
 	default:
 		break;
@@ -31,6 +33,8 @@ unsigned TextureChannelData::TextureChannelTypeToOpenGLType() const
 	case TextureChannel::RGBA32F:
 		return GL_RGBA32F;
 	case TextureChannel::Depth:
+		return GL_DEPTH;
+	case TextureChannel::DepthStencil:
 		return GL_DEPTH_STENCIL;
 	default:
 		break;
