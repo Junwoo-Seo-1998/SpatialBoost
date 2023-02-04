@@ -62,6 +62,8 @@ void Scenario_1::Start()
 	demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
 	demo_mesh.AddComponent<RendererComponent>();
 	demo_mesh.AddComponent<MaterialComponent>();
+	demo_mesh.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh(AssetManager::GetUUID("bunny")));
+	demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh(AssetManager::GetUUID("bunny")));
 	demo_mesh.AddComponent<MeshComponent>("bunny");
 
 
@@ -90,6 +92,8 @@ void Scenario_1::Start()
 		transform.LookAtDir(glm::vec3{ 0,0,0 } - position);
 		GeneratedSphere.AddComponent<RendererComponent>();
 		GeneratedSphere.AddComponent<MeshComponent>("GeneratedOrbitSphere");
+		GeneratedSphere.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh(AssetManager::GetUUID("GeneratedOrbitSphere")));
+		GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh(AssetManager::GetUUID("GeneratedOrbitSphere")));
 		auto& mat=GeneratedSphere.AddComponent<MaterialComponent>("light_shader");
 		mat.mode = RenderMode::Forward;
 		mat["BaseColor"] = glm::vec4{ 1,1,1,1 };

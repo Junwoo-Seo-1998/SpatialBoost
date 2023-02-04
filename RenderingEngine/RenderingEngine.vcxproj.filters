@@ -198,6 +198,7 @@
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Layer\LineRenderLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -321,5 +322,6 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Layer\LineRenderLayer.cpp" />
   </ItemGroup>
 </Project>

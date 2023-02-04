@@ -137,6 +137,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Layer\CameraLayer.h" />
     <ClInclude Include="Core\Layer\Layer.h" />
     <ClInclude Include="Core\Layer\LayerManager.h" />
+    <ClInclude Include="Core\Layer\LineRenderLayer.h" />
     <ClInclude Include="Core\Layer\RenderLayer.h" />
     <ClInclude Include="Core\Layer\SkyboxRenderLayer.h" />
     <ClInclude Include="Core\Scene\Entity.h" />
@@ -182,6 +183,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClCompile Include="Core\Input\Input.cpp" />
     <ClCompile Include="Core\Layer\CameraLayer.cpp" />
     <ClCompile Include="Core\Layer\LayerManager.cpp" />
+    <ClCompile Include="Core\Layer\LineRenderLayer.cpp" />
     <ClCompile Include="Core\Layer\RenderLayer.cpp" />
     <ClCompile Include="Core\Layer\SkyboxRenderLayer.cpp" />
     <ClCompile Include="Core\Scene\Entity.cpp" />

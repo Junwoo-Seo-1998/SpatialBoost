@@ -276,27 +276,6 @@ void RenderLayer::ForwardRender()
 	std::shared_ptr<Shader> shader;
 
 	vao->Bind();
-	//line render
-	{
-		shader = AssetManager::GetShader("line_shader");
-		shader->Use();
-		//default
-		shader->SetFloat4("BaseColor", glm::vec4{ 0,0.5f,0.2f,1.f });
-		shader->TrySetMat4("Matrix.View", world_to_cam);
-		shader->TrySetMat4("Matrix.Projection", camComp.GetPerspective());
-
-		auto LineMeshes = registry.view<TransformComponent, LineRendererComponent>();
-		for (auto& entity : LineMeshes)
-		{
-			auto [TransformComp, LineRendererComp] = LineMeshes.get<TransformComponent, LineRendererComponent>(entity);
-			shader->SetMat4("Matrix.Model", TransformComp.GetTransform());
-
-			LineRendererComp.mesh->GetBuffer()->BindToVertexArray();
-
-			glDrawArrays(LineRendererComp.mesh->GetGLDrawType(), 0, static_cast<GLsizei>(LineRendererComp.mesh->GetVertices()->size()));
-		}
-
-	}
 
 	//render
 	{

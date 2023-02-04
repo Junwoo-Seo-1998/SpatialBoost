@@ -1,5 +1,6 @@
 #include "CameraLayer.h"
 
+#include "imgui.h"
 #include "Core/Application.h"
 #include "Core/Time.h"
 #include "Core/Component/CameraComponent.h"
@@ -70,7 +71,9 @@ void CameraLayer::OnPostRender()
 
 void CameraLayer::OnGuiRender()
 {
-
+	ImGui::Begin("Control");
+	ImGui::TextColored({ 1,0,0,1 }, "WASD to move. Spacebar and Ctrl for Up and Down");
+	ImGui::End();
 }
 
 void CameraLayer::OnEvent(Event& event)
