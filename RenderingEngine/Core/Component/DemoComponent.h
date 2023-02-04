@@ -2,10 +2,11 @@
 struct DemoComponent
 {
 	bool enable = true;
+	std::string meshName = "bunny";
 };
 
 struct DemoControlComponent
 {
 	bool StopRotation = false;
-	int LightNumber = 3;
+	int LightNumber = 8;
 };

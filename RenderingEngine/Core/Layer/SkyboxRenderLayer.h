@@ -15,4 +15,5 @@ public:
 private:
 	std::shared_ptr<Shader> skybox_shader;
 	std::shared_ptr<VertexArray> vao;
+	bool drawSkyBox = true;
 };

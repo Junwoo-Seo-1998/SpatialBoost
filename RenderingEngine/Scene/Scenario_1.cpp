@@ -75,7 +75,7 @@ void Scenario_1::Start()
 	plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
 	plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
 	plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
-	plane.AddComponent<MaterialComponent>();
+	plane.AddComponent<MaterialComponent>().material.Shininess = 64;
 	plane.AddComponent<RendererComponent>();
 	plane.AddComponent<MeshComponent>("Plane");
 
@@ -100,9 +100,13 @@ void Scenario_1::Start()
 		GeneratedSphere.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh(AssetManager::GetUUID("GeneratedOrbitSphere")));
 		auto& mat=GeneratedSphere.AddComponent<MaterialComponent>("light_shader");
 		mat.mode = RenderMode::Forward;
-		mat["BaseColor"] = glm::vec4{ 1,1,1,1 };
+		glm::vec3 random{ (glm::cos(step) + 1.f) / 2.f,(glm::sin(step) + 1.f) / 2.f,0.5f };
+		mat["BaseColor"] = glm::vec4{ random,1 };
 		auto& Light = GeneratedSphere.AddComponent<LightComponent>();
 		Light.light.m_LightType = LightType::PointLight;
+		Light.light.Diffuse = random;
+		Light.light.Ambient = random;
+		Light.light.Specular = random;
 		theta += d_theta;
 	}
 
@@ -112,6 +116,12 @@ void Scenario_1::Start()
 void Scenario_1::Update()
 {
 	float dt = Time::GetDelta();
+
+	auto& demo = demo_mesh.GetComponent<DemoComponent>();
+	UUID uuid = AssetManager::GetUUID(demo.meshName);
+	demo_mesh.GetComponent<MeshComponent>().uuid = uuid;
+	demo_mesh.GetComponent<FaceNormalLineRendererComponent>().mesh = AssetManager::GetFaceNormalLineMesh(uuid);
+	demo_mesh.GetComponent<VertexNormalLineRendererComponent>().mesh = AssetManager::GetVertexNormalLineMesh(uuid);
 	auto& ctrl = demo_ctrl.GetComponent<DemoControlComponent>();
 
 	glm::vec3 orbit_rot;
@@ -124,6 +134,7 @@ void Scenario_1::Update()
 
 	auto rot_mat = glm::toMat4(glm::quat(orbit_rot));
 	{//light update
+
 		float radius = 3.f;
 		float d_theta = 2.f * glm::pi<float>() / static_cast<float>(ctrl.LightNumber);
 		float theta = 0.f;
@@ -131,16 +142,20 @@ void Scenario_1::Update()
 		int i = 0;
 		for (auto& entity : Lights)
 		{
-			auto [TransformComp, Light, Renderer] = Lights.get<TransformComponent, LightComponent, RendererComponent>(entity);
+			auto& TransformComp= Lights.get<TransformComponent>(entity);
+			auto& Renderer = Lights.get<RendererComponent>(entity);
 
-			if (i <= ctrl.LightNumber)
+			if (i < ctrl.LightNumber)
 				Renderer.enabled = true;
 			else
 				Renderer.enabled = false;
 
 			glm::vec3 position{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
-			TransformComp.Position = rot_mat * glm::vec4{ position ,1.f };
-			TransformComp.LookAtDir(glm::vec3{ 0,0,0 } - position);
+			if (!ctrl.StopRotation)
+			{
+				TransformComp.Position = rot_mat * glm::vec4{ position ,1.f };
+				TransformComp.LookAtDir(glm::vec3{ 0,0,0 } - position);
+			}
 			theta += d_theta;
 			i++;
 		}

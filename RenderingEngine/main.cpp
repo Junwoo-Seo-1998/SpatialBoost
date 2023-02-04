@@ -23,6 +23,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Layer/SkyboxRenderLayer.h"
 #include "Core/Utils/File.h"
 #include "Scene/Scenario_1.h"
+#include "Scene/CommonOverlay/DemoOverLay.h"
 
 
 class MyApp : public Application
@@ -32,9 +33,7 @@ class MyApp : public Application
 		AssetManager::LoadShaderFromFile("skybox_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/skybox.vert", "Assets/Shaders/skybox.frag");
 		AssetManager::LoadShaderFromFile("line_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
 		AssetManager::LoadShaderFromFile("light_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
-		AssetManager::LoadShaderFromFile("Phong_Lighting", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_light.vert", "Assets/Shaders/phong_light.frag");
 		AssetManager::LoadShaderFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
-		AssetManager::LoadShaderFromFile("Blinn_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/blinn_shading.vert", "Assets/Shaders/blinn_shading.frag");
 		AssetManager::LoadShaderFromFile("Deferred_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred.vert", "Assets/Shaders/deferred.frag");
 		AssetManager::LoadShaderFromFile("Deferred_Phong", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred_phong.vert", "Assets/Shaders/deferred_phong.frag");
 
@@ -65,6 +64,7 @@ class MyApp : public Application
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<LineRenderLayer>());
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<SkyboxRenderLayer>());
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<CameraLayer>());
+		Application::Get().GetLayerManager()->PushOverlay(std::make_shared<DemoOverLay>());
 	}
 };
 std::shared_ptr<Application> CoreMain()

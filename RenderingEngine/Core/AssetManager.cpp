@@ -128,6 +128,8 @@ void AssetManager::GenerateSphere(const std::string& key_name, float radius, int
 
 	m_VertexNormalMesh[uuid] = MeshGenerator::GenerateVertexNormalMesh(*gen_points, *gen_indices, generated_vertex_normal);
 	m_VertexNormalMesh[uuid]->SetBoundingBox(box);
+	m_VertexNormalMesh[uuid]->SetUV(std::make_shared<UV>(*m_VertexNormalMesh[uuid]->GetVertices(), *box));
+
 	m_VertexNormalLineMesh[uuid] = MeshGenerator::GenerateVertexNormalLineMesh(*gen_points, *gen_indices, generated_vertex_normal);
 }
 

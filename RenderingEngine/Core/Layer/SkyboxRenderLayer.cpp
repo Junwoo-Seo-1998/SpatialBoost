@@ -1,5 +1,6 @@
 #include "SkyboxRenderLayer.h"
 
+#include "imgui.h"
 #include "Core/Application.h"
 #include "Core/Component/CameraComponent.h"
 #include "Core/Component/TransformComponent.h"
@@ -26,6 +27,9 @@ void SkyboxRenderLayer::OnUpdate()
 
 void SkyboxRenderLayer::OnPostRender()
 {
+	if(!drawSkyBox)
+		return;
+
 	Entity mainCam = Application::Get().GetSceneManager()->GetCurrentScene()->GetMainCamera();
 	auto& transform = mainCam.GetComponent<TransformComponent>();
 
@@ -54,7 +58,9 @@ void SkyboxRenderLayer::OnPostRender()
 
 void SkyboxRenderLayer::OnGuiRender()
 {
-
+	ImGui::Begin("Control");
+	ImGui::Checkbox("Draw Skybox", &drawSkyBox);
+	ImGui::End();
 }
 
 void SkyboxRenderLayer::OnEvent(Event& event)

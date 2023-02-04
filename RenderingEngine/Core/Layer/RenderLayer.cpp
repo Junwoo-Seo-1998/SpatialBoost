@@ -215,12 +215,14 @@ void RenderLayer::DeferredRenderQuad()
 	shader->SetTexture("gEmissive", deferred_fb->GetColorTexture(4), 4);
 
 	{
-		auto Lights = registry.view<TransformComponent, LightComponent>();
-		//shader->SetInt("LightNumbers", Lights.size());
-		shader->SetInt("LightNumbers", 16);
+		auto Lights = registry.view<TransformComponent, LightComponent, RendererComponent>();
+
 		int light_index = 0;
 		for (auto& light : Lights)
 		{
+			auto& renderer = Lights.get<RendererComponent>(light);
+			if(!renderer.enabled)
+				continue;
 			auto& transform = Lights.get<TransformComponent>(light);
 			auto& lightComp = Lights.get<LightComponent>(light);
 			std::string to_string = std::to_string(light_index++);
@@ -235,6 +237,7 @@ void RenderLayer::DeferredRenderQuad()
 			shader->SetFloat3("Light[" + to_string + "].Diffuse", lightComp.light.Diffuse);
 			shader->SetFloat3("Light[" + to_string + "].Specular", lightComp.light.Specular);
 		}
+		shader->SetInt("LightNumbers", light_index);
 	}
 	shader->SetFloat3("CameraPosition", camTransform.Position);
 
