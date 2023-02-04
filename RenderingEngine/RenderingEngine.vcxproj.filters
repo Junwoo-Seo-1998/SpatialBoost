@@ -63,6 +63,9 @@
     <ClInclude Include="Core\Component\CameraComponent.h">
       <Filter>Core\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Component\DemoComponent.h">
+      <Filter>Core\Component</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Component\LightComponent.h">
       <Filter>Core\Component</Filter>
     </ClInclude>
@@ -141,6 +144,9 @@
     <ClInclude Include="Core\Layer\LayerManager.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Layer\LineRenderLayer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Layer\RenderLayer.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
@@ -192,15 +198,15 @@
     <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h">
       <Filter>Scene\CommonOverlay</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\CommonOverlay\DemoOverLay.h">
+      <Filter>Scene\CommonOverlay</Filter>
+    </ClInclude>
     <ClInclude Include="Scene\DemoEnums\DemoEnums.h">
       <Filter>Scene\DemoEnums</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Layer\LineRenderLayer.h" />
-    <ClInclude Include="Scene\CommonOverlay\DemoOverLay.h" />
-    <ClInclude Include="Core\Component\DemoComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -275,6 +281,9 @@
     <ClCompile Include="Core\Layer\LayerManager.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Layer\LineRenderLayer.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Layer\RenderLayer.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
@@ -320,11 +329,12 @@
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp">
       <Filter>Scene\CommonOverlay</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\CommonOverlay\DemoOverLay.cpp">
+      <Filter>Scene\CommonOverlay</Filter>
+    </ClCompile>
     <ClCompile Include="Scene\Scenario_1.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Layer\LineRenderLayer.cpp" />
-    <ClCompile Include="Scene\CommonOverlay\DemoOverLay.cpp" />
   </ItemGroup>
 </Project>
