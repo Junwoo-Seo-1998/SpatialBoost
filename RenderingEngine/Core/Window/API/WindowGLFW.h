@@ -20,6 +20,7 @@ private:
     GLFWwindow* m_Window = nullptr;
     static void GLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void GLFWMouseCallback(GLFWwindow* window, int button, int action, int mods);
+    static void GLFWMousePositionCallback(GLFWwindow* window, double xposIn, double yposIn);
 public:
     virtual bool Init() override;
     virtual bool ShouldClose() override;

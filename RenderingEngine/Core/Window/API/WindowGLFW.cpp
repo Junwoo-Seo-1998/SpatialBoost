@@ -82,6 +82,14 @@ void WindowGLFW::GLFWMouseCallback(GLFWwindow* window, int button, int action, i
 	}
 }
 
+void WindowGLFW::GLFWMousePositionCallback(GLFWwindow* window, double xposIn, double yposIn)
+{
+	float xpos = static_cast<float>(xposIn);
+	float ypos = static_cast<float>(yposIn);
+
+	Input::SetMousePosition(xpos, ypos);
+}
+
 bool WindowGLFW::Init()
 {
 	if (glfwInit() != GLFW_TRUE)
@@ -106,8 +114,10 @@ bool WindowGLFW::Init()
 	//set glfw callback
 		//so that we can use data of window in glfw call backs.
 	glfwSetWindowUserPointer(static_cast<GLFWwindow*>(m_WindowData.window), &m_WindowData);
+	//glfwSetInputMode(static_cast<GLFWwindow*>(m_WindowData.window), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetKeyCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWKeyCallback);
 	glfwSetMouseButtonCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWMouseCallback);
+	glfwSetCursorPosCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWMousePositionCallback);
 	glfwSetWindowSizeCallback(static_cast<GLFWwindow*>(m_WindowData.window), [](GLFWwindow* window, int width, int height)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);

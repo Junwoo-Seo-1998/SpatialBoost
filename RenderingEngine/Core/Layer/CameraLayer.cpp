@@ -61,11 +61,31 @@ void CameraLayer::OnUpdate()
 	{
 		movement /= len;
 	}
+
+	if(Input::IsPressed(KeyCode::LeftShift))
+	{
+		movement *= 5.f;
+	}
+
 	camTransform.Position += movement * speed * Time::GetDelta();
 
-	camTransform.LookAtDir(glm::vec3{ 0,0,0 } - camTransform.Position);
+	if (Input::IsPressed(KeyCode::LeftAlt) && Input::IsPressed(MouseCode::Left))
+	{
+		auto [x_offset, y_offset] = Input::GetMouseOffset();
+
+		x_offset *= MouseSensitivity * Time::GetDelta();
+		y_offset *= MouseSensitivity * Time::GetDelta();
+
+		float Pitch = camTransform.Rotation.x + y_offset;
+
+		Pitch = glm::clamp(Pitch, glm::radians(-89.0f), glm::radians(89.0f));
+
+		camTransform.Rotation.x = Pitch;
+		camTransform.Rotation.y -= x_offset;
+	}
+	/*camTransform.LookAtDir(glm::vec3{ 0,0,0 } - camTransform.Position);
 	if (glm::length(camTransform.Position) <= 2.f)
-		camTransform.Position += camTransform.GetForward() * 8.f;
+		camTransform.Position += camTransform.GetForward() * 8.f;*/
 }
 
 void CameraLayer::OnRender()

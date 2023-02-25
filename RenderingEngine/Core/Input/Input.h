@@ -32,9 +32,13 @@ public:
 	static bool IsRepeating(Key key);
 	static bool IsReleased(Key key);
 	static bool IsReleased(Mouse button);
+
+	static std::tuple<float, float> GetMousePosition();
+	static std::tuple<float, float> GetMouseOffset();
 private:
 	static void Reset();
 	static void SetKey(Key key, bool state);
 	static void SetMouseButton(Mouse button, bool state);
+	static void SetMousePosition(float x, float y);
 
 };

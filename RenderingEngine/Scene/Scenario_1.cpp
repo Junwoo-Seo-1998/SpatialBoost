@@ -58,6 +58,8 @@ void Scenario_1::Start()
 	MainCamera.GetComponent<TransformComponent>().Position = { 0,5,10 };
 	//MainCamera.GetComponent<TransformComponent>().Rotation = { glm::radians(-15.f),0, 0 };
 
+	MainCamera.GetComponent<TransformComponent>().LookAtDir(glm::vec3{ 0,0,0 } - MainCamera.GetComponent<TransformComponent>().Position);
+
 	demo_ctrl = CreateEntity();
 	demo_ctrl.AddComponent<DemoControlComponent>();
 

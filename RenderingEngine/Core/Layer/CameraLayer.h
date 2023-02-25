@@ -20,4 +20,6 @@ public:
 	void OnPostRender() override;
 	void OnGuiRender() override;
 	void OnEvent(Event& event) override;
+private:
+	float MouseSensitivity = 0.25f;
 };
