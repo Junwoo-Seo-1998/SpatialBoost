@@ -147,6 +147,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
     <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Core\Utils\AssimpParser.h" />
     <ClInclude Include="Core\UUID.h" />
     <ClInclude Include="Core\Utils\DataType.h" />
     <ClInclude Include="Core\Utils\File.h" />
@@ -154,9 +155,10 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Utils\Math.h" />
     <ClInclude Include="Core\Utils\MeshGenerator.h" />
     <ClInclude Include="Core\Utils\MouseCodes.h" />
-    <ClInclude Include="Core\Utils\ObjParser.h" />
+    <ClInclude Include="Core\Utils\Parser.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
+    <ClInclude Include="Core\Utils\ManualParser.h" />
     <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h" />
     <ClInclude Include="Scene\CommonOverlay\DemoOverLay.h" />
     <ClInclude Include="Scene\DemoEnums\DemoEnums.h" />
@@ -194,14 +196,16 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClCompile Include="Core\Scene\Scene.cpp" />
     <ClCompile Include="Core\Scene\SceneManager.cpp" />
     <ClCompile Include="Core\Time.cpp" />
+    <ClCompile Include="Core\Utils\AssimpParser.cpp" />
     <ClCompile Include="Core\UUID.cpp" />
     <ClCompile Include="Core\Utils\File.cpp" />
     <ClCompile Include="Core\Utils\Math.cpp" />
     <ClCompile Include="Core\Utils\MeshGenerator.cpp" />
-    <ClCompile Include="Core\Utils\ObjParser.cpp" />
+    <ClCompile Include="Core\Utils\Parser.cpp" />
     <ClCompile Include="Core\Utils\stb_impl.cpp" />
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
+    <ClCompile Include="Core\Utils\ManualParser.cpp" />
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
     <ClCompile Include="Scene\CommonOverlay\DemoOverLay.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />

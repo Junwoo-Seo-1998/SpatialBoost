@@ -186,7 +186,7 @@
     <ClInclude Include="Core\Utils\MouseCodes.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Utils\ObjParser.h">
+    <ClInclude Include="Core\Utils\Parser.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Window\API\WindowGLFW.h">
@@ -207,6 +207,10 @@
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\ManualParser.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils\AssimpParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -314,7 +318,7 @@
     <ClCompile Include="Core\Utils\MeshGenerator.cpp">
       <Filter>Core\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Utils\ObjParser.cpp">
+    <ClCompile Include="Core\Utils\Parser.cpp">
       <Filter>Core\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Core\Utils\stb_impl.cpp">
@@ -336,5 +340,9 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Utils\ManualParser.cpp">
+      <Filter>Core\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils\AssimpParser.cpp" />
   </ItemGroup>
 </Project>

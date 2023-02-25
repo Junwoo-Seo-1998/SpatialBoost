@@ -12,7 +12,7 @@ Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include "AssetManager.h"
 #include "Utils/MeshGenerator.h"
-#include "Utils/ObjParser.h"
+#include "Utils/Parser.h"
 #include "Core/Graphics/Shader.h"
 #include <iostream>
 
@@ -44,7 +44,7 @@ void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::str
 	std::cout << "Load - " << file_name << std::endl;
 	std::vector<glm::vec3> loaded_points;
 	std::vector<unsigned int> loaded_indices;
-	ObjParser::ParseFile(file_name, loaded_points, loaded_indices);
+	Parser::ParseFile(file_name, loaded_points, loaded_indices);
 
 	std::vector<glm::vec3> generated_face_normal{ MeshGenerator::GenerateFaceNormals(loaded_points, loaded_indices) };
 	
