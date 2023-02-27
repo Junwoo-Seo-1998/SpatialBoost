@@ -18,6 +18,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Event/ApplicationEvents/ApplicationEvents.h"
 #include "Core/Event/InputEvents/KeyBoardEvent.h"
 #include "Core/Input/Input.h"
+#include "Core/Utils/Log.h"
 
 void GLAPIENTRY OpenGLMessageCallback(
 	GLenum source,
@@ -103,9 +104,10 @@ bool WindowGLFW::Init()
 	m_WindowData.window = m_Window;
 	glfwMakeContextCurrent(m_Window);
 	gladLoadGL();
-	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
+
+	EngineLog::Info("Vendor - {}", (const char*)(glGetString(GL_VENDOR)));
+	EngineLog::Info("Renderer - {}", (const char*)(glGetString(GL_RENDERER)));
+	EngineLog::Info("Version - {}", (const char*)(glGetString(GL_VERSION)));
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(OpenGLMessageCallback, nullptr);
 

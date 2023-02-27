@@ -16,9 +16,12 @@ workspace "RenderingEngine"
     platforms {"Win64"}
     configurations  { "Debug", "Release" }    
     startproject "RenderingEngine"
+
+group "Libs"
 include "Libs/glfw"
 include "Libs/glad"
 include "Libs/imgui"
+group ""
 IncludeDir={}
 IncludeDir["GLFW"]="Libs/glfw/glfw/include/"
 IncludeDir["GLAD"]="Libs/glad/"
@@ -27,6 +30,7 @@ IncludeDir["ENTT"]="Libs/entt/"
 IncludeDir["IMGUI"]="Libs/imgui/"
 IncludeDir["STB_IMAGE"]="Libs/stb_image/"
 IncludeDir["ASSIMP"]="Libs/assimp/include/"
+IncludeDir["SPDLOG"]="Libs/spdlog/include/"
 
 Library = {}
 Library["DASSIMP"]="assimp-vc143-mtd.lib"
@@ -65,7 +69,8 @@ project "RenderingEngine"
         "%{IncludeDir.ENTT}",
         "%{IncludeDir.IMGUI}",
         "%{IncludeDir.STB_IMAGE}",
-        "%{IncludeDir.ASSIMP}"
+        "%{IncludeDir.ASSIMP}",
+        "%{IncludeDir.SPDLOG}"
     }
     files {
         "RenderingEngine/**.h",
@@ -82,10 +87,12 @@ project "RenderingEngine"
         '{COPYFILE} "../Settings/imgui.ini" ../bin/%{cfg.buildcfg}/imgui.ini',
     }
 
-
+    defines{
+        "PLATFORM_WINDOWS",
+    }
     -- All of these settings will appear in the Debug configuration
     filter "configurations:Debug"
-        defines { "DEBUG" }
+        defines { "DEBUG", "DEBUG_MODE"}
         symbols "On"
         debugdir "bin/%{cfg.buildcfg}"
         libdirs 

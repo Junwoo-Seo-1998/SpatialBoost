@@ -4,6 +4,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\BoundingVolume">
+      <UniqueIdentifier>{4B2617EF-B787-F4FC-40F5-3AAFAC552BBC}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Component">
       <UniqueIdentifier>{101E4FE1-FCEB-42E7-E57F-B30DD1EC1E4C}</UniqueIdentifier>
     </Filter>
@@ -59,6 +62,12 @@
     </ClInclude>
     <ClInclude Include="Core\AssetManager.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BoundingVolume\AABB.h">
+      <Filter>Core\BoundingVolume</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BoundingVolume\Sphere.h">
+      <Filter>Core\BoundingVolume</Filter>
     </ClInclude>
     <ClInclude Include="Core\Component\CameraComponent.h">
       <Filter>Core\Component</Filter>
@@ -168,13 +177,22 @@
     <ClInclude Include="Core\UUID.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\AssimpParser.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Utils\DataType.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils\DebugDetection.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\File.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\KeyCodes.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils\ManualParser.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\Math.h">
@@ -207,10 +225,8 @@
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Utils\ManualParser.h">
-      <Filter>Core\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Utils\AssimpParser.h" />
+    <ClInclude Include="Core\Utils\Log.h" />
+    <ClInclude Include="Core\Utils\Assert.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -309,7 +325,13 @@
     <ClCompile Include="Core\UUID.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Utils\AssimpParser.cpp">
+      <Filter>Core\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Utils\File.cpp">
+      <Filter>Core\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils\ManualParser.cpp">
       <Filter>Core\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Core\Utils\Math.cpp">
@@ -340,9 +362,6 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Utils\ManualParser.cpp">
-      <Filter>Core\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Utils\AssimpParser.cpp" />
+    <ClCompile Include="Core\Utils\Log.cpp" />
   </ItemGroup>
 </Project>

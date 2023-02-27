@@ -15,6 +15,8 @@ End Header --------------------------------------------------------*/
 #include <vector>
 #include<glm/glm.hpp>
 
+#include "Core/BoundingVolume/AABB.h"
+#include "Core/BoundingVolume/Sphere.h"
 #include "Core/Data/BoundingBox.h"
 //bit compute
 #define BIT(x) (1)<<(x) 
@@ -40,5 +42,18 @@ public:
 	static std::shared_ptr<std::vector<glm::vec2>> ComputeCylindricalUVs(const std::vector<glm::vec3> TextureEntities, const BoundingBox& box);
 	static std::shared_ptr<std::vector<glm::vec2>> ComputeSphericalUVs(const std::vector<glm::vec3> TextureEntities);
 	static std::shared_ptr<std::vector<glm::vec2>> ComputeCubeMapUVs(const std::vector<glm::vec3> TextureEntities);
+
+public:
+	static std::tuple<glm::vec3, glm::vec3> FindMinAndMax(const std::vector<glm::vec3>& vertices);
+	static std::tuple<int, int> ExtremePairAlongDirection(glm::vec3 dir,
+		const std::vector<glm::vec3>& vertices);
+
+	static void ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices);
+
+	static AABB CreateAABB(std::vector<glm::vec3>& vertices);
+	static Sphere CreateRitterSphere(std::vector<glm::vec3>& vertices);
+	static Sphere CreateLarssonSphere(std::vector<glm::vec3>& vertices);
+	static Sphere CreatePCASphere(std::vector<glm::vec3>& vertices);
+
 };
 

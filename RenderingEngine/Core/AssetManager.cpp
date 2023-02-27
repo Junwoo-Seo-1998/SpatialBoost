@@ -21,6 +21,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Data/Texture.h"
 #include "Core/Data/TextureData.h"
 #include "Data/UV.h"
+#include "Utils/Log.h"
 std::shared_ptr<VertexBuffer>AssetManager::m_Skybox;
 std::unordered_map<std::string, UUID> m_UUIDMap;
 
@@ -197,7 +198,8 @@ std::shared_ptr<VertexBuffer> AssetManager::GetSkybox()
 
 std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_name, const std::string& vert_file, const std::string& frag_file)
 {
-	std::cout << "Shader Files: " << vert_file << ", " << frag_file << std::endl;
+	EngineLog::Info("Shader Files - {}, {}", vert_file, frag_file);
+	//std::cout << "Shader Files: " << vert_file << ", " << frag_file << std::endl;
 	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({ 
 		{ShaderType::VertexShader,{vert_file}}, {ShaderType::FragmentShader,{frag_file}}
 	});
@@ -211,7 +213,7 @@ std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_
 std::shared_ptr<Shader> AssetManager::LoadShaderFromFile(const std::string& key_name, const std::string& common_file, const std::string& vert_file,
 	const std::string& frag_file)
 {
-	std::cout << "Shader Files: " << common_file << ", " << vert_file << ", " << frag_file << std::endl;
+	EngineLog::Info("Shader Files - {}, {}, {}", common_file, vert_file, frag_file);
 	std::shared_ptr<Shader> shader = Shader::CreateShaderFromFile({
 		{ShaderType::VertexShader,{common_file,vert_file}}, {ShaderType::FragmentShader,{common_file,frag_file}}
 		});

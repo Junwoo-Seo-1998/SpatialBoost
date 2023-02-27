@@ -58,8 +58,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4819;4002;4005;6031;4267;26498;26819;28020;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Libs\glfw\glfw\include;..\Libs\glad;..\Libs\glm;..\Libs\entt;..\Libs\imgui;..\Libs\stb_image;..\Libs\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;PLATFORM_WINDOWS;DEBUG;DEBUG_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..\Libs\glfw\glfw\include;..\Libs\glad;..\Libs\glm;..\Libs\entt;..\Libs\imgui;..\Libs\stb_image;..\Libs\assimp\include;..\Libs\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -84,8 +84,8 @@ copy /B /Y ..\Libs\assimp\dbg\assimp-vc143-mtd.dll ..\bin\Debug\assimp-vc143-mtd
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4819;4002;4005;6031;4267;26498;26819;28020;26439;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\Libs\glfw\glfw\include;..\Libs\glad;..\Libs\glm;..\Libs\entt;..\Libs\imgui;..\Libs\stb_image;..\Libs\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;PLATFORM_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..\Libs\glfw\glfw\include;..\Libs\glad;..\Libs\glm;..\Libs\entt;..\Libs\imgui;..\Libs\stb_image;..\Libs\assimp\include;..\Libs\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -112,6 +112,8 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Core\AssetManager.h" />
+    <ClInclude Include="Core\BoundingVolume\AABB.h" />
+    <ClInclude Include="Core\BoundingVolume\Sphere.h" />
     <ClInclude Include="Core\Component\CameraComponent.h" />
     <ClInclude Include="Core\Component\DemoComponent.h" />
     <ClInclude Include="Core\Component\LightComponent.h" />
@@ -147,18 +149,21 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
     <ClInclude Include="Core\Time.h" />
-    <ClInclude Include="Core\Utils\AssimpParser.h" />
+    <ClInclude Include="Core\Utils\Assert.h" />
+    <ClInclude Include="Core\Utils\Log.h" />
     <ClInclude Include="Core\UUID.h" />
+    <ClInclude Include="Core\Utils\AssimpParser.h" />
     <ClInclude Include="Core\Utils\DataType.h" />
+    <ClInclude Include="Core\Utils\DebugDetection.h" />
     <ClInclude Include="Core\Utils\File.h" />
     <ClInclude Include="Core\Utils\KeyCodes.h" />
+    <ClInclude Include="Core\Utils\ManualParser.h" />
     <ClInclude Include="Core\Utils\Math.h" />
     <ClInclude Include="Core\Utils\MeshGenerator.h" />
     <ClInclude Include="Core\Utils\MouseCodes.h" />
     <ClInclude Include="Core\Utils\Parser.h" />
     <ClInclude Include="Core\Window\API\WindowGLFW.h" />
     <ClInclude Include="Core\Window\Window.h" />
-    <ClInclude Include="Core\Utils\ManualParser.h" />
     <ClInclude Include="Scene\CommonOverlay\CommonOverlay.h" />
     <ClInclude Include="Scene\CommonOverlay\DemoOverLay.h" />
     <ClInclude Include="Scene\DemoEnums\DemoEnums.h" />
@@ -196,16 +201,17 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClCompile Include="Core\Scene\Scene.cpp" />
     <ClCompile Include="Core\Scene\SceneManager.cpp" />
     <ClCompile Include="Core\Time.cpp" />
-    <ClCompile Include="Core\Utils\AssimpParser.cpp" />
+    <ClCompile Include="Core\Utils\Log.cpp" />
     <ClCompile Include="Core\UUID.cpp" />
+    <ClCompile Include="Core\Utils\AssimpParser.cpp" />
     <ClCompile Include="Core\Utils\File.cpp" />
+    <ClCompile Include="Core\Utils\ManualParser.cpp" />
     <ClCompile Include="Core\Utils\Math.cpp" />
     <ClCompile Include="Core\Utils\MeshGenerator.cpp" />
     <ClCompile Include="Core\Utils\Parser.cpp" />
     <ClCompile Include="Core\Utils\stb_impl.cpp" />
     <ClCompile Include="Core\Window\API\WindowGLFW.cpp" />
     <ClCompile Include="Core\Window\Window.cpp" />
-    <ClCompile Include="Core\Utils\ManualParser.cpp" />
     <ClCompile Include="Scene\CommonOverlay\CommonOverlay.cpp" />
     <ClCompile Include="Scene\CommonOverlay\DemoOverLay.cpp" />
     <ClCompile Include="Scene\Scenario_1.cpp" />

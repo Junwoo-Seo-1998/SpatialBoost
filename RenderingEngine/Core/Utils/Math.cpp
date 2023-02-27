@@ -247,3 +247,138 @@ std::shared_ptr<std::vector<glm::vec2>> Math::ComputeCubeMapUVs(const std::vecto
 	return UVs;
 }
 
+std::tuple<glm::vec3, glm::vec3> Math::FindMinAndMax(const std::vector<glm::vec3>& vertices)
+{
+	glm::vec3 min{ std::numeric_limits<float>().max() };
+	glm::vec3 max{ std::numeric_limits<float>().lowest() };
+
+	for (const auto& vert : vertices)
+	{
+		min.x = glm::min(min.x, vert.x);
+		min.y = glm::min(min.y, vert.y);
+		min.z = glm::min(min.z, vert.z);
+
+		max.x = glm::max(max.x, vert.x);
+		max.y = glm::max(max.y, vert.y);
+		max.z = glm::max(max.z, vert.z);
+	}
+
+	return { min, max };
+}
+
+std::tuple<int, int> Math::ExtremePairAlongDirection(glm::vec3 dir, const std::vector<glm::vec3>& vertices)
+{
+	float min = std::numeric_limits<float>().max();
+	float max = std::numeric_limits<float>().lowest();
+	int min_index = 0;
+	int max_index = 0;
+	int size = static_cast<int>(vertices.size());
+	for (int i=0; i<size; ++i)
+	{
+		float dot = glm::dot(dir, vertices[i]);
+
+		if(min>dot)
+		{
+			min = dot;
+			min_index = i;
+		}
+		if(max<dot)
+		{
+			max = dot;
+			max_index = i;
+		}
+	}
+
+	return { min_index, max_index };
+}
+
+void Math::ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices)
+{
+	int size = static_cast<int>(vertices.size());
+	while (true)
+	{
+		bool containAll = true;
+		glm::vec3 found_dir{ 0.f };
+		float found_dist = 0.f;
+		for (int i=0; i<size; ++i)
+		{
+			glm::vec3 dir = vertices[i] - sphere.center;
+			float dist = glm::length(dir);
+			dir /= dist;
+			bool contain = dist <= sphere.radius;
+			if(!contain)
+			{
+				if(found_dist<dist)
+				{
+					found_dist = dist;
+					found_dir = dir;
+				}
+			}
+			containAll &= contain;
+		}
+
+		if(containAll)
+			break;
+
+		float new_radius = (sphere.radius + found_dist) / 2.f;
+		sphere.center += (new_radius - sphere.radius) * found_dir;
+		sphere.radius = new_radius;
+	}
+}
+
+AABB Math::CreateAABB(std::vector<glm::vec3>& vertices)
+{
+	auto [min, max] = FindMinAndMax(vertices);
+
+	return { min, max };
+}
+
+Sphere Math::CreateRitterSphere(std::vector<glm::vec3>& vertices)
+{
+	//xyz
+	auto [xmin, xmax] = ExtremePairAlongDirection({ 1,0,0 }, vertices);
+	auto [ymin, ymax] = ExtremePairAlongDirection({ 0,1,0 }, vertices);
+	auto [zmin, zmax] = ExtremePairAlongDirection({ 0,0,1 }, vertices);
+
+
+	std::vector<int> candidates;
+	candidates.push_back(xmin);
+	candidates.push_back(ymin);
+	candidates.push_back(zmin);
+
+	candidates.push_back(xmax);
+	candidates.push_back(ymax);
+	candidates.push_back(zmax);
+
+	glm::vec3 center{ 0.f };
+	float max_len = 0.f;
+	for (int i=0; i < 6; ++i)
+	{
+		for (int j = 0; j < 6; ++j)
+		{
+			if(i==j)
+				continue;
+
+			float len = glm::distance(vertices[j], vertices[i]);
+			if (max_len < len)
+			{
+				max_len = len;
+				center = vertices[j] + vertices[i];
+			}
+		}
+	}
+	Sphere sphere{ center / 2.f, max_len / 2.f };
+	Math::ExtendSphere(sphere, vertices);
+	return sphere;
+}
+
+Sphere Math::CreateLarssonSphere(std::vector<glm::vec3>& vertices)
+{
+	return {};
+}
+
+Sphere Math::CreatePCASphere(std::vector<glm::vec3>& vertices)
+{
+	return {};
+}
+
