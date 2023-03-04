@@ -71,10 +71,10 @@ public:
 	bool HasUV() const;
 
 	void AttachBuffer(std::shared_ptr<VertexBuffer> buffer);
-	void AttachBuffer(std::shared_ptr<ElementBuffer> buffer);
+	void AttachBuffer(std::shared_ptr<IndexBuffer> buffer);
 
 	std::shared_ptr<VertexBuffer> GetBuffer() const;
-	std::shared_ptr<ElementBuffer> GetIndexBuffer() const;
+	std::shared_ptr<IndexBuffer> GetIndexBuffer() const;
 	std::shared_ptr<BoundingBox> GetBoundingBox() const;
 	std::shared_ptr<UV> GetUV() const;
 private:
@@ -83,6 +83,6 @@ private:
 	std::shared_ptr <std::vector<unsigned int>> m_Indices;
 	std::shared_ptr<BoundingBox> m_BoundingBox;
 	std::shared_ptr<VertexBuffer> m_Buffer;
-	std::shared_ptr<ElementBuffer> m_IndexBuffer;
+	std::shared_ptr<IndexBuffer> m_IndexBuffer;
 	std::shared_ptr<UV> m_UV;
 };

@@ -121,7 +121,7 @@ std::shared_ptr<VertexBuffer> Mesh::GetBuffer() const
 	return m_Buffer;
 }
 
-std::shared_ptr<ElementBuffer> Mesh::GetIndexBuffer() const
+std::shared_ptr<IndexBuffer> Mesh::GetIndexBuffer() const
 {
 	return m_IndexBuffer;
 }
@@ -136,7 +136,7 @@ std::shared_ptr<UV> Mesh::GetUV() const
 	return m_UV;
 }
 
-void Mesh::AttachBuffer(std::shared_ptr<ElementBuffer> buffer)
+void Mesh::AttachBuffer(std::shared_ptr<IndexBuffer> buffer)
 {
 	m_IndexBuffer = buffer;
 }

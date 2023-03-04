@@ -18,6 +18,7 @@ End Header --------------------------------------------------------*/
 #include <unordered_map>
 
 #include "FrameBuffer.h"
+class DebugRenderer;
 struct MaterialData;
 struct Material;
 
@@ -37,6 +38,7 @@ class RenderLayer;
 class Shader
 {
 	friend RenderLayer;
+	friend DebugRenderer;
 public:
 	~Shader();
 	static std::shared_ptr<Shader> CreateShaderFromString(const ShaderSource& srcs);

@@ -24,6 +24,8 @@ End Header --------------------------------------------------------*/
 #include "Core/Graphics/Shader.h"
 #include "Core/Graphics/FrameBuffer.h"
 #include "Core/Data/Texture.h"
+#include "Core/Graphics/DebugRenderer.h"
+
 void RenderLayer::OnAttach()
 {
 	vao = VertexArray::CreateVertexArray();
@@ -94,7 +96,16 @@ void RenderLayer::OnRender()//
 
 void RenderLayer::OnPostRender()
 {
-	
+	auto scene = Application::Get().GetSceneManager()->GetCurrentScene();
+	Entity mainCam = scene->GetMainCamera();
+	auto& camTransform = mainCam.GetComponent<TransformComponent>();
+	auto& camComp = mainCam.GetComponent<CameraComponent>();
+
+	glm::mat4 world_to_cam = Math::BuildCameraMatrixWithDirection(camTransform.Position, camTransform.GetForward(), camTransform.GetUp());
+
+	DebugRenderer::DrawBegin(world_to_cam, camComp.GetPerspective());
+	DebugRenderer::DrawBox({ -3, -3, -3 }, { 3,3,3 }, { 1.0,0,0 });
+	DebugRenderer::DrawSphere({ 0,0,0 }, 3.f, { 0.25f,0.25f,0.25f });
 }
 
 void RenderLayer::OnGuiRender()

@@ -135,6 +135,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Event\InputEvents\KeyBoardEvent.h" />
     <ClInclude Include="Core\Graphics\Buffer.h" />
     <ClInclude Include="Core\Graphics\FrameBuffer.h" />
+    <ClInclude Include="Core\Graphics\DebugRenderer.h" />
     <ClInclude Include="Core\Graphics\Shader.h" />
     <ClInclude Include="Core\Graphics\VertexArray.h" />
     <ClInclude Include="Core\ImGui\ImGuiRenderer.h" />
@@ -186,6 +187,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClCompile Include="Core\Event\Event.cpp" />
     <ClCompile Include="Core\Event\InputEvents\KeyBoardEvent.cpp" />
     <ClCompile Include="Core\Graphics\Buffer.cpp" />
+    <ClCompile Include="Core\Graphics\DebugRenderer.cpp" />
     <ClCompile Include="Core\Graphics\FrameBuffer.cpp" />
     <ClCompile Include="Core\Graphics\Shader.cpp" />
     <ClCompile Include="Core\Graphics\VertexArray.cpp" />

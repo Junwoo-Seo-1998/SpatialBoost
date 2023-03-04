@@ -39,7 +39,8 @@ void GLAPIENTRY OpenGLMessageCallback(
 void WindowGLFW::GLFWKeyCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
 {
 	WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
+	if (key < 0)
+		return;
 	switch (action)
 	{
 		case GLFW_PRESS:

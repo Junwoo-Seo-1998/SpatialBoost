@@ -227,6 +227,7 @@
     </ClInclude>
     <ClInclude Include="Core\Utils\Log.h" />
     <ClInclude Include="Core\Utils\Assert.h" />
+    <ClInclude Include="Core\Graphics\DebugRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -363,5 +364,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Utils\Log.cpp" />
+    <ClCompile Include="Core\Graphics\DebugRenderer.cpp" />
   </ItemGroup>
 </Project>

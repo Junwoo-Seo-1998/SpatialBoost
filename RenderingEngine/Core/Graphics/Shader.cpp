@@ -16,6 +16,8 @@ End Header --------------------------------------------------------*/
 #include "Core/Data/Texture.h"
 #include "Core/Utils/File.h"
 #include "Core/Data/Material.h"
+#include "Core/Utils/Assert.h"
+
 Shader::~Shader()
 {
 	glUseProgram(0);
@@ -155,7 +157,7 @@ Shader::Shader(const ShaderSource& shaderSrc, bool is_file)
 	glGetProgramiv(m_ShaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(m_ShaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
+		EngineLog::Error("ERROR::SHADER::PROGRAM::LINK_FAILED\n {}", infoLog);
 	}
 
 	//no need only program
@@ -184,7 +186,7 @@ int Shader::GetUniformLocation(const std::string& name) const
 	GLint location = glGetUniformLocation(m_ShaderProgram, name.c_str());
 	if (location == -1)
 	{
-		std::cout << "error on shader location! - " << name << std::endl;
+		EngineLog::Warn("Couldn't find the shader location! - {}", name);
 		return -1;
 	}
 	return location;
@@ -288,8 +290,7 @@ unsigned Shader::CompileShader(ShaderType type, const std::vector<std::string>& 
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-		static_assert(true, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n");
+		EngineLog::Error("ERROR::SHADER::COMPILATION_FAILED\n {}", infoLog);
 	}
 	return shader;
 }

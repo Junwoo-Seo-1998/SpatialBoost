@@ -18,6 +18,7 @@ End Header --------------------------------------------------------*/
 #include "ImGui/ImGuiRenderer.h"
 #include "Core/Layer/LayerManager.h"
 #include "Core/Layer/Layer.h"
+#include "Graphics/DebugRenderer.h"
 #include "Input/Input.h"
 Application* Application::s_Instance;
 Application::Application()
@@ -72,6 +73,8 @@ bool Application::Init()
 	if (!m_Window->Init())
 		return false;
 	m_Window->SetEventCallbackFunction(BIND_EVENT_FUNCTION(OnEvent));
+
+	DebugRenderer::Init();
 	return true;
 }
 

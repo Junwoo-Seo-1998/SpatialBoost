@@ -59,6 +59,20 @@ MeshGenerator::GenerateSpherePointsWithIndices(float radius, int segments, int r
 	}
 	IndicesPtr indices = std::make_shared<std::vector<unsigned int>>();
 	int sides = rings - 2; //- top and bottom
+
+	//top
+	points->push_back({ 0,radius,0 });
+	int	top_index = static_cast<int>(points->size() - 1);
+	for (int segment = 0; segment < segments; ++segment)
+	{
+		//triangle 1
+		//*  top
+		//** first circle
+		indices->push_back(top_index);
+		indices->push_back(segment % segments);
+		indices->push_back((segment + 1) % segments);
+	}
+
 	for (int side = 0; side < sides; ++side)
 	{
 		int current_circle = side * segments;
@@ -80,20 +94,7 @@ MeshGenerator::GenerateSpherePointsWithIndices(float radius, int segments, int r
 			indices->push_back(current_circle + (segment + 1) % segments);
 		}	
 	}
-
 	
-	//top
-	points->push_back({ 0,radius,0 });
-	int	top_index = static_cast<int>(points->size() - 1);
-	for (int segment = 0; segment < segments; ++segment)
-	{
-		//triangle 1
-		//*  top
-		//** first circle
-		indices->push_back(top_index);
-		indices->push_back(segment % segments);
-		indices->push_back((segment + 1) % segments);
-	}
 	//bottom
 	int last_circle = sides * segments;
 	points->push_back({ 0,-radius,0 });
@@ -219,7 +220,9 @@ std::shared_ptr<Mesh> MeshGenerator::GenerateVertexNormalMesh(const std::vector<
 	vertex_buffer->SetData(static_cast<unsigned int>(new_vertex->size() * sizeof(Vertex)), new_vertex->data());
 	vertex_buffer->SetDataTypes({ {0, DataType::Float3},{1, DataType::Float3} });
 
-	std::shared_ptr<ElementBuffer> index_buffer = std::make_shared<ElementBuffer>(loaded_index);
+	std::shared_ptr<IndexBuffer> index_buffer = IndexBuffer::CreateIndexBuffer(sizeof(unsigned int) * loaded_index.size());
+	index_buffer->SetData(sizeof(unsigned int) * loaded_index.size(), loaded_index.data());
+
 	mesh->AttachBuffer(vertex_buffer);
 	mesh->AttachBuffer(index_buffer);
 

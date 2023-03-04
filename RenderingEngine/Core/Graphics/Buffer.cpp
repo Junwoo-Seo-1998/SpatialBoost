@@ -146,30 +146,43 @@ void VertexBuffer::UnBind() const
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-
-
-ElementBuffer::ElementBuffer(const std::vector<unsigned int>& indices)
+IndexBuffer::~IndexBuffer()
 {
-	CreateBuffer(indices.data(), static_cast<unsigned>(indices.size() * sizeof(unsigned int)));
 }
 
-ElementBuffer::~ElementBuffer()
+std::shared_ptr<IndexBuffer> IndexBuffer::CreateIndexBuffer(int byte_size)
 {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &m_Buffer);
+	return std::shared_ptr<IndexBuffer>(new IndexBuffer{ byte_size });
 }
 
-void ElementBuffer::Bind() const
+void IndexBuffer::Bind() const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Buffer);
 }
 
-void ElementBuffer::UnBind() const
+void IndexBuffer::BindToVertexArray() const
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Buffer);
+}
+
+void IndexBuffer::UnBind() const
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ElementBuffer::CreateBuffer(const void* data, unsigned size)
+void IndexBuffer::SetData(int size, const void* data, unsigned offset)
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Buffer);
+	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
+}
+
+IndexBuffer::IndexBuffer(int byte_size)
+	:m_Buffer(0)
+{
+	CreateBuffer(byte_size, nullptr);
+}
+
+void IndexBuffer::CreateBuffer(unsigned size, const void* data)
 {
 	glGenBuffers(1, &m_Buffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Buffer);
