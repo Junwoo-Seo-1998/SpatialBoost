@@ -17,6 +17,7 @@ class Layer
 public:
 	virtual void OnAttach() {}
 	virtual void OnDetach() {}
+	virtual void OnStart() {}
 	virtual void OnUpdate() {}
 	virtual void OnPreRender() {}
 	virtual void OnRender() {}

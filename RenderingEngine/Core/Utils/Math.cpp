@@ -11,9 +11,12 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include "Math.h"
+#include "Log.h"
 #include<glm/gtc/matrix_transform.hpp>
-
-
+#include<glm/gtc/random.hpp>
+#include "EPOS.h"
+#undef far
+#undef near
 
 glm::mat4 Math::BuildCameraMatrix(glm::vec3 cam_position, glm::vec3 target, glm::vec3 world_up)
 {
@@ -247,6 +250,16 @@ std::shared_ptr<std::vector<glm::vec2>> Math::ComputeCubeMapUVs(const std::vecto
 	return UVs;
 }
 
+std::vector<glm::vec3> Math::RandomVec3(int how_many, const glm::vec3& min, const glm::vec3& max)
+{
+	std::vector<glm::vec3> result;
+	for (int i=0; i<how_many; ++i)
+	{
+		result.push_back(glm::linearRand(min, max));
+	}
+	return result;
+}
+
 std::tuple<glm::vec3, glm::vec3> Math::FindMinAndMax(const std::vector<glm::vec3>& vertices)
 {
 	glm::vec3 min{ std::numeric_limits<float>().max() };
@@ -295,7 +308,6 @@ std::tuple<int, int> Math::ExtremePairAlongDirection(glm::vec3 dir, const std::v
 void Math::ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices)
 {
 	int size = static_cast<int>(vertices.size());
-	while (true)
 	{
 		bool containAll = true;
 		glm::vec3 found_dir{ 0.f };
@@ -318,7 +330,7 @@ void Math::ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices)
 		}
 
 		if(containAll)
-			break;
+			return;
 
 		float new_radius = (sphere.radius + found_dist) / 2.f;
 		sphere.center += (new_radius - sphere.radius) * found_dir;
@@ -326,20 +338,20 @@ void Math::ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices)
 	}
 }
 
-AABB Math::CreateAABB(std::vector<glm::vec3>& vertices)
+AABB Math::CreateAABB(const std::vector<glm::vec3>& vertices)
 {
 	auto [min, max] = FindMinAndMax(vertices);
-
-	return { min, max };
+	auto center = (min + max) / 2.f;
+	return { center, max - center };
 }
 
-Sphere Math::CreateRitterSphere(std::vector<glm::vec3>& vertices)
+Sphere Math::CreateRitterSphere(const std::vector<glm::vec3>& vertices)
 {
+	EngineLog::Info("Creating RitterSphere");
 	//xyz
 	auto [xmin, xmax] = ExtremePairAlongDirection({ 1,0,0 }, vertices);
 	auto [ymin, ymax] = ExtremePairAlongDirection({ 0,1,0 }, vertices);
 	auto [zmin, zmax] = ExtremePairAlongDirection({ 0,0,1 }, vertices);
-
 
 	std::vector<int> candidates;
 	candidates.push_back(xmin);
@@ -354,16 +366,13 @@ Sphere Math::CreateRitterSphere(std::vector<glm::vec3>& vertices)
 	float max_len = 0.f;
 	for (int i=0; i < 6; ++i)
 	{
-		for (int j = 0; j < 6; ++j)
+		for (int j = i+1; j < 6; ++j)
 		{
-			if(i==j)
-				continue;
-
-			float len = glm::distance(vertices[j], vertices[i]);
+			float len = glm::distance(vertices[candidates[j]], vertices[candidates[i]]);
 			if (max_len < len)
 			{
 				max_len = len;
-				center = vertices[j] + vertices[i];
+				center = vertices[candidates[j]] + vertices[candidates[i]];
 			}
 		}
 	}
@@ -372,13 +381,161 @@ Sphere Math::CreateRitterSphere(std::vector<glm::vec3>& vertices)
 	return sphere;
 }
 
-Sphere Math::CreateLarssonSphere(std::vector<glm::vec3>& vertices)
+Sphere Math::CreateLarssonSphere(const std::vector<glm::vec3>& vertices, EPOS epos)
 {
-	return {};
+	EngineLog::Info("Creating LarssonSphere");
+	int to_compare = 0;
+	switch (epos)
+	{
+	case EPOS::EPOS6:
+		to_compare = 3;
+		break;
+	case EPOS::EPOS14:
+		to_compare = 7;
+		break;
+	case EPOS::EPOS26:
+		to_compare = 13;
+		break;
+	case EPOS::EPOS98:
+		to_compare = 49;
+		break;
+	}
+	std::vector<int> candidates;
+	for (int i=0; i<to_compare; ++i)
+	{
+		auto [min, max] = ExtremePairAlongDirection(EPOS98[i], vertices);
+		candidates.push_back(min);
+		candidates.push_back(max);
+	}
+	int size = candidates.size();
+	glm::vec3 center{ 0.f };
+	float max_len = 0.f;
+	for (int i = 0; i < size; ++i)
+	{
+		for (int j = i + 1; j < size; ++j)
+		{
+			float len = glm::distance(vertices[candidates[j]], vertices[candidates[i]]);
+			if (max_len < len)
+			{
+				max_len = len;
+				center = vertices[candidates[j]] + vertices[candidates[i]];
+			}
+		}
+	}
+	Sphere sphere{ center / 2.f, max_len / 2.f };
+	Math::ExtendSphere(sphere, vertices);
+	return sphere;
 }
 
-Sphere Math::CreatePCASphere(std::vector<glm::vec3>& vertices)
+Sphere Math::CreatePCASphere(const std::vector<glm::vec3>& vertices)
 {
-	return {};
+	EngineLog::Info("Creating PCASphere");
+	glm::vec3 mean = { 0.f, 0.f, 0.f };
+	float size = static_cast<float>(vertices.size());
+	for (const auto& vertex : vertices)
+	{
+		mean += vertex;
+	}
+
+	mean /= size;
+
+	float CovXX = 0.f;
+	float CovXY = 0.f;
+	float CovXZ = 0.f;
+	float CovYY = 0.f;
+	float CovYZ = 0.f;
+	float CovZZ = 0.f;
+
+	for (const auto& vertex : vertices)
+	{
+		CovXX += (vertex.x - mean.x) * (vertex.x - mean.x);
+		CovXY += (vertex.x - mean.x) * (vertex.y - mean.y);
+		CovXZ += (vertex.x - mean.x) * (vertex.z - mean.z);
+		CovYY += (vertex.y - mean.y) * (vertex.y - mean.y);
+		CovYZ += (vertex.y - mean.y) * (vertex.z - mean.z);
+		CovZZ += (vertex.z - mean.z) * (vertex.z - mean.z);
+
+	}
+
+	CovXX /= size;
+	CovXY /= size;
+	CovXZ /= size;
+	CovYY /= size;
+	CovYZ /= size;
+	CovZZ /= size;
+
+	glm::mat<3, 3, glm::f64, glm::defaultp> covMat{ CovXX, CovXY , CovXZ, CovXY , CovYY, CovYZ, CovXZ, CovYZ, CovZZ };
+	glm::mat<3, 3, glm::f64, glm::defaultp> Q, X;
+	X = glm::identity<glm::mat3>();
+
+	bool convergence = true;
+	int r = 0, s = 0;
+	while (convergence)
+	{
+		double maxElement = 0.;
+
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				if (i != j && (glm::abs(maxElement) < glm::abs(covMat[i][j])))
+				{
+					maxElement = covMat[i][j];
+					r = i;
+					s = j;
+				}
+			}
+		}
+		convergence = glm::abs(covMat[r][s]) > 10.;
+		if (!convergence) break;
+		double theta = 0.f;
+		if (glm::abs(covMat[r][r] - covMat[s][s]) < std::numeric_limits<double>::epsilon())
+		{
+			theta = glm::pi<double>() / 4.;
+		}
+		else
+		{
+			double tangent2theta = 2.f * covMat[r][s] / (covMat[r][r] - covMat[s][s]);
+			theta = atan(tangent2theta) / 2.f;
+		}
+
+		const double costheta = cos(theta);
+		const double sintheta = sin(theta);
+		Q = glm::identity<glm::mat3>();
+		Q[r][r] = costheta;
+		Q[r][s] = -sintheta;
+		Q[s][r] = sintheta;
+		Q[s][s] = costheta;
+		X *= Q;
+		covMat = glm::transpose(Q) * covMat * Q;
+	}
+
+	double maxElement = 0.;
+	int maxIndex = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		if (glm::abs(maxElement) < glm::abs(covMat[i][i]))
+		{
+			maxElement = covMat[i][i];
+			maxIndex = i;
+		}
+	}
+
+	auto [min, max] = ExtremePairAlongDirection(X[maxIndex], vertices);
+
+
+	glm::vec3 center = (vertices[min] + vertices[max]) / 2.f;
+	float radius = glm::distance(vertices[min], vertices[max]) / 2.f;
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		float newD = glm::distance(vertices[i], center);
+		if (newD > radius)
+		{
+			float temp = radius;
+			radius = (radius + newD) / 2.f;
+			center += (radius - temp) * glm::normalize(vertices[i] - center);
+		}
+	}
+	return { center , radius };
 }
 

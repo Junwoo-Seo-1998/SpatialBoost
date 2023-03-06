@@ -11,7 +11,7 @@ End Header --------------------------------------------------------*/
 struct DemoComponent
 {
 	bool enable = true;
-	std::string meshName = "bunny";
+	std::string meshName = "g0";
 };
 
 struct DemoControlComponent

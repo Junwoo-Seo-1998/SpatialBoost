@@ -15,15 +15,20 @@ End Header --------------------------------------------------------*/
 #include "Utils/Parser.h"
 #include "Core/Graphics/Shader.h"
 #include <iostream>
-
+#include <sstream>
 #include "UUID.h"
 #include "Utils/File.h"
 #include "Core/Data/Texture.h"
 #include "Core/Data/TextureData.h"
 #include "Data/UV.h"
 #include "Utils/Log.h"
+#include "Utils/Math.h"
+#include "Data/BoundingBox.h"
 std::shared_ptr<VertexBuffer>AssetManager::m_Skybox;
 std::unordered_map<std::string, UUID> m_UUIDMap;
+
+std::unordered_map<UUID, std::shared_ptr<MeshSource>> AssetManager::m_MeshSources;
+
 
 std::unordered_map<UUID, std::shared_ptr<Mesh>>AssetManager::m_VertexNormalMesh;
 std::unordered_map<UUID, std::shared_ptr<LineMesh>>AssetManager::m_VertexNormalLineMesh;
@@ -40,12 +45,25 @@ UUID AssetManager::GetUUID(const std::string& asset_name)
 	return m_UUIDMap[asset_name];
 }
 
+void AssetManager::LoadMeshsFromList(const std::string& file_name)
+{
+	auto strings = File::ReadFileToStrings(file_name);
+	for(auto& str:strings)
+	{
+		LoadMeshFromFile("Models/" + str, str);
+	}
+}
+
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
 	std::cout << "Load - " << file_name << std::endl;
 	std::vector<glm::vec3> loaded_points;
 	std::vector<unsigned int> loaded_indices;
 	Parser::ParseFile(file_name, loaded_points, loaded_indices);
+
+	std::shared_ptr<MeshSource> source = std::make_shared<MeshSource>();
+	source->SetVertices(loaded_points);
+	
 
 	std::vector<glm::vec3> generated_face_normal{ MeshGenerator::GenerateFaceNormals(loaded_points, loaded_indices) };
 	
@@ -56,17 +74,24 @@ void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::str
 	UUID uuid{};
 	m_UUIDMap[key_name] = uuid;
 
+	m_MeshSources[uuid] = source;
+
 	m_FaceNormalMesh[uuid] = MeshGenerator::GenerateFaceNormalMesh(loaded_points, loaded_indices, generated_face_normal);
 	m_FaceNormalMesh[uuid]->SetBoundingBox(box);
 
-	m_FaceNormalLineMesh[uuid] = MeshGenerator::GenerateFaceNormalLineMesh(loaded_points, loaded_indices, generated_face_normal);
+	m_FaceNormalLineMesh[uuid] = MeshGenerator::GenerateFaceNormalLineMesh(loaded_points, loaded_indices, generated_face_normal, 100);
 	
 
 	m_VertexNormalMesh[uuid] = MeshGenerator::GenerateVertexNormalMesh(loaded_points, loaded_indices, generated_vertex_normal);
 	m_VertexNormalMesh[uuid]->SetBoundingBox(box);
 	m_VertexNormalMesh[uuid]->SetUV(std::make_shared<UV>(*m_VertexNormalMesh[uuid]->GetVertices(), *box));
 
-	m_VertexNormalLineMesh[uuid] = MeshGenerator::GenerateVertexNormalLineMesh(loaded_points, loaded_indices, generated_vertex_normal);
+	m_VertexNormalLineMesh[uuid] = MeshGenerator::GenerateVertexNormalLineMesh(loaded_points, loaded_indices, generated_vertex_normal, 100);
+}
+
+std::shared_ptr<MeshSource> AssetManager::GetMeshSource(UUID uuid)
+{
+	return m_MeshSources[uuid];
 }
 
 std::shared_ptr<Mesh> AssetManager::GetVertexNormalMesh(UUID uuid)

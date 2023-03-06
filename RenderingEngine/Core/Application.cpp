@@ -81,6 +81,10 @@ bool Application::Init()
 void Application::Update()
 {
 	m_ImGuiRenderer->OnStart(m_Window->GetWindowHandle());
+	for (auto layer : m_LayerManager->GetLayers())
+		layer->OnStart();
+	for (auto layer : m_LayerManager->GetOverLays())
+		layer->OnStart();
 	while (!m_Window->ShouldClose())
 	{
 		

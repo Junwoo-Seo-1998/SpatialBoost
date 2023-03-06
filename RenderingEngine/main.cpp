@@ -19,6 +19,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Layer/CameraLayer.h"
 #include "Core/Layer/LayerManager.h"
 #include "Core/Layer/LineRenderLayer.h"
+#include "Core/Layer/PhysicsLayer.h"
 #include "Core/Layer/RenderLayer.h"
 #include "Core/Layer/SkyboxRenderLayer.h"
 #include "Core/Utils/File.h"
@@ -37,11 +38,9 @@ class MyApp : public Application
 		AssetManager::LoadShaderFromFile("Deferred_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred.vert", "Assets/Shaders/deferred.frag");
 		AssetManager::LoadShaderFromFile("Deferred_Phong", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred_phong.vert", "Assets/Shaders/deferred_phong.frag");
 
-		AssetManager::LoadMeshFromFile("Assets/4Sphere.obj", "4Sphere");
-		AssetManager::LoadMeshFromFile("Assets/bunny_high_poly.obj", "bunny");
-		AssetManager::LoadMeshFromFile("Assets/cube2.obj", "cube");
-		AssetManager::LoadMeshFromFile("Assets/sphere.obj", "sphere");
-		AssetManager::LoadMeshFromFile("Assets/sphere_modified.obj", "sphere_modified");
+		//AssetManager::LoadMeshsFromList("Models/Section4.txt");
+		//AssetManager::LoadMeshsFromList("Models/Section5.txt");
+		AssetManager::LoadMeshsFromList("Models/Section6.txt");
 
 		AssetManager::LoadTextureFromFile("diff", "Assets/metal_roof_diff_512x512.png");
 		AssetManager::LoadTextureFromFile("spec", "Assets/metal_roof_spec_512x512.png");
@@ -61,6 +60,7 @@ class MyApp : public Application
 
 
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<RenderLayer>());
+		Application::Get().GetLayerManager()->PushLayer(std::make_shared<PhysicsLayer>());
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<LineRenderLayer>());
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<SkyboxRenderLayer>());
 		Application::Get().GetLayerManager()->PushLayer(std::make_shared<CameraLayer>());

@@ -15,7 +15,7 @@ class DebugRenderer
 public:
 	static void DrawBegin(const glm::mat4& view, const glm::mat4& projection);
 	static void DrawEnd();
-	static void DrawBox(const glm::vec3& min, const glm::vec3& max, const glm::vec3& color = { 0.5,0.5,0.5 });
+	static void DrawBox(const glm::vec3& center, const glm::vec3& halfExtents, const glm::vec3& color = { 0.5,0.5,0.5 });
 	static void DrawSphere(const glm::vec3& position, float radius, const glm::vec3& color = { 0.5,0.5,0.5 });
 
 private:

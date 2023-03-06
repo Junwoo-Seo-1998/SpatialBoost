@@ -83,7 +83,8 @@ project "RenderingEngine"
 
     postbuildcommands {
         "{COPYDIR} \"../Assets\" \"../bin/%{cfg.buildcfg}/Assets\"",
-        "{COPYDIR} \"../Assets\" \"../RenderingEngine/Assets\"",
+        --"{COPYDIR} \"../Assets\" \"../RenderingEngine/Assets\"",
+        "{COPYDIR} \"../Models\" \"../bin/%{cfg.buildcfg}/Models\"",
         '{COPYFILE} "../Settings/imgui.ini" ../bin/%{cfg.buildcfg}/imgui.ini',
     }
 

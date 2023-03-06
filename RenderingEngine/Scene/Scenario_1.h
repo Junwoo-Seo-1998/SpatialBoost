@@ -35,7 +35,7 @@ public:
 	void OnDestroy() override;
 	void OnEvent(Event& event) override;
 private:
-
+	void SetupObjects(const std::string& file);
 	Entity demo_ctrl;
 	Entity demo_mesh;
 	Entity orbit;

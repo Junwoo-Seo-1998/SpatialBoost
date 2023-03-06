@@ -22,4 +22,5 @@ public:
 	void OnEvent(Event& event) override;
 private:
 	float MouseSensitivity = 0.25f;
+	float speed = 5000.f;
 };

@@ -30,6 +30,15 @@ enum class DrawType
 	Triangles,
 };
 
+class MeshSource
+{
+public:
+	void SetVertices(const std::vector<glm::vec3>& vertex);
+	const std::vector<glm::vec3>& GetVertices() const;
+private:
+	std::vector<glm::vec3> vertices;
+};
+
 class BaseMesh
 {
 public:

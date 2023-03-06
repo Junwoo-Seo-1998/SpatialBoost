@@ -12,6 +12,16 @@ Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include "Mesh.h"
 
+void MeshSource::SetVertices(const std::vector<glm::vec3>& vertex)
+{
+	vertices = vertex;
+}
+
+const std::vector<glm::vec3>& MeshSource::GetVertices() const
+{
+	return vertices;
+}
+
 BaseMesh::BaseMesh(DrawType draw_type, bool use_index)
 	:m_DrawType(draw_type), m_UseIndex(use_index)
 {

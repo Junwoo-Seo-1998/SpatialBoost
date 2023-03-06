@@ -16,6 +16,7 @@ End Header --------------------------------------------------------*/
 #include <memory>
 #include <unordered_map>
 
+struct AABB;
 class UUID;
 class Texture;
 class Application;
@@ -26,7 +27,10 @@ class AssetManager
 {
 public:
 	static UUID GetUUID(const std::string& asset_name);
+	static void LoadMeshsFromList(const std::string& file_name);
 	static void LoadMeshFromFile(const std::string& file_name, const std::string& key_name);
+
+	static std::shared_ptr<MeshSource> GetMeshSource(UUID uuid);
 
 	static std::shared_ptr<Mesh> GetVertexNormalMesh(UUID uuid);
 	static std::shared_ptr<LineMesh> GetVertexNormalLineMesh(UUID uuid);
@@ -52,6 +56,8 @@ public:
 	static std::shared_ptr<Scene> GetScene(const std::string& scene_name);
 private:
 	static std::shared_ptr<VertexBuffer>m_Skybox;
+	static std::unordered_map<UUID, std::shared_ptr<MeshSource>>m_MeshSources;
+
 	static std::unordered_map<UUID, std::shared_ptr<Mesh>>m_VertexNormalMesh;
 	static std::unordered_map<UUID, std::shared_ptr<LineMesh>>m_VertexNormalLineMesh;
 	static std::unordered_map<UUID, std::shared_ptr<Mesh>>m_FaceNormalMesh;

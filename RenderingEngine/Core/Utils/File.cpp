@@ -23,6 +23,17 @@ std::string File::ReadFileToString(const std::string& file_name)
     return ss.str();
 }
 
+std::vector<std::string> File::ReadFileToStrings(const std::string& file_name)
+{
+    std::ifstream file(file_name);
+    std::vector<std::string> strings;
+    for (std::string line; std::getline(file, line); )
+    {
+        strings.push_back(line);
+    }
+    return strings;
+}
+
 std::shared_ptr<TextureData> File::ReadImageToTexture(const std::string& file_name)
 {
     if (!std::filesystem::exists(file_name))

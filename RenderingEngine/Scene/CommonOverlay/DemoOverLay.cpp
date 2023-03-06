@@ -17,7 +17,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Scene/SceneManager.h"
 void DemoOverLay::OnAttach()
 {
-	current_mesh = "bunny";
+	current_mesh = "g0";
 }
 
 void DemoOverLay::OnDetach()
@@ -52,7 +52,7 @@ void DemoOverLay::OnGuiRender()
 
 	ImGui::Begin("Control");
 	{
-		static const char* items[] =
+		/*static const char* items[] =
 		{
 			"4Sphere", "bunny", "cube", "sphere", "sphere_modified","GeneratedSphere"
 		};
@@ -75,16 +75,16 @@ void DemoOverLay::OnGuiRender()
 		{
 			auto& Comp = view.get<DemoComponent>(entt);
 			Comp.meshName = current_mesh;
-		}
+		}*/
 	}
 	{
-		auto view = registry.view<DemoControlComponent>();
+		/*auto view = registry.view<DemoControlComponent>();
 		for (auto entt:view)
 		{
 			auto& Comp = view.get<DemoControlComponent>(entt);
 			ImGui::Checkbox("Stop Rotation", &Comp.StopRotation);
 			ImGui::DragInt("Light Numbers", &Comp.LightNumber, 1, 1, 16);
-		}
+		}*/
 	}
 	ImGui::End();
 }

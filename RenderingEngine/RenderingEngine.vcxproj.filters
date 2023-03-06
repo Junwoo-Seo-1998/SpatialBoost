@@ -69,6 +69,12 @@
     <ClInclude Include="Core\BoundingVolume\Sphere.h">
       <Filter>Core\BoundingVolume</Filter>
     </ClInclude>
+    <ClInclude Include="Core\BoundingVolume\Tree.h">
+      <Filter>Core\BoundingVolume</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Component\BoundingVolumeComponent.h">
+      <Filter>Core\Component</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Component\CameraComponent.h">
       <Filter>Core\Component</Filter>
     </ClInclude>
@@ -129,6 +135,9 @@
     <ClInclude Include="Core\Graphics\Buffer.h">
       <Filter>Core\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Graphics\DebugRenderer.h">
+      <Filter>Core\Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Graphics\FrameBuffer.h">
       <Filter>Core\Graphics</Filter>
     </ClInclude>
@@ -156,6 +165,9 @@
     <ClInclude Include="Core\Layer\LineRenderLayer.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Layer\PhysicsLayer.h">
+      <Filter>Core\Layer</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Layer\RenderLayer.h">
       <Filter>Core\Layer</Filter>
     </ClInclude>
@@ -177,6 +189,9 @@
     <ClInclude Include="Core\UUID.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\Assert.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Utils\AssimpParser.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
@@ -186,10 +201,16 @@
     <ClInclude Include="Core\Utils\DebugDetection.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Utils\EPOS.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Utils\File.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\KeyCodes.h">
+      <Filter>Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Utils\Log.h">
       <Filter>Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\Utils\ManualParser.h">
@@ -225,9 +246,6 @@
     <ClInclude Include="Scene\Scenario_1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Utils\Log.h" />
-    <ClInclude Include="Core\Utils\Assert.h" />
-    <ClInclude Include="Core\Graphics\DebugRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp">
@@ -235,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="Core\AssetManager.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Component\BoundingVolumeComponent.cpp">
+      <Filter>Core\Component</Filter>
     </ClCompile>
     <ClCompile Include="Core\Component\CameraComponent.cpp">
       <Filter>Core\Component</Filter>
@@ -278,6 +299,9 @@
     <ClCompile Include="Core\Graphics\Buffer.cpp">
       <Filter>Core\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Graphics\DebugRenderer.cpp">
+      <Filter>Core\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Graphics\FrameBuffer.cpp">
       <Filter>Core\Graphics</Filter>
     </ClCompile>
@@ -305,6 +329,9 @@
     <ClCompile Include="Core\Layer\LineRenderLayer.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Layer\PhysicsLayer.cpp">
+      <Filter>Core\Layer</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Layer\RenderLayer.cpp">
       <Filter>Core\Layer</Filter>
     </ClCompile>
@@ -330,6 +357,9 @@
       <Filter>Core\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Core\Utils\File.cpp">
+      <Filter>Core\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils\Log.cpp">
       <Filter>Core\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Core\Utils\ManualParser.cpp">
@@ -363,7 +393,5 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Core\Utils\Log.cpp" />
-    <ClCompile Include="Core\Graphics\DebugRenderer.cpp" />
   </ItemGroup>
 </Project>

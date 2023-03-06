@@ -29,10 +29,9 @@ void DebugRenderer::DrawEnd()
 	DebugVertexArray->UnBind();
 }
 
-void DebugRenderer::DrawBox(const glm::vec3& min, const glm::vec3& max, const glm::vec3& color)
+void DebugRenderer::DrawBox(const glm::vec3& center, const glm::vec3& halfExtents, const glm::vec3& color)
 {
-	glm::vec3 center = (min + max) / 2.f;
-	glm::vec3 size = max - min;
+	glm::vec3 size = halfExtents * 2.f;
 	glm::mat4 model = glm::translate(glm::mat4(1.f), center) * glm::scale(glm::mat4(1.f), size);
 
 	DebugShader->TrySetMat4("Matrix.Model", model);

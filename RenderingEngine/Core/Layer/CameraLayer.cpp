@@ -30,7 +30,6 @@ void CameraLayer::OnDetach()
 
 void CameraLayer::OnUpdate()
 {
-	constexpr float speed = 15.f;
 	auto scene = Application::Get().GetSceneManager()->GetCurrentScene();
 
 	Entity mainCam = scene->GetMainCamera();
@@ -101,7 +100,8 @@ void CameraLayer::OnPostRender()
 void CameraLayer::OnGuiRender()
 {
 	ImGui::Begin("Control");
-	ImGui::TextColored({ 1,0,0,1 }, "WASD to move. Spacebar and Ctrl for Up and Down");
+	ImGui::TextColored({ 1,0,0,1 }, "WASD to move. Spacebar and Ctrl for Up and Down. Alt and Mouse left click for rotation");
+	ImGui::DragFloat("Speed", &speed, 1000, 1.0f, 50000.f);
 	ImGui::End();
 }
 

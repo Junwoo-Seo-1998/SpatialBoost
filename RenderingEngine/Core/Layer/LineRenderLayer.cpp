@@ -18,6 +18,8 @@ End Header --------------------------------------------------------*/
 #include "Core/Scene/Entity.h"
 #include "Core/Utils/Math.h"
 #include "Core/Application.h"
+#include "Core/Component/BoundingVolumeComponent.h"
+#include "Core/Graphics/DebugRenderer.h"
 #include "Core/Graphics/VertexArray.h"
 #include "Core/Scene/Scene.h"
 #include "Core/Scene/SceneManager.h"
@@ -120,6 +122,7 @@ void LineRenderLayer::OnPostRender()
 		}
 	}
 
+	
 }
 
 void LineRenderLayer::OnGuiRender()

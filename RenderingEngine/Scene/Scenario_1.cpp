@@ -19,6 +19,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Application.h"
 #include "Core/AssetManager.h"
 #include "Core/Time.h"
+#include "Core/Component/BoundingVolumeComponent.h"
 #include "Core/Component/CameraComponent.h"
 #include "Core/Component/DemoComponent.h"
 #include "Core/Component/LightComponent.h"
@@ -35,6 +36,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Layer/LayerManager.h"
 #include "Core/Layer/RenderLayer.h"
 #include "Core/Layer/SkyboxRenderLayer.h"
+#include "Core/Utils/File.h"
 
 Scenario_1::Scenario_1(Application& app)
 	: Scene(app)
@@ -55,34 +57,43 @@ void Scenario_1::Start()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	MainCamera.GetComponent<TransformComponent>().Position = { 0,5,10 };
+	MainCamera.GetComponent<TransformComponent>().Position = { 0,50000,50000 };
 	//MainCamera.GetComponent<TransformComponent>().Rotation = { glm::radians(-15.f),0, 0 };
 
-	MainCamera.GetComponent<TransformComponent>().LookAtDir(glm::vec3{ 0,0,0 } - MainCamera.GetComponent<TransformComponent>().Position);
+	//MainCamera.GetComponent<TransformComponent>().LookAtDir(glm::vec3{ 0,0,0 } - MainCamera.GetComponent<TransformComponent>().Position);
 
 	demo_ctrl = CreateEntity();
 	demo_ctrl.AddComponent<DemoControlComponent>();
 
+	//SetupObjects("Models/Section4.txt");
+	//SetupObjects("Models/Section5.txt");
+	SetupObjects("Models/Section6.txt");
+
+	/*
 	demo_mesh = CreateEntity();
-	demo_mesh.AddComponent<DemoComponent>();
+	//demo_mesh.AddComponent<DemoComponent>();
 	demo_mesh.GetComponent<TransformComponent>().Scale = { 1,1,1 };
 	demo_mesh.AddComponent<RendererComponent>();
 	demo_mesh.AddComponent<MaterialComponent>();
-	demo_mesh.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh(AssetManager::GetUUID("bunny")));
-	demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh(AssetManager::GetUUID("bunny")));
-	demo_mesh.AddComponent<MeshComponent>("bunny");
+	demo_mesh.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh(AssetManager::GetUUID("g0")));
+	demo_mesh.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh(AssetManager::GetUUID("g0")));
+	demo_mesh.AddComponent<MeshComponent>("g0");
+	demo_mesh.AddComponent<AABBComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID("g0"))->GetVertices());
+	demo_mesh.AddComponent<RitterSphereComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID("g0"))->GetVertices());
+	demo_mesh.AddComponent<LarssonSphereComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID("g0"))->GetVertices());
+	demo_mesh.AddComponent<PCASphereComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID("g0"))->GetVertices());
+	*/
 
-
-	Entity plane = CreateEntity();
+	/*Entity plane = CreateEntity();
 	plane.GetComponent<TransformComponent>().Position = { 0,-1,0 };
 	plane.GetComponent<TransformComponent>().Scale = { 5.f,5.f,1.f };
 	plane.GetComponent<TransformComponent>().Rotation = { glm::radians(-90.f),0.f,0.f };
 	plane.AddComponent<MaterialComponent>().material.Shininess = 64;
 	plane.AddComponent<RendererComponent>();
-	plane.AddComponent<MeshComponent>("Plane");
+	plane.AddComponent<MeshComponent>("Plane");*/
 
 	
-	float radius = 3.f;
+	float radius = 25000.f;
 	orbit = CreateEntity();
 	auto& parent_transform = orbit.GetComponent<TransformComponent>();
 	orbit.AddComponent<LineRendererComponent>(MeshGenerator::GenerateOrbit(radius));
@@ -91,10 +102,11 @@ void Scenario_1::Start()
 	float theta = 0.f;
 	for (int step = 0; step < 16; ++step)
 	{
-		glm::vec3 position{ radius * glm::sin(theta), 0.f, radius * glm::cos(theta) };
+		glm::vec3 position{ radius * glm::sin(theta), 70000.f, radius * glm::cos(theta) };
 		auto GeneratedSphere = CreateEntity();
 		auto& transform = GeneratedSphere.GetComponent<TransformComponent>();
 		transform.Position = position;
+		transform.Scale = { 3000,3000,3000 };
 		transform.LookAtDir(glm::vec3{ 0,0,0 } - position);
 		GeneratedSphere.AddComponent<RendererComponent>();
 		GeneratedSphere.AddComponent<MeshComponent>("GeneratedOrbitSphere");
@@ -105,7 +117,7 @@ void Scenario_1::Start()
 		glm::vec3 random{ (glm::cos(step) + 1.f) / 2.f,(glm::sin(step) + 1.f) / 2.f,0.5f };
 		mat["BaseColor"] = glm::vec4{ random,1 };
 		auto& Light = GeneratedSphere.AddComponent<LightComponent>();
-		Light.light.m_LightType = LightType::PointLight;
+		Light.light.m_LightType = LightType::DirectionLight;
 		Light.light.Diffuse = random;
 		Light.light.Ambient = random;
 		Light.light.Specular = random;
@@ -119,11 +131,11 @@ void Scenario_1::Update()
 {
 	float dt = Time::GetDelta();
 
-	auto& demo = demo_mesh.GetComponent<DemoComponent>();
-	UUID uuid = AssetManager::GetUUID(demo.meshName);
-	demo_mesh.GetComponent<MeshComponent>().uuid = uuid;
-	demo_mesh.GetComponent<FaceNormalLineRendererComponent>().mesh = AssetManager::GetFaceNormalLineMesh(uuid);
-	demo_mesh.GetComponent<VertexNormalLineRendererComponent>().mesh = AssetManager::GetVertexNormalLineMesh(uuid);
+	//auto& demo = demo_mesh.GetComponent<DemoComponent>();
+	//UUID uuid = AssetManager::GetUUID(demo.meshName);
+	//demo_mesh.GetComponent<MeshComponent>().uuid = uuid;
+	//demo_mesh.GetComponent<FaceNormalLineRendererComponent>().mesh = AssetManager::GetFaceNormalLineMesh(uuid);
+	//demo_mesh.GetComponent<VertexNormalLineRendererComponent>().mesh = AssetManager::GetVertexNormalLineMesh(uuid);
 	auto& ctrl = demo_ctrl.GetComponent<DemoControlComponent>();
 
 	glm::vec3 orbit_rot;
@@ -137,7 +149,7 @@ void Scenario_1::Update()
 	auto rot_mat = glm::toMat4(glm::quat(orbit_rot));
 	{//light update
 
-		float radius = 3.f;
+		float radius = 25000.f;
 		float d_theta = 2.f * glm::pi<float>() / static_cast<float>(ctrl.LightNumber);
 		float theta = 0.f;
 		auto Lights = GetRegistry().view<TransformComponent, LightComponent, RendererComponent>();
@@ -190,3 +202,24 @@ void Scenario_1::OnEvent(Event& event)
 			return true;
 		});
 }
+
+void Scenario_1::SetupObjects(const std::string& file)
+{
+	auto strings = File::ReadFileToStrings(file);
+	for (auto& str : strings)
+	{
+		auto entity = CreateEntity();
+		
+		entity.GetComponent<TransformComponent>().Scale = { 1,1,1 };
+		entity.AddComponent<RendererComponent>();
+		entity.AddComponent<MaterialComponent>();
+		entity.AddComponent<FaceNormalLineRendererComponent>(AssetManager::GetFaceNormalLineMesh(AssetManager::GetUUID(str)));
+		entity.AddComponent<VertexNormalLineRendererComponent>(AssetManager::GetVertexNormalLineMesh(AssetManager::GetUUID(str)));
+		entity.AddComponent<MeshComponent>(str);
+		entity.AddComponent<AABBComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID(str))->GetVertices());
+		entity.AddComponent<RitterSphereComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID(str))->GetVertices());
+		entity.AddComponent<LarssonSphereComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID(str))->GetVertices());
+		entity.AddComponent<PCASphereComponent>(AssetManager::GetMeshSource(AssetManager::GetUUID(str))->GetVertices());
+	}
+}
+

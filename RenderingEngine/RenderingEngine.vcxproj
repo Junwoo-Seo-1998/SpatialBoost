@@ -74,7 +74,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Debug\Assets"
-xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"
+xcopy /Q /E /Y /I "..\Models" "..\bin\Debug\Models"
 copy /B /Y "..\Settings\imgui.ini" ..\bin\Debug\imgui.ini
 copy /B /Y ..\Libs\assimp\dbg\assimp-vc143-mtd.dll ..\bin\Debug\assimp-vc143-mtd.dll</Command>
     </PostBuildEvent>
@@ -104,7 +104,7 @@ copy /B /Y ..\Libs\assimp\dbg\assimp-vc143-mtd.dll ..\bin\Debug\assimp-vc143-mtd
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Release\Assets"
-xcopy /Q /E /Y /I "..\Assets" "..\RenderingEngine\Assets"
+xcopy /Q /E /Y /I "..\Models" "..\bin\Release\Models"
 copy /B /Y "..\Settings\imgui.ini" ..\bin\Release\imgui.ini
 copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt.dll</Command>
     </PostBuildEvent>
@@ -114,6 +114,8 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\AssetManager.h" />
     <ClInclude Include="Core\BoundingVolume\AABB.h" />
     <ClInclude Include="Core\BoundingVolume\Sphere.h" />
+    <ClInclude Include="Core\BoundingVolume\Tree.h" />
+    <ClInclude Include="Core\Component\BoundingVolumeComponent.h" />
     <ClInclude Include="Core\Component\CameraComponent.h" />
     <ClInclude Include="Core\Component\DemoComponent.h" />
     <ClInclude Include="Core\Component\LightComponent.h" />
@@ -134,8 +136,8 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Event\Event.h" />
     <ClInclude Include="Core\Event\InputEvents\KeyBoardEvent.h" />
     <ClInclude Include="Core\Graphics\Buffer.h" />
-    <ClInclude Include="Core\Graphics\FrameBuffer.h" />
     <ClInclude Include="Core\Graphics\DebugRenderer.h" />
+    <ClInclude Include="Core\Graphics\FrameBuffer.h" />
     <ClInclude Include="Core\Graphics\Shader.h" />
     <ClInclude Include="Core\Graphics\VertexArray.h" />
     <ClInclude Include="Core\ImGui\ImGuiRenderer.h" />
@@ -144,20 +146,22 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClInclude Include="Core\Layer\Layer.h" />
     <ClInclude Include="Core\Layer\LayerManager.h" />
     <ClInclude Include="Core\Layer\LineRenderLayer.h" />
+    <ClInclude Include="Core\Layer\PhysicsLayer.h" />
     <ClInclude Include="Core\Layer\RenderLayer.h" />
     <ClInclude Include="Core\Layer\SkyboxRenderLayer.h" />
     <ClInclude Include="Core\Scene\Entity.h" />
     <ClInclude Include="Core\Scene\Scene.h" />
     <ClInclude Include="Core\Scene\SceneManager.h" />
     <ClInclude Include="Core\Time.h" />
-    <ClInclude Include="Core\Utils\Assert.h" />
-    <ClInclude Include="Core\Utils\Log.h" />
     <ClInclude Include="Core\UUID.h" />
+    <ClInclude Include="Core\Utils\Assert.h" />
     <ClInclude Include="Core\Utils\AssimpParser.h" />
     <ClInclude Include="Core\Utils\DataType.h" />
     <ClInclude Include="Core\Utils\DebugDetection.h" />
+    <ClInclude Include="Core\Utils\EPOS.h" />
     <ClInclude Include="Core\Utils\File.h" />
     <ClInclude Include="Core\Utils\KeyCodes.h" />
+    <ClInclude Include="Core\Utils\Log.h" />
     <ClInclude Include="Core\Utils\ManualParser.h" />
     <ClInclude Include="Core\Utils\Math.h" />
     <ClInclude Include="Core\Utils\MeshGenerator.h" />
@@ -173,6 +177,7 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
   <ItemGroup>
     <ClCompile Include="Core\Application.cpp" />
     <ClCompile Include="Core\AssetManager.cpp" />
+    <ClCompile Include="Core\Component\BoundingVolumeComponent.cpp" />
     <ClCompile Include="Core\Component\CameraComponent.cpp" />
     <ClCompile Include="Core\Component\MaterialComponent.cpp" />
     <ClCompile Include="Core\Component\Meshcomponent.cpp" />
@@ -197,16 +202,17 @@ copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt
     <ClCompile Include="Core\Layer\CameraLayer.cpp" />
     <ClCompile Include="Core\Layer\LayerManager.cpp" />
     <ClCompile Include="Core\Layer\LineRenderLayer.cpp" />
+    <ClCompile Include="Core\Layer\PhysicsLayer.cpp" />
     <ClCompile Include="Core\Layer\RenderLayer.cpp" />
     <ClCompile Include="Core\Layer\SkyboxRenderLayer.cpp" />
     <ClCompile Include="Core\Scene\Entity.cpp" />
     <ClCompile Include="Core\Scene\Scene.cpp" />
     <ClCompile Include="Core\Scene\SceneManager.cpp" />
     <ClCompile Include="Core\Time.cpp" />
-    <ClCompile Include="Core\Utils\Log.cpp" />
     <ClCompile Include="Core\UUID.cpp" />
     <ClCompile Include="Core\Utils\AssimpParser.cpp" />
     <ClCompile Include="Core\Utils\File.cpp" />
+    <ClCompile Include="Core\Utils\Log.cpp" />
     <ClCompile Include="Core\Utils\ManualParser.cpp" />
     <ClCompile Include="Core\Utils\Math.cpp" />
     <ClCompile Include="Core\Utils\MeshGenerator.cpp" />
