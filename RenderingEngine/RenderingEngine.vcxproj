@@ -74,7 +74,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Debug\Assets"
-xcopy /Q /E /Y /I "..\Models" "..\bin\Debug\Models"
+xcopy /Q /E /Y /I "..\models" "..\bin\Debug\models"
 copy /B /Y "..\Settings\imgui.ini" ..\bin\Debug\imgui.ini
 copy /B /Y ..\Libs\assimp\dbg\assimp-vc143-mtd.dll ..\bin\Debug\assimp-vc143-mtd.dll</Command>
     </PostBuildEvent>
@@ -104,7 +104,7 @@ copy /B /Y ..\Libs\assimp\dbg\assimp-vc143-mtd.dll ..\bin\Debug\assimp-vc143-mtd
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "..\Assets" "..\bin\Release\Assets"
-xcopy /Q /E /Y /I "..\Models" "..\bin\Release\Models"
+xcopy /Q /E /Y /I "..\models" "..\bin\Release\models"
 copy /B /Y "..\Settings\imgui.ini" ..\bin\Release\imgui.ini
 copy /B /Y ..\Libs\assimp\rel\assimp-vc143-mt.dll ..\bin\Release\assimp-vc143-mt.dll</Command>
     </PostBuildEvent>

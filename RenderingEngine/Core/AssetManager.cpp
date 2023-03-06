@@ -50,7 +50,7 @@ void AssetManager::LoadMeshsFromList(const std::string& file_name)
 	auto strings = File::ReadFileToStrings(file_name);
 	for(auto& str:strings)
 	{
-		LoadMeshFromFile("Models/" + str, str);
+		LoadMeshFromFile("models/" + str, str);
 	}
 }
 
