@@ -78,13 +78,13 @@ void DemoOverLay::OnGuiRender()
 		}*/
 	}
 	{
-		/*auto view = registry.view<DemoControlComponent>();
+		auto view = registry.view<DemoControlComponent>();
 		for (auto entt:view)
 		{
 			auto& Comp = view.get<DemoControlComponent>(entt);
 			ImGui::Checkbox("Stop Rotation", &Comp.StopRotation);
 			ImGui::DragInt("Light Numbers", &Comp.LightNumber, 1, 1, 16);
-		}*/
+		}
 	}
 	ImGui::End();
 }

@@ -259,7 +259,7 @@ void RenderLayer::DeferredRenderQuad()
 
 	shader->SetFloat3("Fog.Color", { 0.5f,0.5f,0.5f });
 	shader->SetFloat("Fog.Near", 1.f);
-	shader->SetFloat("Fog.Far", 100000.f);
+	shader->SetFloat("Fog.Far", 500000.f);
 	//render quad 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
