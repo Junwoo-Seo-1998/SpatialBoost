@@ -485,8 +485,7 @@ Sphere Math::CreatePCASphere(const std::vector<glm::vec3>& vertices)
 	CovZZ /= size;
 	
 	glm::mat3 covMat{ CovXX, CovXY , CovXZ, CovXY , CovYY, CovYZ, CovXZ, CovYZ, CovZZ };
-	glm::mat3 Q, X;
-	X = glm::identity<glm::mat3>();
+	glm::mat3 Q, X{ glm::identity<glm::mat3>() };
 
 	bool convergence = true;
 	float lastSum = 0.f;
@@ -520,13 +519,13 @@ Sphere Math::CreatePCASphere(const std::vector<glm::vec3>& vertices)
 
 		float beta = (covMat[q][q] - covMat[p][p]) / (2.f * covMat[p][q]);
 		float t = glm::sign(beta) / (glm::abs(beta) + glm::sqrt(beta * beta + 1.f));
-		float costheta = 1.f / glm::sqrt(t * t + 1.f);
-		float sintheta = costheta * t;
+		float cosTheta = 1.f / glm::sqrt(t * t + 1.f);
+		float sinTheta = cosTheta * t;
 		Q = glm::identity<glm::mat3>();
-		Q[p][p] = costheta;
-		Q[p][q] = -sintheta;
-		Q[q][p] = sintheta;
-		Q[q][q] = costheta;
+		Q[p][p] = cosTheta;
+		Q[p][q] = -sinTheta;
+		Q[q][p] = sinTheta;
+		Q[q][q] = cosTheta;
 		X *= Q;
 		covMat = glm::transpose(Q) * covMat * Q;
 	}
@@ -545,18 +544,9 @@ Sphere Math::CreatePCASphere(const std::vector<glm::vec3>& vertices)
 
 	glm::vec3 center = (vertices[min] + vertices[max]) / 2.f;
 	float radius = glm::distance(vertices[min], vertices[max]) / 2.f;
-	int numOfVertices = static_cast<int>(vertices.size());
-	for (int i = 0; i < numOfVertices; i++)
-	{
-		float newD = glm::distance(vertices[i], center);
-		if (newD > radius)
-		{
-			float temp = radius;
-			radius = (radius + newD) / 2.f;
-			center += (radius - temp) * glm::normalize(vertices[i] - center);
-		}
-	}
 
-	return { center , radius };
+	Sphere sphere{ center, radius };
+	Math::ExtendSphere(sphere, vertices);
+	return sphere;
 }
 
