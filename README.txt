@@ -17,11 +17,11 @@ the application to fail.
 #Which part of the assignment has been completed? 
 - Completed AABB, Ritter’s Method,Larsson’s Method, PCA-based Method, AABB BVH top down, AABB bottom up.
 - Completed Control and UI 
-- Completed ALL except Sphere BVH.
+- Completed ALL BVH.
 
 #Which part of the assignment has NOT been completed (not done, not working, etc.) and
 explanation on why those parts are not completed?
-- Sphere BVH i couldn't find way to compute sphere that will contain spheres.
+- no
 
 #Where the relevant source codes (both C++ and shaders) for the assignment are located.
 #Specify the file path (folder name), file name, and function name (or line number).
