@@ -57,9 +57,14 @@ public:
 	static std::tuple<glm::vec3, glm::vec3> FindMinAndMax(const std::vector<glm::vec3>& vertices);
 	static std::tuple<int, int> ExtremePairAlongDirection(glm::vec3 dir,
 		const std::vector<glm::vec3>& vertices);
-
-	static void ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices);
 	
+	static void ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices);
+
+	static Sphere MergeTwoSphere(const Sphere& left, const Sphere& right);
+	static Sphere CreateEnclosingSphere(const std::vector<Sphere>& spheres);
+	static AABB CreateEnclosingAABB(const std::vector<AABB>& aabbs);
+	static float ComputeAABBVolume(const AABB& aabb);
+	static glm::vec3 ComputePCAVector(const std::vector<glm::vec3>& vertices);
 	static AABB CreateAABB(const std::vector<glm::vec3>& vertices);
 	static Sphere CreateRitterSphere(const std::vector<glm::vec3>& vertices);
 	static Sphere CreateLarssonSphere(const std::vector<glm::vec3>& vertices, EPOS epos = EPOS::EPOS98);

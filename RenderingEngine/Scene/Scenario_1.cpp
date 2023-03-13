@@ -65,8 +65,8 @@ void Scenario_1::Start()
 	demo_ctrl = CreateEntity();
 	demo_ctrl.AddComponent<DemoControlComponent>();
 
-	//SetupObjects("Models/Section4.txt");
-	//SetupObjects("Models/Section5.txt");
+	SetupObjects("Models/Section4.txt");
+	SetupObjects("Models/Section5.txt");
 	SetupObjects("Models/Section6.txt");
 
 	/*

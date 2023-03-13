@@ -38,8 +38,8 @@ class MyApp : public Application
 		AssetManager::LoadShaderFromFile("Deferred_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred.vert", "Assets/Shaders/deferred.frag");
 		AssetManager::LoadShaderFromFile("Deferred_Phong", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred_phong.vert", "Assets/Shaders/deferred_phong.frag");
 
-		//AssetManager::LoadMeshsFromList("Models/Section4.txt");
-		//AssetManager::LoadMeshsFromList("Models/Section5.txt");
+		AssetManager::LoadMeshsFromList("Models/Section4.txt");
+		AssetManager::LoadMeshsFromList("Models/Section5.txt");
 		AssetManager::LoadMeshsFromList("Models/Section6.txt");
 
 		AssetManager::LoadTextureFromFile("diff", "Assets/metal_roof_diff_512x512.png");

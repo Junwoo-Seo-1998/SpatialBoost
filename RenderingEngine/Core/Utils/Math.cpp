@@ -340,6 +340,182 @@ void Math::ExtendSphere(Sphere& sphere, const std::vector<glm::vec3>& vertices)
 	}
 }
 
+
+
+Sphere Math::MergeTwoSphere(const Sphere& left, const Sphere& right)
+{
+	Sphere big = left.radius > right.radius ? left : right;
+	Sphere small = left.radius > right.radius ? right : left;
+	float d = glm::distance(big.center, small.center);
+	float r1 = big.radius;
+	float r2 = small.radius;
+
+	if ((d + r2) <= r1)
+		return big;
+
+	float newR = (d + r1 + r2) / 2.f;
+	const glm::vec3 dVector = glm::normalize(right.center - left.center);
+	const glm::vec3 newCenter = left.center + (newR - r2) * dVector;
+	return { newCenter, newR };
+}
+
+Sphere Math::CreateEnclosingSphere(const std::vector<Sphere>& spheres)
+{
+	if (spheres.size() == 1)
+		return spheres[0];
+	Sphere result = spheres[0];
+	int size = static_cast<int>(spheres.size());
+	for (int i = 1; i < size; ++i)
+	{
+		result = MergeTwoSphere(result, spheres[i]);
+	}
+	return result;
+}
+
+AABB Math::CreateEnclosingAABB(const std::vector<AABB>& aabbs)
+{
+	glm::vec3 min{ std::numeric_limits<float>().max() }, max{ std::numeric_limits<float>().lowest() };
+	int numObjects = static_cast<int>(aabbs.size());
+	for (int i = 0; i < numObjects; ++i)
+	{
+		auto& aabb = aabbs[i];
+		auto aabb_min = aabb.center - aabb.extend;
+		auto aabb_max = aabb.center + aabb.extend;
+		min.x = std::min(min.x, aabb_min.x);
+		min.y = std::min(min.y, aabb_min.y);
+		min.z = std::min(min.z, aabb_min.z);
+
+		max.x = std::max(max.x, aabb_max.x);
+		max.y = std::max(max.y, aabb_max.y);
+		max.z = std::max(max.z, aabb_max.z);
+	}
+	auto center = (min + max) / 2.f;
+	return { center, max - center };
+}
+
+float Math::ComputeAABBVolume(const AABB& aabb)
+{
+	auto aabb_min = aabb.center - aabb.extend;
+	auto aabb_max = aabb.center + aabb.extend;
+
+	auto scale = aabb_max - aabb_min;
+	return scale.x * scale.y * scale.z;
+}
+
+
+glm::vec3 Math::ComputePCAVector(const std::vector<glm::vec3>& vertices)
+{
+	glm::vec3 mean = { 0.f, 0.f, 0.f };
+
+	glm::vec3 minScale{ std::numeric_limits<float>().max() };
+	glm::vec3 maxScale{ std::numeric_limits<float>().lowest() };
+
+	float size = static_cast<float>(vertices.size());
+	for (const auto& vertex : vertices)
+	{
+		mean += vertex;
+		minScale.x = glm::min(minScale.x, vertex.x);
+		minScale.y = glm::min(minScale.y, vertex.y);
+		minScale.z = glm::min(minScale.z, vertex.z);
+
+		maxScale.x = glm::max(maxScale.x, vertex.x);
+		maxScale.y = glm::max(maxScale.y, vertex.y);
+		maxScale.z = glm::max(maxScale.z, vertex.z);
+	}
+
+	mean /= size;
+
+	float CovXX = 0.f;
+	float CovXY = 0.f;
+	float CovXZ = 0.f;
+	float CovYY = 0.f;
+	float CovYZ = 0.f;
+	float CovZZ = 0.f;
+
+	for (const auto& vertex : vertices)
+	{
+		CovXX += (vertex.x - mean.x) * (vertex.x - mean.x);
+		CovXY += (vertex.x - mean.x) * (vertex.y - mean.y);
+		CovXZ += (vertex.x - mean.x) * (vertex.z - mean.z);
+		CovYY += (vertex.y - mean.y) * (vertex.y - mean.y);
+		CovYZ += (vertex.y - mean.y) * (vertex.z - mean.z);
+		CovZZ += (vertex.z - mean.z) * (vertex.z - mean.z);
+	}
+	//scale it to compute fast
+	glm::vec3 scales = maxScale - minScale;
+	CovXX /= scales.x * scales.x;
+	CovXY /= scales.x * scales.y;
+	CovXZ /= scales.x * scales.z;
+	CovYY /= scales.y * scales.y;
+	CovYZ /= scales.y * scales.z;
+	CovZZ /= scales.z * scales.z;
+
+	CovXX /= size;
+	CovXY /= size;
+	CovXZ /= size;
+	CovYY /= size;
+	CovYZ /= size;
+	CovZZ /= size;
+
+	glm::mat3 covMat{ CovXX, CovXY , CovXZ, CovXY , CovYY, CovYZ, CovXZ, CovYZ, CovZZ };
+	glm::mat3 Q, X{ glm::identity<glm::mat3>() };
+
+	bool convergence = true;
+	float lastSum = 0.f;
+	int p = 0, q = 0;
+
+	while (convergence)
+	{
+		float maxElement = 0.f;
+		float sum = 0.f;
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				if (i != j)
+				{
+					const float abs_value = glm::abs(covMat[i][j]);
+					sum += abs_value;
+					if (maxElement < abs_value)
+					{
+						maxElement = abs_value;
+						p = i;
+						q = j;
+					}
+				}
+			}
+		}
+
+		convergence = glm::abs(lastSum - sum) > std::numeric_limits<float>::epsilon();
+		if (!convergence) break;
+		lastSum = sum;
+
+		float beta = (covMat[q][q] - covMat[p][p]) / (2.f * covMat[p][q]);
+		float t = glm::sign(beta) / (glm::abs(beta) + glm::sqrt(beta * beta + 1.f));
+		float cosTheta = 1.f / glm::sqrt(t * t + 1.f);
+		float sinTheta = cosTheta * t;
+		Q = glm::identity<glm::mat3>();
+		Q[p][p] = cosTheta;
+		Q[p][q] = -sinTheta;
+		Q[q][p] = sinTheta;
+		Q[q][q] = cosTheta;
+		X *= Q;
+		covMat = glm::transpose(Q) * covMat * Q;
+	}
+
+	float maxElement = 0.f;
+	int maxIndex = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		if (glm::abs(maxElement) < glm::abs(covMat[i][i]))
+		{
+			maxElement = covMat[i][i];
+			maxIndex = i;
+		}
+	}
+	return X[maxIndex];
+}
+
 AABB Math::CreateAABB(const std::vector<glm::vec3>& vertices)
 {
 	auto [min, max] = FindMinAndMax(vertices);
@@ -349,7 +525,7 @@ AABB Math::CreateAABB(const std::vector<glm::vec3>& vertices)
 
 Sphere Math::CreateRitterSphere(const std::vector<glm::vec3>& vertices)
 {
-	EngineLog::Info("Creating RitterSphere");
+	//EngineLog::Info("Creating RitterSphere");
 	//xyz
 	auto [xmin, xmax] = ExtremePairAlongDirection({ 1,0,0 }, vertices);
 	auto [ymin, ymax] = ExtremePairAlongDirection({ 0,1,0 }, vertices);
@@ -385,7 +561,7 @@ Sphere Math::CreateRitterSphere(const std::vector<glm::vec3>& vertices)
 
 Sphere Math::CreateLarssonSphere(const std::vector<glm::vec3>& vertices, EPOS epos)
 {
-	EngineLog::Info("Creating LarssonSphere");
+	//EngineLog::Info("Creating LarssonSphere");
 	int to_compare = 0;
 	switch (epos)
 	{
@@ -431,7 +607,7 @@ Sphere Math::CreateLarssonSphere(const std::vector<glm::vec3>& vertices, EPOS ep
 
 Sphere Math::CreatePCASphere(const std::vector<glm::vec3>& vertices)
 {
-	EngineLog::Info("Creating PCASphere");
+	//EngineLog::Info("Creating PCASphere");
 	glm::vec3 mean = { 0.f, 0.f, 0.f };
 
 	glm::vec3 minScale{ std::numeric_limits<float>().max() };

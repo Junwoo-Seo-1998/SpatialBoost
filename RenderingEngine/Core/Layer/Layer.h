@@ -15,6 +15,7 @@ class Event;
 class Layer
 {
 public:
+	virtual ~Layer() {}
 	virtual void OnAttach() {}
 	virtual void OnDetach() {}
 	virtual void OnStart() {}

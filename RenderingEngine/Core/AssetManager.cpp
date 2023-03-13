@@ -56,7 +56,7 @@ void AssetManager::LoadMeshsFromList(const std::string& file_name)
 
 void AssetManager::LoadMeshFromFile(const std::string& file_name, const std::string& key_name)
 {
-	std::cout << "Load - " << file_name << std::endl;
+	EngineLog::Info("Load - {}", file_name);
 	std::vector<glm::vec3> loaded_points;
 	std::vector<unsigned int> loaded_indices;
 	Parser::ParseFile(file_name, loaded_points, loaded_indices);
