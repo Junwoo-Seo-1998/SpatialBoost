@@ -23,6 +23,7 @@ End Header --------------------------------------------------------*/
 #include "Core/Layer/RenderLayer.h"
 #include "Core/Layer/SkyboxRenderLayer.h"
 #include "Core/Utils/File.h"
+#include "Core/Utils/Log.h"
 #include "Scene/Scenario_1.h"
 #include "Scene/CommonOverlay/DemoOverLay.h"
 
@@ -31,17 +32,21 @@ class MyApp : public Application
 {
 	virtual void UserDefinedInit() override
 	{
+		Log::Info("load shaders");
 		AssetManager::LoadShaderFromFile("skybox_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/skybox.vert", "Assets/Shaders/skybox.frag");
 		AssetManager::LoadShaderFromFile("line_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/normal.vert", "Assets/Shaders/normal.frag");
 		AssetManager::LoadShaderFromFile("light_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
 		AssetManager::LoadShaderFromFile("Phong_Shading", "Assets/Shaders/common.glsl", "Assets/Shaders/phong_shading.vert", "Assets/Shaders/phong_shading.frag");
 		AssetManager::LoadShaderFromFile("Deferred_shader", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred.vert", "Assets/Shaders/deferred.frag");
 		AssetManager::LoadShaderFromFile("Deferred_Phong", "Assets/Shaders/common.glsl", "Assets/Shaders/deferred_phong.vert", "Assets/Shaders/deferred_phong.frag");
+		Log::Info("load shaders -done");
 
+		Log::Info("load models");
 		AssetManager::LoadMeshsFromList("Models/Section4.txt");
 		AssetManager::LoadMeshsFromList("Models/Section5.txt");
 		AssetManager::LoadMeshsFromList("Models/Section6.txt");
-
+		Log::Info("load models -done");
+		Log::Info("Load Textures");
 		AssetManager::LoadTextureFromFile("diff", "Assets/metal_roof_diff_512x512.png");
 		AssetManager::LoadTextureFromFile("spec", "Assets/metal_roof_spec_512x512.png");
 		AssetManager::LoadTextureFromFile("sky_front", "Assets/front.jpg");
@@ -50,6 +55,7 @@ class MyApp : public Application
 		AssetManager::LoadTextureFromFile("sky_right", "Assets/right.jpg");
 		AssetManager::LoadTextureFromFile("sky_bottom", "Assets/bottom.jpg");
 		AssetManager::LoadTextureFromFile("sky_top", "Assets/top.jpg");
+		Log::Info("Load Textures -done");
 		//generated
 		AssetManager::GeneratePlane("Plane");
 		AssetManager::GenerateSphere("GeneratedOrbitSphere", 0.1f, 10, 10);

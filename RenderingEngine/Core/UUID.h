@@ -9,6 +9,7 @@ Project: junwoo.seo_cs350_1
 Author: Junwoo Seo, junwoo.seo, 0055213
 End Header --------------------------------------------------------*/
 #include <unordered_map>
+#include <stdint.h>
 
 class UUID
 {

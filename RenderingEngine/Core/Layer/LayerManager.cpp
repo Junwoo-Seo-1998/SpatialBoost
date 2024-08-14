@@ -10,6 +10,7 @@ Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #include "LayerManager.h"
 #include "Layer.h"
+#include <algorithm>
 LayerManager::~LayerManager()
 {
 }
