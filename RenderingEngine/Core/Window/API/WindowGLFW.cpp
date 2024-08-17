@@ -104,18 +104,19 @@ bool WindowGLFW::Init()
 	}
 	m_WindowData.window = m_Window;
 	glfwMakeContextCurrent(m_Window);
-	gladLoadGL();
+	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
 	EngineLog::Info("Vendor - {}", (const char*)(glGetString(GL_VENDOR)));
 	EngineLog::Info("Renderer - {}", (const char*)(glGetString(GL_RENDERER)));
 	EngineLog::Info("Version - {}", (const char*)(glGetString(GL_VERSION)));
-	glEnable(GL_DEBUG_OUTPUT);
-	glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+	//glEnable(GL_DEBUG_OUTPUT);
+	//glDebugMessageCallback(OpenGLMessageCallback, nullptr);
 
+	
 	glClearColor(0.f,0.f,0.f, 1.f);
-
+	
 	//set glfw callback
-		//so that we can use data of window in glfw call backs.
+	//so that we can use data of window in glfw call backs.
 	glfwSetWindowUserPointer(static_cast<GLFWwindow*>(m_WindowData.window), &m_WindowData);
 	//glfwSetInputMode(static_cast<GLFWwindow*>(m_WindowData.window), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetKeyCallback(static_cast<GLFWwindow*>(m_WindowData.window), GLFWKeyCallback);
@@ -130,6 +131,7 @@ bool WindowGLFW::Init()
 			WindowResizeEvent event(width, height);
 			data.eventCallback(event);
 		});
+
 	return true;
 }
 

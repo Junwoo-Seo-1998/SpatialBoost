@@ -14,6 +14,7 @@ End Header --------------------------------------------------------*/
 #include <unordered_map>
 #include <glm/ext/scalar_constants.hpp>
 #include "Math.h"
+#include <algorithm>
 
 std::tuple<MeshGenerator::PointsPtr, MeshGenerator::IndicesPtr> MeshGenerator::
 GeneratePlanePointsWithIndices(float size)
