@@ -11,12 +11,14 @@ Author: Junwoo Seo, junwoo.seo, 0055213
 Creation date: Sep 05 2022
 End Header --------------------------------------------------------*/
 #pragma once
+#include <filesystem>
 #include"Core/Application.h"
 #include<memory>
 #include<iostream>
 extern std::shared_ptr<Application> CoreMain();
-int main(int /*argc*/, char** /*argv*/)
+int main(int argc, char** argv)
 {
+	std::filesystem::current_path(std::filesystem::path(argv[0]).parent_path());
 	std::shared_ptr<Application> application = CoreMain();
 	if (!application->Init())
 	{
